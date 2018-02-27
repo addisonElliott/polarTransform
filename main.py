@@ -6,13 +6,14 @@ import os
 
 dataDirectory = os.path.join(os.path.dirname(__file__), 'tests', 'data')
 
-# TODO Fix issue with ignoregamma, it's weird that it is required
-# TODO Fix issue with images being 180 degrees the wrong way
 shortAxisApexImage = imageio.imread(os.path.join(dataDirectory, 'shortAxisApex.png'), ignoregamma=True)
-# shortAxisApexImage = shortAxisApexImage[:, :, 1]
+shortAxisApexImage = shortAxisApexImage[:, :, 0]
 
-# polarImage, ptSettings = polarTransform.convertToPolarImage(shortAxisApexImage,
-#                                                             center=np.array([401, 365]))
+polarImage, ptSettings = polarTransform.convertToPolarImage(shortAxisApexImage,
+                                                            center=np.array([401, 365]))
+
+polarImage2, ptSettings = polarTransform.convertToPolarImage(np.flipud(shortAxisApexImage),
+                                                            center=np.array([401, 365]))
 # imageio.imwrite('test.png', np.flipud(polarImage))
 
 # TODO Handle RGB eventually
@@ -24,5 +25,8 @@ shortAxisApexImage = imageio.imread(os.path.join(dataDirectory, 'shortAxisApex.p
 # TODO Add border support and stuff
 # TODO Add note about origin and stuff (should I do that)?
 
-plt.imshow(shortAxisApexImage)#, cmap='gray')
+plt.subplot(211)
+plt.imshow(polarImage, cmap='gray')
+plt.subplot(212)
+plt.imshow(polarImage2, cmap='gray')
 plt.show()

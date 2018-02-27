@@ -241,7 +241,7 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
 
     # Take the transpose of the polar image such that first dimension is radius and second
     # dimension is theta.
-    return polarImage, settings
+    return polarImage.T, settings
 
 
 def convertToCartesianImage(image, center=None, initialRadius=None, finalRadius=None, initialSrcRadius=None,

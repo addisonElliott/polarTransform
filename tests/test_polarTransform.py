@@ -24,10 +24,10 @@ dataDirectory = os.path.join(os.path.dirname(__file__), 'data')
 
 class TestPolarConversion(unittest.TestCase):
     def setUp(self):
-        self.shortAxisApexImage = imageio.imread(os.path.join(dataDirectory, 'shortAxisApex.png'))
+        self.shortAxisApexImage = imageio.imread(os.path.join(dataDirectory, 'shortAxisApex.png'), ignoregamma=True)
         self.shortAxisApexImage = self.shortAxisApexImage[:, :, 0]
 
-        self.shortAxisApexPolarImage = imageio.imread(os.path.join(dataDirectory, 'shortAxisApexPolar.png'))
+        self.shortAxisApexPolarImage = imageio.imread(os.path.join(dataDirectory, 'shortAxisApexPolar.png'), ignoregamma=True)
 
     def test_XXX(self):
         polarImage, ptSettings = polarTransform.convertToPolarImage(self.shortAxisApexImage,

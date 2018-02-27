@@ -6,7 +6,7 @@ import scipy.ndimage
 
 class ImageTransform:
     def __init__(self, center, initialRadius, finalRadius, initialAngle, finalAngle, cartesianImageSize,
-                 polarImageSize):
+                 polarImageSize, origin):
         self.center = center
         self.initialRadius = initialRadius
         self.finalRadius = finalRadius
@@ -14,6 +14,9 @@ class ImageTransform:
         self.finalAngle = finalAngle
         self.cartesianImageSize = cartesianImageSize
         self.polarImageSize = polarImageSize
+        # Note: Cartesian origin is whether the origin is in upper or lower and only applies for conversion to Cartesian
+        # image. The polar image does not matter because (0, 0) should correspond to r=0, theta=0
+        self.origin = origin
 
     def convertToPolarImage(self, image):
         image, ptSettings = convertToPolarImage(image, settings=self)
@@ -169,7 +172,7 @@ def getCartesianPointsImage(points, settings):
 
 
 def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None, initialAngle=None, finalAngle=None,
-                        radiusSize=None, angleSize=None, settings=None):
+                        radiusSize=None, angleSize=None, origin='upper', settings=None):
     # Create settings if none are given
     if settings is None:
         # If center is not specified, set to the center of the image
@@ -213,7 +216,12 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
 
         # Create the settings
         settings = ImageTransform(center, initialRadius, finalRadius, initialAngle, finalAngle, image.shape,
-                                  [radiusSize, angleSize])
+                                  [radiusSize, angleSize], origin)
+
+    # Flip the image such that the origin is lower left
+    # If this does not happen, then 0->2pi rotates clockwise instead of counter-clockwise as is traditional for angles
+    if settings.origin == 'upper':
+        image = np.flipud(image)
 
     # Create radii from start to finish with radiusSize, do same for theta
     # Then create a 2D grid of radius and theta using meshgrid

@@ -1,9 +1,9 @@
 import os
 import sys
-import tempfile
-import numpy as np
+
 import imageio
-import matplotlib.pyplot as plt
+import numpy as np
+import skimage
 
 # Look on level up for polarTransform.py
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
@@ -14,22 +14,17 @@ import unittest
 dataDirectory = os.path.join(os.path.dirname(__file__), 'data')
 
 
-# DATA_DIR_PATH = os.path.dirname(__file__)
-# RAW_NRRD_FILE_PATH = os.path.join(DATA_DIR_PATH, 'BallBinary30x30x30.nrrd')
-# RAW_NHDR_FILE_PATH = os.path.join(DATA_DIR_PATH, 'BallBinary30x30x30.nhdr')
-# RAW_DATA_FILE_PATH = os.path.join(DATA_DIR_PATH, 'BallBinary30x30x30.raw')
-# GZ_NRRD_FILE_PATH = os.path.join(DATA_DIR_PATH, 'BallBinary30x30x30_gz.nrrd')
-# BZ2_NRRD_FILE_PATH = os.path.join(DATA_DIR_PATH, 'BallBinary30x30x30_bz2.nrrd')
-# GZ_LINESKIP_NRRD_FILE_PATH = os.path.join(DATA_DIR_PATH, 'BallBinary30x30x30_gz_lineskip.nrrd')
-
 class TestPolarConversion(unittest.TestCase):
     def setUp(self):
         self.shortAxisApexImage = imageio.imread(os.path.join(dataDirectory, 'shortAxisApex.png'), ignoregamma=True)
         self.shortAxisApexImage = self.shortAxisApexImage[:, :, 0]
 
-        self.shortAxisApexPolarImage = imageio.imread(os.path.join(dataDirectory, 'shortAxisApexPolar.png'), ignoregamma=True)
+        self.shortAxisApexPolarImage = imageio.imread(os.path.join(dataDirectory, 'shortAxisApexPolar.png'),
+                                                      ignoregamma=True)
+        # TODO Is this what I want to do?
+        self.shortAxisApexPolarImage = np.flipud(self.shortAxisApexPolarImage)
 
-    def test_XXX(self):
+    def test_convertPolarDefault(self):
         polarImage, ptSettings = polarTransform.convertToPolarImage(self.shortAxisApexImage,
                                                                     center=np.array([401, 365]))
 
@@ -39,5 +34,11 @@ class TestPolarConversion(unittest.TestCase):
         self.assertEqual(ptSettings.initialAngle, 0.0)
         self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
         self.assertEqual(ptSettings.cartesianImageSize, self.shortAxisApexImage.shape)
+        np.testing.assert_array_equal(ptSettings.polarImageSize,
+                                      np.array([ptSettings.finalRadius, self.shortAxisApexImage.shape[1] * 2]))
+        self.assertEqual(ptSettings.origin, 'upper')
 
-        # TODO Check polarImageSize
+        np.testing.assert_almost_equal(polarImage, self.shortAxisApexPolarImage)
+
+if __name__ == '__main__':
+    unittest.main()

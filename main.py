@@ -12,8 +12,8 @@ shortAxisApexImage = shortAxisApexImage[:, :, 0]
 polarImage, ptSettings = polarTransform.convertToPolarImage(shortAxisApexImage,
                                                             center=np.array([401, 365]))
 
-polarImage2, ptSettings = polarTransform.convertToPolarImage(np.flipud(shortAxisApexImage),
-                                                            center=np.array([401, 365]))
+polarImage2, ptSettings2 = polarTransform.convertToPolarImage(np.flipud(shortAxisApexImage),
+                                                            center=np.array([401, 365]), origin='lower')
 # imageio.imwrite('test.png', np.flipud(polarImage))
 
 # TODO Handle RGB eventually
@@ -24,6 +24,7 @@ polarImage2, ptSettings = polarTransform.convertToPolarImage(np.flipud(shortAxis
 # TODO Add method support
 # TODO Add border support and stuff
 # TODO Add note about origin and stuff (should I do that)?
+# TODO Check origin
 
 plt.subplot(211)
 plt.imshow(polarImage, cmap='gray')

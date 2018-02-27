@@ -185,7 +185,7 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
         # This will be the maximum radius to represent the entire image in polar
         if finalRadius is None:
             corners = np.array([[0, 0], [0, 1], [1, 0], [1, 1]]) * image.shape
-            radii, _ = getPolarPoints2(corners[:, 0], corners[:, 1], center)
+            radii, _ = getPolarPoints2(corners[:, 1], corners[:, 0], center)
             finalRadius = np.ceil(radii.max()).astype(int)
 
         # Initial angle of zero if none is selected

@@ -25,10 +25,19 @@ dataDirectory = os.path.join(os.path.dirname(__file__), 'data')
 class TestPolarConversion(unittest.TestCase):
     def setUp(self):
         self.shortAxisApexImage = imageio.imread(os.path.join(dataDirectory, 'shortAxisApex.png'))
+        self.shortAxisApexImage = self.shortAxisApexImage[:, :, 0]
+
+        self.shortAxisApexPolarImage = imageio.imread(os.path.join(dataDirectory, 'shortAxisApexPolar.png'))
 
     def test_XXX(self):
         polarImage, ptSettings = polarTransform.convertToPolarImage(self.shortAxisApexImage,
                                                                     center=np.array([401, 365]))
 
-        plt.imshow(polarImage, cmap='gray')
-        plt.show()
+        np.testing.assert_array_equal(ptSettings.center, np.array([401, 365]))
+        self.assertEqual(ptSettings.initialRadius, 0)
+        self.assertEqual(ptSettings.finalRadius, 543)
+        self.assertEqual(ptSettings.initialAngle, 0.0)
+        self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
+        self.assertEqual(ptSettings.cartesianImageSize, self.shortAxisApexImage.shape)
+
+        # TODO Check polarImageSize

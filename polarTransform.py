@@ -1,10 +1,12 @@
 import cv2
 import numpy as np
+import scipy.interpolate
+import scipy.ndimage
 
 
 class ImageTransform:
-    def __init__(self, center, initialRadius, finalRadius, initialAngle, finalAngle,
-                 cartesianImageSize, polarImageSize):
+    def __init__(self, center, initialRadius, finalRadius, initialAngle, finalAngle, cartesianImageSize,
+                 polarImageSize):
         self.center = center
         self.initialRadius = initialRadius
         self.finalRadius = finalRadius
@@ -222,16 +224,14 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
     # Take polar  grid and convert to cartesian coordinates
     xCartesian, yCartesian = getCartesianPoints2(r, theta, settings.center)
 
-    # Convert for 32-bit floats for OpenCV2, does not support double
-    xCartesian = xCartesian.astype(np.float32)
-    yCartesian = yCartesian.astype(np.float32)
+    # Flatten the desired x/y cartesian points into one 2xN array
+    # Retrieve polar image using map_coordinates. Returns a linear array of the values that
+    # must be reshaped into the desired size
+    desiredCoords = np.vstack((yCartesian.flatten(), xCartesian.flatten()))
+    polarImage = scipy.ndimage.map_coordinates(image, desiredCoords, order=3).reshape(r.shape)
 
-    # Use OpenCV2 to remap, allows to use their interpolation techniques
-    polarImage = cv2.remap(image, xCartesian, yCartesian, cv2.INTER_CUBIC)
-
-    # Take the transpose of the polar image because OpenCV returns matrix that uses
-    # Cartesian coordinate system meaning (x, y) instead of (row, col) (A.K.A, (y, x))
-    # First dimension of polar image is radius, second dimension is theta
+    # Take the transpose of the polar image such that first dimension is radius and second
+    # dimension is theta.
     return polarImage.T, settings
 
 

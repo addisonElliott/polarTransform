@@ -272,7 +272,7 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
 
 def convertToCartesianImage(image, center=None, initialRadius=None, finalRadius=None, initialSrcRadius=None,
                             finalSrcRadius=None, initialAngle=None, finalAngle=None, initialSrcAngle=None,
-                            finalSrcAngle=None, imageSize=None, settings=None):
+                            finalSrcAngle=None, imageSize=None, origin='upper', settings=None):
     if settings is None:
         # Center is set to middle-middle, which means all four quadrants will be shown
         if center is None:
@@ -388,7 +388,7 @@ def convertToCartesianImage(image, center=None, initialRadius=None, finalRadius=
                 center = imageSize[::-1] * np.array([1, 1])
 
         settings = ImageTransform(center, initialSrcRadius, finalSrcRadius, initialSrcAngle, finalSrcAngle, imageSize,
-                                  image.shape)
+                                  image.shape, origin)
     else:
         # This is used to scale the result of the radius to get the appropriate Cartesian value
         scaleRadius = settings.polarImageSize[0] / (settings.finalRadius - settings.initialRadius)

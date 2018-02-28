@@ -5,7 +5,7 @@ import imageio
 import os
 from tests.util import loadImage, saveImage
 
-shortAxisApexImage = loadImage('shortAxisApex.png', False, True)
+shortAxisApexImage = loadImage('shortAxisApex.png', False)
 verticalLinesImage = loadImage('verticalLines.png', False)
 horizontalLinesImage = loadImage('horizontalLines.png', False)
 checkerboardImage = loadImage('checkerboard.png', False)
@@ -14,7 +14,6 @@ shortAxisApexPolarImage = loadImage('shortAxisApexPolarImage.png')
 shortAxisApexPolarImage_centerMiddle = loadImage('shortAxisApexPolarImage_centerMiddle.png')
 verticalLinesPolarImage = loadImage('verticalLinesPolarImage.png')
 verticalLinesPolarImage_scaled = loadImage('verticalLinesPolarImage_scaled.png')
-verticalLinesPolarImage_scaled2 = loadImage('verticalLinesPolarImage_scaled2.png')
 
 
 def generateShortAxisPolar():
@@ -39,6 +38,22 @@ def generateVerticalLinesPolar2():
     saveImage('verticalLinesPolarImage_scaled.png', polarImage)
 
 
+cartesianImage, ptSettings = polarTransform.convertToCartesianImage(shortAxisApexPolarImage, center=[401, 365], imageSize=[608, 800])
+# cartesianImage = np.flipud(cartesianImage)
+# saveImage('shortAxisApex.png', shortAxisApexImage)
+# saveImage('test.png', cartesianImage)
+# np.testing.assert_almost_equal(cartesianImage, np.flipud(shortAxisApexImage))
+shortAxisApexImage = np.flipud(shortAxisApexImage)
+
+plt.figure()
+plt.imshow(cartesianImage, cmap='gray', origin='lower')
+plt.figure()
+plt.imshow(shortAxisApexImage, cmap='gray', origin='upper')
+plt.figure()
+plt.imshow(shortAxisApexImage - cartesianImage, cmap='gray', origin='upper')
+
+plt.show()
+
 # Enable these functions as you see fit to generate the images
 # Note: It is up to the developer to ensure these images are created and look like they are supposed to
 # generateShortAxisPolar()
@@ -56,3 +71,4 @@ def generateVerticalLinesPolar2():
 # TODO Add border support and stuff
 # TODO Add note about origin and stuff (should I do that)?
 # TODO Check origin
+

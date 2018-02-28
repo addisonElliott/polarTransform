@@ -233,8 +233,10 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
 
     # Create radii from start to finish with radiusSize, do same for theta
     # Then create a 2D grid of radius and theta using meshgrid
-    radii = np.linspace(settings.initialRadius, settings.finalRadius - 1, settings.polarImageSize[0])
-    theta = np.linspace(settings.initialAngle, settings.finalAngle, settings.polarImageSize[1])
+    # Set endpoint to False to NOT include the final sample specified. Think of it like this, if you ask to count from
+    # 0 to 30, that is 31 numbers not 30. Thus, we count 0...29 to get 30 numbers.
+    radii = np.linspace(settings.initialRadius, settings.finalRadius, settings.polarImageSize[0], endpoint=False)
+    theta = np.linspace(settings.initialAngle, settings.finalAngle, settings.polarImageSize[1], endpoint=False)
     r, theta = np.meshgrid(radii, theta)
 
     # Take polar  grid and convert to cartesian coordinates

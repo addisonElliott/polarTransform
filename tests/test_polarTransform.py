@@ -1,7 +1,6 @@
 import os
 import sys
 
-import imageio
 import numpy as np
 
 # Look on level up for polarTransform.py
@@ -10,16 +9,7 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 import polarTransform
 import unittest
 
-dataDirectory = os.path.join(os.path.dirname(__file__), 'data')
-
-
-def loadImage(filename, flipud=True, convertToGrayscale=False):
-    image = imageio.imread(os.path.join(dataDirectory, filename), ignoregamma=True)
-
-    if convertToGrayscale:
-        image = image[:, :, 0]
-
-    return np.flipud(image) if flipud else image
+from tests.util import loadImage
 
 
 class TestPolarConversion(unittest.TestCase):
@@ -138,7 +128,7 @@ class TestPolarConversion(unittest.TestCase):
                                       np.array([70, 192]))
         self.assertEqual(ptSettings.origin, 'upper')
 
-        np.testing.assert_almost_equal(polarImage, self.verticalLinesPolarImage[30:100, 129:320, :])
+        np.testing.assert_almost_equal(polarImage, self.verticalLinesPolarImage[30:100, 128:320, :])
 
 
 if __name__ == '__main__':

@@ -39,12 +39,14 @@ def generateVerticalLinesPolar2():
     saveImage('verticalLinesPolarImage_scaled.png', polarImage)
 
 
-generateShortAxisPolar()
-generateShortAxisPolar2()
-generateVerticalLinesPolar()
-generateVerticalLinesPolar2()
+# Enable these functions as you see fit to generate the images
+# Note: It is up to the developer to ensure these images are created and look like they are supposed to
+# generateShortAxisPolar()
+# generateShortAxisPolar2()
+# generateVerticalLinesPolar()
+# generateVerticalLinesPolar2()
 
-# # TODO Dont forget note that finalRadius is NOT included. It is everything up to that
+# # TODO Dont forget note that finalRadius/Angle is NOT included. It is everything up to that
 # # TODO Handle RGB eventually
 # # TODO Handle rotating 90 degrees
 # # TODO Check ptSettings for validity

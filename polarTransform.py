@@ -173,13 +173,16 @@ def getCartesianPointsImage(points, settings):
 
 def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None, initialAngle=None, finalAngle=None,
                         radiusSize=None, angleSize=None, origin='upper', settings=None):
+    # Determines whether there are multiple bands or channels in image by checking for 3rd dimension
+    isMultiChannel = image.ndim == 3
+
     # Create settings if none are given
     if settings is None:
         # If center is not specified, set to the center of the image
         # Image shape is reversed because center is specified as x,y and shape is r,c.
         # Otherwise, make sure the center is a Numpy array
         if center is None:
-            center = (np.array(image.shape[::-1]) / 2).astype(int)
+            center = (np.array(image.shape[1::-1]) / 2).astype(int)
         else:
             center = np.array(center)
 
@@ -191,7 +194,7 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
         # Convert the corners to polar and get the largest radius
         # This will be the maximum radius to represent the entire image in polar
         if finalRadius is None:
-            corners = np.array([[0, 0], [0, 1], [1, 0], [1, 1]]) * image.shape
+            corners = np.array([[0, 0], [0, 1], [1, 0], [1, 1]]) * image.shape[0:1]
             radii, _ = getPolarPoints2(corners[:, 1], corners[:, 0], center)
             finalRadius = np.ceil(radii.max()).astype(int)
 
@@ -236,24 +239,26 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
     # Take polar  grid and convert to cartesian coordinates
     xCartesian, yCartesian = getCartesianPoints2(r, theta, settings.center)
 
-    # Convert to 32-bit floats for OpenCV2, does not support double
-    # xCartesian = xCartesian.astype(np.float32)
-    # yCartesian = yCartesian.astype(np.float32)
-
-    # Use OpenCV2 to remap, allows use of their interpolation techniques
-    # OpenCV wants x, y coordinates which is opposite of row, col system
-    # Theta is the x (col) coordinate, radius is the y (row) coordinate
-    # polarImage = cv2.remap(image, xCartesian, yCartesian, cv2.INTER_CUBIC)
-
     # Flatten the desired x/y cartesian points into one 2xN array
+    desiredCoords = np.vstack((yCartesian.flatten(), xCartesian.flatten()))
+
     # Retrieve polar image using map_coordinates. Returns a linear array of the values that
     # must be reshaped into the desired size
-    desiredCoords = np.vstack((yCartesian.flatten(), xCartesian.flatten()))
-    polarImage = scipy.ndimage.map_coordinates(image, desiredCoords, order=3).reshape(r.shape)
-
+    # For multiple channels, repeat this process for each band and concatenate them at end
     # Take the transpose of the polar image such that first dimension is radius and second
     # dimension is theta.
-    return polarImage.T, settings
+    if isMultiChannel:
+        polarImages = []
+
+        for k in range(image.shape[2]):
+            polarImage = scipy.ndimage.map_coordinates(image[:, :, k], desiredCoords, order=3).reshape(r.shape).T
+            polarImages.append(polarImage)
+
+        polarImage = np.dstack(polarImages)
+    else:
+        polarImage = scipy.ndimage.map_coordinates(image, desiredCoords, order=3).reshape(r.shape).T
+
+    return polarImage, settings
 
 
 def convertToCartesianImage(image, center=None, initialRadius=None, finalRadius=None, initialSrcRadius=None,

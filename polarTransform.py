@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import scipy.interpolate
 import scipy.ndimage
+import skimage.util
 
 
 class ImageTransform:
@@ -250,8 +251,14 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
     if isMultiChannel:
         polarImages = []
 
-        for k in range(image.shape[2]):
+        # Assume that there are at least 3 bands in 3D matrix
+        for k in range(3):
             polarImage = scipy.ndimage.map_coordinates(image[:, :, k], desiredCoords, order=3).reshape(r.shape).T
+            polarImages.append(polarImage)
+
+        if image.shape[2] == 4:
+            imin, imax = skimage.util.dtype_limits(polarImages[0])
+            polarImage = np.full_like(polarImages[0], imax)
             polarImages.append(polarImage)
 
         polarImage = np.dstack(polarImages)

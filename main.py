@@ -10,15 +10,30 @@ shortAxisApexImage = imageio.imread(os.path.join(dataDirectory, 'shortAxisApex.p
 shortAxisApexImage = shortAxisApexImage[:, :, 0]
 
 checkerboardImage = imageio.imread(os.path.join(dataDirectory, 'checkerboard.png'), ignoregamma=True)
+horizontalLineImage = imageio.imread(os.path.join(dataDirectory, 'horizontalLines.png'), ignoregamma=True)
+verticalLineImage = imageio.imread(os.path.join(dataDirectory, 'verticalLines.png'), ignoregamma=True)
 
-# polarImage, ptSettings = polarTransform.convertToPolarImage(shortAxisApexImage, center=[401, 365], initialRadius=30, finalRadius=200)
-polarImage, ptSettings = polarTransform.convertToPolarImage(checkerboardImage, center=[0, 0])
+# TODO This
+# polarImage, ptSettings = polarTransform.convertToPolarImage(verticalLineImage)
+# imageio.imwrite('tests\\data\\verticalLinesPolarImage.png', np.flipud(polarImage))
+
+# polarImage, ptSettings = polarTransform.convertToPolarImage(verticalLineImage, initialRadius=30, finalRadius=100)
+# imageio.imwrite('tests\\data\\verticalLinesPolarImage_scaled.png', np.flipud(polarImage))
+#
+# polarImage, ptSettings = polarTransform.convertToPolarImage(verticalLineImage, initialRadius=30, finalRadius=100, initialAngle=2/4 * np.pi, finalAngle=5/4 * np.pi)
+# imageio.imwrite('tests\\data\\verticalLinesPolarImage_scaled2.png', np.flipud(polarImage))
+#
+# polarImage, ptSettings = polarTransform.convertToPolarImage(verticalLineImage, initialRadius=30, finalRadius=100, initialAngle=2/4 * np.pi, finalAngle=5/4 * np.pi, radiusSize=140, angleSize=700)
+# imageio.imwrite('tests\\data\\verticalLinesPolarImage_scaled3.png', np.flipud(polarImage))
+
+
+
+
 # polarImage, ptSettings = polarTransform.convertToPolarImage(shortAxisApexImage, center=[401, 365], initialRadius=30, finalRadius=200)
 # polarImage, ptSettings = polarTransform.convertToPolarImage(shortAxisApexImage, center=[401, 365], initialRadius=30, finalRadius=200)
 
 # polarImage2, ptSettings2 = polarTransform.convertToPolarImage(np.flipud(shortAxisApexImage),
 #                                                             center=np.array([401, 365]), origin='lower')
-# imageio.imwrite('tests\\data\\shortAxisApexPolarImage_centerMiddle.png', np.flipud(polarImage))
 
 # TODO Handle RGB eventually
 # TODO Handle rotating 90 degrees
@@ -37,9 +52,9 @@ polarImage, ptSettings = polarTransform.convertToPolarImage(checkerboardImage, c
 
 # RGB
 plt.subplot(211)
-plt.imshow(polarImage, origin='lower')
+plt.imshow(np.abs(compareImage - polarImage), origin='lower')
 plt.subplot(212)
-plt.imshow(checkerboardImage)
+plt.imshow(verticalLineImage)
 # print(polarImage.shape)
 
 plt.show()

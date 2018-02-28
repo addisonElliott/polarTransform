@@ -46,13 +46,13 @@ def generateVerticalLinesPolar2():
 # generateVerticalLinesPolar()
 # generateVerticalLinesPolar2()
 
-# # TODO Dont forget note that finalRadius/Angle is NOT included. It is everything up to that
-# # TODO Handle RGB eventually
-# # TODO Handle rotating 90 degrees
-# # TODO Check ptSettings for validity
-# # TODO Clip the radius
-# # TODO Clip the angle
-# # TODO Add method support
-# # TODO Add border support and stuff
-# # TODO Add note about origin and stuff (should I do that)?
-# # TODO Check origin
+# TODO Remove warning skimage dtype
+# TODO Dont forget note that finalRadius/Angle is NOT included. It is everything up to that
+# TODO Handle rotating 90 degrees
+# TODO Check ptSettings for validity
+# TODO Clip the radius
+# TODO Clip the angle
+# TODO Add method support
+# TODO Add border support and stuff
+# TODO Add note about origin and stuff (should I do that)?
+# TODO Check origin

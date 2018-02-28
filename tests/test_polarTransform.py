@@ -39,7 +39,7 @@ class TestPolarConversion(unittest.TestCase):
     #                                                             radiusSize=140, angleSize=700)
     # imageio.imwrite('tests\\data\\verticalLinesPolarImage_scaled3.png', np.flipud(polarImage))
 
-    def test_convertPolarDefault(self):
+    def test_default(self):
         polarImage, ptSettings = polarTransform.convertToPolarImage(self.shortAxisApexImage,
                                                                     center=np.array([401, 365]))
 
@@ -81,7 +81,7 @@ class TestPolarConversion(unittest.TestCase):
         np.testing.assert_array_equal(ptSettings.center, np.array([401, 365]))
         np.testing.assert_almost_equal(polarImage, self.shortAxisApexPolarImage)
 
-    def test_convertPolarRGBA(self):
+    def test_RGBA(self):
         polarImage, ptSettings = polarTransform.convertToPolarImage(self.verticalLinesImage)
 
         np.testing.assert_array_equal(ptSettings.center, np.array([128, 128]))
@@ -96,7 +96,7 @@ class TestPolarConversion(unittest.TestCase):
 
         np.testing.assert_almost_equal(polarImage, self.verticalLinesPolarImage)
 
-    def test_convertPolarIFRadius(self):
+    def test_IFRadius(self):
         polarImage, ptSettings = polarTransform.convertToPolarImage(self.verticalLinesImage, initialRadius=30,
                                                                     finalRadius=100)
 
@@ -112,7 +112,7 @@ class TestPolarConversion(unittest.TestCase):
 
         np.testing.assert_almost_equal(polarImage, self.verticalLinesPolarImage[30:100, :, :])
 
-    def test_convertPolarIFRadiusAngle(self):
+    def test_IFRadiusAngle(self):
         polarImage, ptSettings = polarTransform.convertToPolarImage(self.verticalLinesImage, initialRadius=30,
                                                                     finalRadius=100, initialAngle=2 / 4 * np.pi,
                                                                     finalAngle=5 / 4 * np.pi)
@@ -129,7 +129,7 @@ class TestPolarConversion(unittest.TestCase):
 
         np.testing.assert_almost_equal(polarImage, self.verticalLinesPolarImage[30:100, 128:320, :])
 
-    def test_convertPolarIFRadiusAngleScaled(self):
+    def test_IFRadiusAngleScaled(self):
         polarImage, ptSettings = polarTransform.convertToPolarImage(self.verticalLinesImage, initialRadius=30,
                                                                     finalRadius=100, initialAngle=2 / 4 * np.pi,
                                                                     finalAngle=5 / 4 * np.pi, radiusSize=140,
@@ -146,6 +146,49 @@ class TestPolarConversion(unittest.TestCase):
         self.assertEqual(ptSettings.origin, 'upper')
 
         np.testing.assert_almost_equal(polarImage, self.verticalLinesPolarImage_scaled)
+
+    def test_origin(self):
+        polarImage, ptSettings = polarTransform.convertToPolarImage(np.flipud(self.verticalLinesImage),
+                                                                    initialRadius=30,
+                                                                    finalRadius=100, initialAngle=2 / 4 * np.pi,
+                                                                    finalAngle=5 / 4 * np.pi, radiusSize=140,
+                                                                    angleSize=700, origin='lower')
+
+        np.testing.assert_array_equal(ptSettings.center, np.array([128, 128]))
+        self.assertEqual(ptSettings.initialRadius, 30)
+        self.assertEqual(ptSettings.finalRadius, 100)
+        self.assertEqual(ptSettings.initialAngle, 2 / 4 * np.pi)
+        self.assertEqual(ptSettings.finalAngle, 5 / 4 * np.pi)
+        self.assertEqual(ptSettings.cartesianImageSize, self.verticalLinesImage.shape)
+        np.testing.assert_array_equal(ptSettings.polarImageSize,
+                                      np.array([140, 700]))
+        self.assertEqual(ptSettings.origin, 'lower')
+
+        np.testing.assert_almost_equal(polarImage, self.verticalLinesPolarImage_scaled)
+
+    def test_settings(self):
+        polarImage1, ptSettings1 = polarTransform.convertToPolarImage(self.verticalLinesImage,
+                                                                      initialRadius=30,
+                                                                      finalRadius=100, initialAngle=2 / 4 * np.pi,
+                                                                      finalAngle=5 / 4 * np.pi, radiusSize=140,
+                                                                      angleSize=700)
+
+        polarImage, ptSettings = polarTransform.convertToPolarImage(self.verticalLinesImage, settings=ptSettings1)
+
+        np.testing.assert_array_equal(ptSettings.center, np.array([128, 128]))
+        self.assertEqual(ptSettings.initialRadius, 30)
+        self.assertEqual(ptSettings.finalRadius, 100)
+        self.assertEqual(ptSettings.initialAngle, 2 / 4 * np.pi)
+        self.assertEqual(ptSettings.finalAngle, 5 / 4 * np.pi)
+        self.assertEqual(ptSettings.cartesianImageSize, self.verticalLinesImage.shape)
+        np.testing.assert_array_equal(ptSettings.polarImageSize,
+                                      np.array([140, 700]))
+        self.assertEqual(ptSettings.origin, 'upper')
+
+        np.testing.assert_almost_equal(polarImage, self.verticalLinesPolarImage_scaled)
+
+        polarImage2 = ptSettings1.convertToPolarImage(self.verticalLinesImage)
+        np.testing.assert_almost_equal(polarImage2, self.verticalLinesPolarImage_scaled)
 
 
 if __name__ == '__main__':

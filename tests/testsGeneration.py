@@ -3,7 +3,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import imageio
 import os
-from tests.util import loadImage, saveImage
+# from tests.util import loadImage, saveImage
+from util import loadImage, saveImage
 
 shortAxisApexImage = loadImage('shortAxisApex.png', False)
 verticalLinesImage = loadImage('verticalLines.png', False)
@@ -37,9 +38,9 @@ def generateVerticalLinesPolar2():
                                                                 radiusSize=140, angleSize=700)
     saveImage('verticalLinesPolarImage_scaled.png', polarImage)
 
-
-cartesianImage, ptSettings = polarTransform.convertToCartesianImage(shortAxisApexPolarImage, center=[401, 365], imageSize=[608, 800])
-# cartesianImage = np.flipud(cartesianImage)
+polarImage, ptSettings = polarTransform.convertToPolarImage(shortAxisApexImage, center=[401, 365])
+cartesianImage, ptSettings = polarTransform.convertToCartesianImage(shortAxisApexPolarImage)#, center=[401, 365], imageSize=[608, 800])
+# cartesianImage = np.flipudd(cartesianImage)
 # saveImage('shortAxisApex.png', shortAxisApexImage)
 # saveImage('test.png', cartesianImage)
 # np.testing.assert_almost_equal(cartesianImage, np.flipud(shortAxisApexImage))
@@ -48,9 +49,9 @@ shortAxisApexImage = np.flipud(shortAxisApexImage)
 plt.figure()
 plt.imshow(cartesianImage, cmap='gray', origin='lower')
 plt.figure()
-plt.imshow(shortAxisApexImage, cmap='gray', origin='upper')
-plt.figure()
-plt.imshow(shortAxisApexImage - cartesianImage, cmap='gray', origin='upper')
+plt.imshow(shortAxisApexImage, cmap='gray', origin='lower')
+# plt.figure()
+# plt.imshow(shortAxisApexImage - cartesianImage, cmap='gray', origin='upper')
 
 plt.show()
 

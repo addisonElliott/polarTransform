@@ -448,9 +448,13 @@ def convertToCartesianImage(image, center=None, initialRadius=None, finalRadius=
     r = r.astype(np.float32)
     theta = theta.astype(np.float32)
 
+    # Flatten the desired r/theta polar points into one 2xN array
+    desiredCoords = np.vstack((r.flatten(), theta.flatten()))
+    cartesianImage = scipy.ndimage.map_coordinates(image, desiredCoords, mode='nearest', order=3).reshape(x.shape)
+
     # Use OpenCV2 to remap, allows use of their interpolation techniques
     # OpenCV wants x, y coordinates which is opposite of row, col system
     # Theta is the x (col) coordinate, radius is the y (row) coordinate
-    cartesianImage = cv2.remap(image, theta, r, cv2.INTER_CUBIC)
+    # cartesianImage = cv2.remap(image, theta, r, cv2.INTER_CUBIC)
 
     return cartesianImage, settings

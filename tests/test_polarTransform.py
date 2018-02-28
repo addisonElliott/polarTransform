@@ -24,21 +24,6 @@ class TestPolarConversion(unittest.TestCase):
         self.verticalLinesPolarImage = loadImage('verticalLinesPolarImage.png')
         self.verticalLinesPolarImage_scaled = loadImage('verticalLinesPolarImage_scaled.png')
 
-    # polarImage, ptSettings = polarTransform.convertToPolarImage(verticalLineImage)
-    # imageio.imwrite('tests\\data\\verticalLinesPolarImage.png', np.flipud(polarImage))
-    #
-    # polarImage, ptSettings = polarTransform.convertToPolarImage(verticalLineImage, initialRadius=30, finalRadius=100)
-    # imageio.imwrite('tests\\data\\verticalLinesPolarImage_scaled.png', np.flipud(polarImage))
-    #
-    # polarImage, ptSettings = polarTransform.convertToPolarImage(verticalLineImage, initialRadius=30, finalRadius=100,
-    #                                                             initialAngle=2 / 4 * np.pi, finalAngle=5 / 4 * np.pi)
-    # imageio.imwrite('tests\\data\\verticalLinesPolarImage_scaled2.png', np.flipud(polarImage))
-    #
-    # polarImage, ptSettings = polarTransform.convertToPolarImage(verticalLineImage, initialRadius=30, finalRadius=100,
-    #                                                             initialAngle=2 / 4 * np.pi, finalAngle=5 / 4 * np.pi,
-    #                                                             radiusSize=140, angleSize=700)
-    # imageio.imwrite('tests\\data\\verticalLinesPolarImage_scaled3.png', np.flipud(polarImage))
-
     def test_default(self):
         polarImage, ptSettings = polarTransform.convertToPolarImage(self.shortAxisApexImage,
                                                                     center=np.array([401, 365]))

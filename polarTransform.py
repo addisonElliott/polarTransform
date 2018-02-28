@@ -177,7 +177,7 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
     if settings is None:
         # If center is not specified, set to the center of the image
         if center is None:
-            center = (np.array(image.shape) / 2).astype(int)
+            center = (np.array(image.shape[::-1]) / 2).astype(int)
 
         # Initial radius is zero if none is selected
         if initialRadius is None:
@@ -233,19 +233,19 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
     xCartesian, yCartesian = getCartesianPoints2(r, theta, settings.center)
 
     # Convert to 32-bit floats for OpenCV2, does not support double
-    xCartesian = xCartesian.astype(np.float32)
-    yCartesian = yCartesian.astype(np.float32)
+    # xCartesian = xCartesian.astype(np.float32)
+    # yCartesian = yCartesian.astype(np.float32)
 
     # Use OpenCV2 to remap, allows use of their interpolation techniques
     # OpenCV wants x, y coordinates which is opposite of row, col system
     # Theta is the x (col) coordinate, radius is the y (row) coordinate
-    polarImage = cv2.remap(image, xCartesian, yCartesian, cv2.INTER_CUBIC)
+    # polarImage = cv2.remap(image, xCartesian, yCartesian, cv2.INTER_CUBIC)
 
     # Flatten the desired x/y cartesian points into one 2xN array
     # Retrieve polar image using map_coordinates. Returns a linear array of the values that
     # must be reshaped into the desired size
-    # desiredCoords = np.vstack((yCartesian.flatten(), xCartesian.flatten()))
-    # polarImage = scipy.ndimage.map_coordinates(image, desiredCoords, order=3).reshape(r.shape)
+    desiredCoords = np.vstack((yCartesian.flatten(), xCartesian.flatten()))
+    polarImage = scipy.ndimage.map_coordinates(image, desiredCoords, order=3).reshape(r.shape)
 
     # Take the transpose of the polar image such that first dimension is radius and second
     # dimension is theta.

@@ -9,11 +9,11 @@ dataDirectory = os.path.join(os.path.dirname(__file__), 'tests', 'data')
 shortAxisApexImage = imageio.imread(os.path.join(dataDirectory, 'shortAxisApex.png'), ignoregamma=True)
 shortAxisApexImage = shortAxisApexImage[:, :, 0]
 
-polarImage, ptSettings = polarTransform.convertToPolarImage(shortAxisApexImage, center=np.array([401, 365]))
+polarImage, ptSettings = polarTransform.convertToPolarImage(shortAxisApexImage)
 
 # polarImage2, ptSettings2 = polarTransform.convertToPolarImage(np.flipud(shortAxisApexImage),
 #                                                             center=np.array([401, 365]), origin='lower')
-imageio.imwrite('tests\\data\\shortAxisApexPolarImage.png', np.flipud(polarImage))
+imageio.imwrite('tests\\data\\shortAxisApexPolarImage_centerMiddle.png', np.flipud(polarImage))
 
 # TODO Handle RGB eventually
 # TODO Handle rotating 90 degrees

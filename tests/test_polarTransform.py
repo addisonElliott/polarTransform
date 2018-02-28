@@ -54,7 +54,7 @@ class TestPolarConversion(unittest.TestCase):
 
         np.testing.assert_array_equal(ptSettings.center, np.array([400, 304]))
         self.assertEqual(ptSettings.initialRadius, 0)
-        self.assertEqual(ptSettings.finalRadius, 505)
+        self.assertEqual(ptSettings.finalRadius, 503)
         self.assertEqual(ptSettings.initialAngle, 0.0)
         self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
         self.assertEqual(ptSettings.cartesianImageSize, self.shortAxisApexImage.shape)

@@ -13,27 +13,31 @@ checkerboardImage = imageio.imread(os.path.join(dataDirectory, 'checkerboard.png
 horizontalLineImage = imageio.imread(os.path.join(dataDirectory, 'horizontalLines.png'), ignoregamma=True)
 verticalLineImage = imageio.imread(os.path.join(dataDirectory, 'verticalLines.png'), ignoregamma=True)
 
+# polarImage, ptSettings = polarTransform.convertToPolarImage(shortAxisApexImage,
+#                                                             center=np.array([401, 365]))
+#
+# polarImage2, ptSettings2 = polarTransform.convertToPolarImage(shortAxisApexImage,
+#                                                             center=np.array([401, 365]), initialAngle=0, finalAngle=1/4 * np.pi)
+
+
 # TODO This
-# polarImage, ptSettings = polarTransform.convertToPolarImage(verticalLineImage)
+polarImage1, ptSettings1 = polarTransform.convertToPolarImage(verticalLineImage)
 # imageio.imwrite('tests\\data\\verticalLinesPolarImage.png', np.flipud(polarImage))
 
 # polarImage, ptSettings = polarTransform.convertToPolarImage(verticalLineImage, initialRadius=30, finalRadius=100)
 # imageio.imwrite('tests\\data\\verticalLinesPolarImage_scaled.png', np.flipud(polarImage))
 #
-# polarImage, ptSettings = polarTransform.convertToPolarImage(verticalLineImage, initialRadius=30, finalRadius=100, initialAngle=2/4 * np.pi, finalAngle=5/4 * np.pi)
-# imageio.imwrite('tests\\data\\verticalLinesPolarImage_scaled2.png', np.flipud(polarImage))
-#
+polarImage, ptSettings = polarTransform.convertToPolarImage(verticalLineImage, initialRadius=30, finalRadius=100, initialAngle=2/4 * np.pi, finalAngle=5/4 * np.pi)
+# imageio.imwrite('tests\\data\\verticalLinesPolarImage_scaled.png', np.flipud(polarImage))
+
 # polarImage, ptSettings = polarTransform.convertToPolarImage(verticalLineImage, initialRadius=30, finalRadius=100, initialAngle=2/4 * np.pi, finalAngle=5/4 * np.pi, radiusSize=140, angleSize=700)
-# imageio.imwrite('tests\\data\\verticalLinesPolarImage_scaled3.png', np.flipud(polarImage))
+# imageio.imwrite('tests\\data\\verticalLinesPolarImage_scaled2.png', np.flipud(polarImage))
 
 
 
 
 # polarImage, ptSettings = polarTransform.convertToPolarImage(shortAxisApexImage, center=[401, 365], initialRadius=30, finalRadius=200)
 # polarImage, ptSettings = polarTransform.convertToPolarImage(shortAxisApexImage, center=[401, 365], initialRadius=30, finalRadius=200)
-
-# polarImage2, ptSettings2 = polarTransform.convertToPolarImage(np.flipud(shortAxisApexImage),
-#                                                             center=np.array([401, 365]), origin='lower')
 
 # TODO Handle RGB eventually
 # TODO Handle rotating 90 degrees
@@ -45,16 +49,30 @@ verticalLineImage = imageio.imread(os.path.join(dataDirectory, 'verticalLines.pn
 # TODO Add note about origin and stuff (should I do that)?
 # TODO Check origin
 
+# plt.figure()
 # plt.subplot(211)
 # plt.imshow(polarImage, cmap='gray', origin='lower')
 # plt.subplot(212)
-# plt.imshow(shortAxisApexImage, cmap='gray')
+# plt.imshow(polarImage2, cmap='gray', origin='lower')
+#
+# plt.figure()
+# plt.subplot(211)
+# plt.imshow(cartesianImage, cmap='gray', origin='lower')
+# plt.subplot(212)
+# plt.imshow(cartesianImage2, cmap='gray', origin='lower')
 
 # RGB
-plt.subplot(211)
-plt.imshow(np.abs(compareImage - polarImage), origin='lower')
-plt.subplot(212)
-plt.imshow(verticalLineImage)
-# print(polarImage.shape)
+# plt.subplot(211)
+# plt.imshow(polarImage, origin='lower')
+# plt.subplot(212)
+# plt.imshow(verticalLineImage)
+
+# RGB
+plt.subplot(311)
+plt.imshow(polarImage, origin='lower')
+plt.subplot(312)
+plt.imshow(polarImage1[30:100, 128:320, :], origin='lower')
+plt.subplot(313)
+plt.imshow(np.abs(polarImage[:, :, 0:3] - polarImage1[30:100, 128:320, 0:3]), origin='lower')
 
 plt.show()

@@ -220,7 +220,7 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
         # Where the coordinates used in min are the four corners of the cartesian image with the center
         # subtracted from it. The minimum will be the corner that is the furthest away from the center
         if angleSize is None:
-            angleSize = np.max(image.shape) * 2
+            angleSize = 2 * int(np.max(image.shape) * (finalAngle - initialAngle) / (2 * np.pi))
 
         # Create the settings
         settings = ImageTransform(center, initialRadius, finalRadius, initialAngle, finalAngle, image.shape,

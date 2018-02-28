@@ -135,10 +135,10 @@ class TestPolarConversion(unittest.TestCase):
         self.assertEqual(ptSettings.finalAngle, 5 / 4 * np.pi)
         self.assertEqual(ptSettings.cartesianImageSize, self.verticalLinesImage.shape)
         np.testing.assert_array_equal(ptSettings.polarImageSize,
-                                      np.array([70, self.verticalLinesImage.shape[1] * 2]))
+                                      np.array([70, 192]))
         self.assertEqual(ptSettings.origin, 'upper')
 
-        np.testing.assert_almost_equal(polarImage, self.verticalLinesPolarImage_scaled)
+        np.testing.assert_almost_equal(polarImage, self.verticalLinesPolarImage[30:100, 129:320, :])
 
 
 if __name__ == '__main__':

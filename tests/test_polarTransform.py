@@ -65,5 +65,17 @@ class TestPolarConversion(unittest.TestCase):
         np.testing.assert_almost_equal(polarImage, self.shortAxisApexPolarImage_centerMiddle)
 
 
+    def test_notNumpyArrayCenter(self):
+        polarImage, ptSettings = polarTransform.convertToPolarImage(self.shortAxisApexImage,
+                                                                    center=[401, 365])
+        np.testing.assert_array_equal(ptSettings.center, np.array([401, 365]))
+        np.testing.assert_almost_equal(polarImage, self.shortAxisApexPolarImage)
+
+        polarImage, ptSettings = polarTransform.convertToPolarImage(self.shortAxisApexImage,
+                                                                    center=(401, 365))
+        np.testing.assert_array_equal(ptSettings.center, np.array([401, 365]))
+        np.testing.assert_almost_equal(polarImage, self.shortAxisApexPolarImage)
+
+
 if __name__ == '__main__':
     unittest.main()

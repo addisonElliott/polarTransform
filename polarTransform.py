@@ -176,8 +176,12 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
     # Create settings if none are given
     if settings is None:
         # If center is not specified, set to the center of the image
+        # Image shape is reversed because center is specified as x,y and shape is r,c.
+        # Otherwise, make sure the center is a Numpy array
         if center is None:
             center = (np.array(image.shape[::-1]) / 2).astype(int)
+        else:
+            center = np.array(center)
 
         # Initial radius is zero if none is selected
         if initialRadius is None:

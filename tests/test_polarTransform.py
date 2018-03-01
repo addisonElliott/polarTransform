@@ -360,17 +360,17 @@ class TestCartesianConversion(unittest.TestCase):
 
     def test_centerOrientationsWithoutImageSize(self):
         orientations = [
-            # ('bottom-left', np.array([0, 0]), [0, 128], [0, 128], [128, 256], [128, 256]),
-            # ('bottom-middle', np.array([128, 0]), [0, 128], [0, 256], [128, 256], [0, 256]),
-            # ('bottom-right', np.array([256, 0]), [0, 128], [128, 256], [128, 256], [0, 128]),
-            #
-            # ('middle-left', np.array([0, 128]), [0, 256], [0, 128], [0, 256], [128, 256]),
-            # ('middle-middle', np.array([128, 128]), [0, 256], [0, 256], [0, 256], [0, 256]),
-            # ('middle-right', np.array([256, 128]), [0, 256], [128, 256], [0, 256], [0, 128]),
-            #
-            # ('top-left', np.array([0, 256]), [128, 256], [0, 128], [0, 128], [128, 256]),
-            # ('top-middle', np.array([128, 256]), [128, 256], [0, 256], [0, 128], [0, 256]),
-            ('top-right', [100, 100], np.array([100, 100]), [128, 256], [128, 256], [0, 128], [0, 128])
+            ('bottom-left', [100, 100], np.array([0, 0]), [128, 228], [128, 228]),
+            ('bottom-middle', [100, 200], np.array([100, 0]), [128, 228], [28, 228]),
+            ('bottom-right', [100, 100], np.array([100, 0]), [128, 228], [28, 128]),
+
+            ('middle-left', [200, 100], np.array([0, 100]), [28, 228], [128, 228]),
+            ('middle-middle', [200, 200], np.array([100, 100]), [28, 228], [28, 228]),
+            ('middle-right', [200, 100], np.array([100, 100]), [28, 228], [28, 128]),
+
+            ('top-left', [100, 100], np.array([0, 100]), [28, 128], [128, 228]),
+            ('top-middle', [100, 200], np.array([100, 100]), [28, 128], [28, 228]),
+            ('top-right', [100, 100], np.array([100, 100]), [28, 128], [28, 128])
         ]
 
         for row in orientations:
@@ -380,11 +380,10 @@ class TestCartesianConversion(unittest.TestCase):
                                                                                 finalRadius=100)
 
             self.assertEqual(ptSettings.cartesianImageSize, row[1])
-            np.testing.assert_array_equal(ptSettings.center, row[1])
+            np.testing.assert_array_equal(ptSettings.center, row[2])
 
-            # np.testing.assert_almost_equal(cartesianImage[row[2][0]:row[2][1], row[3][0]:row[3][1], :],
-            #                                self.verticalLinesCartesianImage_scaled2[row[4][0]:row[4][1],
-            #                                row[5][0]:row[5][1], :])
+            np.testing.assert_almost_equal(cartesianImage, self.verticalLinesCartesianImage_scaled2[row[3][0]:row[3][1],
+                                                           row[4][0]:row[4][1], :])
 
 
 if __name__ == '__main__':

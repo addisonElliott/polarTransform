@@ -181,3 +181,4 @@ plt.show()
 # TODO Test print(ptSettings)
 # TODO Explain order (0-5)
 # TODO Add note in docs that cartesianImageSize and polarImageSize only contain first 2 dimensions
+# TODO Test using origin and center orientations too! Make note that they are specific to lower-left hand corner

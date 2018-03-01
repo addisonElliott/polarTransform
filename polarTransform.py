@@ -220,17 +220,35 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
         # keeping the aspect ratio the same if no radius or angle size is given
         # This radius size is proportional to the initial and final radius given.
         if radiusSize is None:
-            radiusSize = int(2 * np.max(image.shape) * (finalRadius - initialRadius) / maxRadius)
+            cross = np.array([[image.shape[1] - 1, center[1]], [0, center[1]], [center[0], image.shape[0] - 1],
+                              [center[0], 0]])
 
-        # Make the angle size be twice the size of the largest dimension of the image
+            radiusSize = np.ceil(np.abs(cross - center).max() * 2 * (finalRadius - initialRadius) / maxRadius) \
+                .astype(int)
+            # crossOffset = initialRadius + np.array([[0, 1], [0, 1], [1, 0], [1, 0]])
+
+            # crossRadius, _ = getPolarPoints2(cross[:, 0], cross[:, 1], center)
+            # crossOffsetRadius, _ = getPolarPoints2(crossOffset[:, 0], crossOffset[:, 1], center)
+            #
+            # radiusSize = np.ceil(1 / np.abs(crossOffsetRadius - crossRadius).min()).astype(int)
+            # radiusSize = int(2 * np.max(image.shape) * (finalRadius - initialRadius) / maxRadius)
+
+        # Make the angle size be twice the size of largest dimension for images above 500px, otherwise
+        # use a factor of 4x.
         # This angle size is proportional to the initial and final angle.
         # This was experimentally determined to yield the best resolution
         # The actual answer for the necessary angle size to represent all of the pixels is
         # (finalAngle - initialAngle) / (min(arctan(y / x) - arctan((y - 1) / x)))
         # Where the coordinates used in min are the four corners of the cartesian image with the center
         # subtracted from it. The minimum will be the corner that is the furthest away from the center
+        # TODO Find a better solution to determining default angle size (optimum?)
         if angleSize is None:
-            angleSize = int(2 * np.max(image.shape) * (finalAngle - initialAngle) / (2 * np.pi))
+            maxSize = np.max(image.shape)
+
+            if maxSize > 500:
+                angleSize = int(2 * np.max(image.shape) * (finalAngle - initialAngle) / (2 * np.pi))
+            else:
+                angleSize = int(4 * np.max(image.shape) * (finalAngle - initialAngle) / (2 * np.pi))
 
         # Create the settings
         settings = ImageTransform(center, initialRadius, finalRadius, initialAngle, finalAngle, image.shape,

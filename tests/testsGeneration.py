@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import imageio
 import os
+import skimage.transform
 from util import loadImage, saveImage
 
 shortAxisApexImage = loadImage('shortAxisApex.png', False)
@@ -38,9 +39,22 @@ def generateVerticalLinesPolar2():
     saveImage('verticalLinesPolarImage_scaled.png', polarImage)
 
 
-polarImage, ptSettings = polarTransform.convertToPolarImage(verticalLinesImage, radiusSize=1024, angleSize=1024)
+def generateVerticalLinesPolar3():
+    polarImage, ptSettings = polarTransform.convertToPolarImage(verticalLinesImage, initialRadius=30,
+                                                                finalRadius=100)
+    saveImage('verticalLinesPolarImage_scaled2.png', polarImage)
 
+
+def generateVerticalLinesPolar4():
+    polarImage, ptSettings = polarTransform.convertToPolarImage(verticalLinesImage, initialRadius=30,
+                                                                finalRadius=100, initialAngle=2 / 4 * np.pi,
+                                                                finalAngle=5 / 4 * np.pi)
+    saveImage('verticalLinesPolarImage_scaled3.png', polarImage)
+
+
+polarImage, ptSettings = polarTransform.convertToPolarImage(verticalLinesImage)
 cartesianImage = ptSettings.convertToCartesianImage(polarImage)
+
 # cartesianImage = np.flipud(cartesianImage)
 # saveImage('shortAxisApex.png', shortAxisApexImage)
 # saveImage('test.png', cartesianImage)
@@ -48,20 +62,22 @@ cartesianImage = ptSettings.convertToCartesianImage(polarImage)
 # shortAxisApexImage = np.flipud(shortAxisApexImage)
 
 plt.figure()
-plt.imshow(cartesianImage, cmap='gray', origin='lower')
-plt.figure()
 plt.imshow(verticalLinesImage, cmap='gray', origin='lower')
+plt.figure()
+plt.imshow(cartesianImage, cmap='gray', origin='lower')
 # plt.figure()
 # plt.imshow(shortAxisApexImage - cartesianImage, cmap='gray', origin='upper')
 
-plt.show()
+# plt.show()
 
 # Enable these functions as you see fit to generate the images
 # Note: It is up to the developer to ensure these images are created and look like they are supposed to
-# generateShortAxisPolar()
-# generateShortAxisPolar2()
-# generateVerticalLinesPolar()
-# generateVerticalLinesPolar2()
+generateShortAxisPolar()
+generateShortAxisPolar2()
+generateVerticalLinesPolar()
+generateVerticalLinesPolar2()
+generateVerticalLinesPolar3()
+generateVerticalLinesPolar4()
 
 # TODO Remove warning skimage dtype
 # TODO Dont forget note that finalRadius/Angle is NOT included. It is everything up to that
@@ -73,4 +89,4 @@ plt.show()
 # TODO Add border support and stuff
 # TODO Add note about origin and stuff (should I do that)?
 # TODO Check origin
-
+# TODO Add note about angle size and radius size

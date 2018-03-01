@@ -273,6 +273,13 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
     # Flatten the desired x/y cartesian points into one 2xN array
     desiredCoords = np.vstack((yCartesian.flatten(), xCartesian.flatten()))
 
+    # Add border to image, add one to theta and r
+    # axis = 0, append 0 and end
+    image = np.pad(image, ((3, 3), (3, 3), (0, 0)), 'edge')
+    # r += 3
+    # theta += 3
+    desiredCoords += 3
+
     # Retrieve polar image using map_coordinates. Returns a linear array of the values that
     # must be reshaped into the desired size
     # For multiple channels, repeat this process for each band and concatenate them at end
@@ -479,6 +486,13 @@ def convertToCartesianImage(image, center=None, initialRadius=None, finalRadius=
 
     # Flatten the desired x/y cartesian points into one 2xN array
     desiredCoords = np.vstack((r.flatten(), theta.flatten()))
+
+    # Add border to image, add one to theta and r
+    # axis = 0, append 0 and end
+    # image = np.pad(image, ((3, 3), (3, 3), (0, 0)), 'edge')
+    # r += 3
+    # theta += 3
+    # desiredCoords += 3
 
     # Retrieve cartesian image using map_coordinates. Returns a linear array of the values that
     # must be reshaped into the desired size.

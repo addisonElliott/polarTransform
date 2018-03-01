@@ -289,7 +289,7 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
         # If there are 4 bands, then assume the 4th band is alpha
         # We do not want to interpolate the transparency so we just make it all fully opaque
         if image.shape[2] == 4:
-            imin, imax = skimage.util.dtype_limits(polarImages[0])
+            imin, imax = skimage.util.dtype_limits(polarImages[0], False)
             polarImage = np.full_like(polarImages[0], imax)
             polarImages.append(polarImage)
 
@@ -495,7 +495,7 @@ def convertToCartesianImage(image, center=None, initialRadius=None, finalRadius=
         # If there are 4 bands, then assume the 4th band is alpha
         # We do not want to interpolate the transparency so we just make it all fully opaque
         if image.shape[2] == 4:
-            imin, imax = skimage.util.dtype_limits(cartesianImages[0])
+            imin, imax = skimage.util.dtype_limits(cartesianImages[0], False)
             cartesianImage = np.full_like(cartesianImages[0], imax)
             cartesianImages.append(cartesianImage)
 

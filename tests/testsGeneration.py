@@ -72,14 +72,13 @@ plt.imshow(cartesianImage, cmap='gray', origin='lower')
 
 # Enable these functions as you see fit to generate the images
 # Note: It is up to the developer to ensure these images are created and look like they are supposed to
-generateShortAxisPolar()
-generateShortAxisPolar2()
-generateVerticalLinesPolar()
-generateVerticalLinesPolar2()
-generateVerticalLinesPolar3()
-generateVerticalLinesPolar4()
+# generateShortAxisPolar()
+# generateShortAxisPolar2()
+# generateVerticalLinesPolar()
+# generateVerticalLinesPolar2()
+# generateVerticalLinesPolar3()
+# generateVerticalLinesPolar4()
 
-# TODO Remove warning skimage dtype
 # TODO Dont forget note that finalRadius/Angle is NOT included. It is everything up to that
 # TODO Handle rotating 90 degrees
 # TODO Check ptSettings for validity

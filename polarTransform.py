@@ -449,19 +449,12 @@ def convertToCartesianImage(image, center=None, initialRadius=None, finalRadius=
     # Scale the angle from radians to pixels using scale factor
     theta = theta * scaleAngle
 
-    # Convert to 32-bit floats for OpenCV2, does not support double
-    # r = r.astype(np.float32)
-    # theta = theta.astype(np.float32)
-
     # Flatten the desired x/y cartesian points into one 2xN array
     desiredCoords = np.vstack((r.flatten(), theta.flatten()))
-    # cartesianImage = scipy.ndimage.map_coordinates(image, desiredCoords, order=3).reshape(x.shape)
 
     # Retrieve cartesian image using map_coordinates. Returns a linear array of the values that
     # must be reshaped into the desired size.
     # For multiple channels, repeat this process for each band and concatenate them at end
-    # Take the transpose of the polar image such that first dimension is radius and second
-    # dimension is theta.
     if isMultiChannel:
         cartesianImages = []
 
@@ -480,10 +473,5 @@ def convertToCartesianImage(image, center=None, initialRadius=None, finalRadius=
         cartesianImage = np.dstack(cartesianImages)
     else:
         cartesianImage = scipy.ndimage.map_coordinates(image, desiredCoords, order=3).reshape(x.shape)
-
-    # Use OpenCV2 to remap, allows use of their interpolation techniques
-    # OpenCV wants x, y coordinates which is opposite of row, col system
-    # Theta is the x (col) coordinate, radius is the y (row) coordinate
-    # cartesianImage = cv2.remap(image, theta, r, cv2.INTER_CUBIC)
 
     return cartesianImage, settings

@@ -243,7 +243,7 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
                 angleSize = int(4 * np.max(image.shape) * (finalAngle - initialAngle) / (2 * np.pi))
 
         # Create the settings
-        settings = ImageTransform(center, initialRadius, finalRadius, initialAngle, finalAngle, image.shape,
+        settings = ImageTransform(center, initialRadius, finalRadius, initialAngle, finalAngle, image.shape[0:2],
                                   [radiusSize, angleSize], origin, order)
 
     # Flip the image such that the origin is lower left

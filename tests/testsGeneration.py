@@ -90,3 +90,5 @@ plt.show()
 # TODO Add note about origin and stuff (should I do that)?
 # TODO Check origin
 # TODO Add note about angle size and radius size
+# TODO Test print(ptSettings)
+# TODO Explain order (0-5)

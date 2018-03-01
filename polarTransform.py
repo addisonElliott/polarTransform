@@ -344,13 +344,12 @@ def convertToCartesianImage(image, center=None, initialSrcRadius=None, finalSrcR
         # This is used to scale the result of the angle to get the appropriate Cartesian value
         scaleAngle = image.shape[1] / (finalAngle - initialAngle)
 
-        # This is the size of the cartesian image, should be set somehow...
         if imageSize is None:
             # Obtain the image size by looping from initial to final source angle (every possible theta in the image
             # basically)
             thetas = np.mod(np.linspace(0, (finalAngle - initialAngle), image.shape[1]) + initialAngle,
                             2 * np.pi)
-            maxRadius = finalRadius / scaleRadius + initialRadius * np.ones_like(thetas)
+            maxRadius = finalRadius * np.ones_like(thetas)
 
             # Then get the maximum radius of the image and compute the x/y coordinates for each option
             # If a center is not specified, then use the origin as a default. This will be used to determine
@@ -400,7 +399,7 @@ def convertToCartesianImage(image, center=None, initialSrcRadius=None, finalSrcR
             # When the image size or center are set to x or y min, then that is a negative value
             # Instead of typing abs for each one, an absolute value of the image size and center is done at the end to
             # make it easier.
-            imageSize = np.abs(imageSize)
+            imageSize = np.ceil(np.abs(imageSize)).astype(int).tolist()
             center = np.abs(center)
         elif isinstance(center, str):
             # Set the center based on the image size given

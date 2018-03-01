@@ -38,19 +38,19 @@ def generateVerticalLinesPolar2():
     saveImage('verticalLinesPolarImage_scaled.png', polarImage)
 
 
-cartesianImage, ptSettings = polarTransform.convertToCartesianImage(shortAxisApexPolarImage, center=[401, 365], imageSize=[608, 800])
+cartesianImage, ptSettings = polarTransform.convertToCartesianImage(verticalLinesPolarImage)
 # cartesianImage = np.flipud(cartesianImage)
 # saveImage('shortAxisApex.png', shortAxisApexImage)
 # saveImage('test.png', cartesianImage)
 # np.testing.assert_almost_equal(cartesianImage, np.flipud(shortAxisApexImage))
-shortAxisApexImage = np.flipud(shortAxisApexImage)
+# shortAxisApexImage = np.flipud(shortAxisApexImage)
 
 plt.figure()
 plt.imshow(cartesianImage, cmap='gray', origin='lower')
 plt.figure()
-plt.imshow(shortAxisApexImage, cmap='gray', origin='upper')
-plt.figure()
-plt.imshow(shortAxisApexImage - cartesianImage, cmap='gray', origin='upper')
+plt.imshow(verticalLinesImage, cmap='gray', origin='lower')
+# plt.figure()
+# plt.imshow(shortAxisApexImage - cartesianImage, cmap='gray', origin='upper')
 
 plt.show()
 

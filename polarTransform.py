@@ -1,4 +1,3 @@
-import cv2
 import numpy as np
 import scipy.interpolate
 import scipy.ndimage
@@ -173,7 +172,8 @@ def getCartesianPointsImage(points, settings):
 
 
 def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None, initialAngle=None, finalAngle=None,
-                        radiusSize=None, angleSize=None, origin='upper', order=3, settings=None):
+                        radiusSize=None, angleSize=None, origin='upper', order=3, border='constant', borderVal=0.0,
+                        settings=None):
     # Determines whether there are multiple bands or channels in image by checking for 3rd dimension
     isMultiChannel = image.ndim == 3
 
@@ -265,12 +265,13 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
     # Flatten the desired x/y cartesian points into one 2xN array
     desiredCoords = np.vstack((yCartesian.flatten(), xCartesian.flatten()))
 
-    # Add border to image, add one to theta and r
-    # axis = 0, append 0 and end
-    image = np.pad(image, ((3, 3), (3, 3), (0, 0)), 'edge')
-    # r += 3
-    # theta += 3
-    desiredCoords += 3
+    # If border is set to constant, then pad the image by the edges by 3 pixels.
+    # If one tries to convert back to cartesian without the borders padded then the border of the cartesian image will
+    # be corrupted because it will average the pixels with the border value
+    if border == 'constant':
+        # Pad image by 3 pixels and then offset all of the desired coordinates by 3
+        image = np.pad(image, ((3, 3), (3, 3), (0, 0)) if isMultiChannel else 3, 'edge')
+        desiredCoords += 3
 
     # Retrieve polar image using map_coordinates. Returns a linear array of the values that
     # must be reshaped into the desired size
@@ -282,8 +283,8 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
 
         # Assume that there are at least 3 bands in 3D matrix
         for k in range(3):
-            polarImage = scipy.ndimage.map_coordinates(image[:, :, k], desiredCoords, order=settings.order) \
-                .reshape(r.shape).T
+            polarImage = scipy.ndimage.map_coordinates(image[:, :, k], desiredCoords, mode=border, cval=borderVal,
+                                                       order=settings.order).reshape(r.shape).T
             polarImages.append(polarImage)
 
         # If there are 4 bands, then assume the 4th band is alpha
@@ -295,14 +296,16 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
 
         polarImage = np.dstack(polarImages)
     else:
-        polarImage = scipy.ndimage.map_coordinates(image, desiredCoords, order=settings.order).reshape(r.shape).T
+        polarImage = scipy.ndimage.map_coordinates(image, desiredCoords, mode=border, cval=borderVal,
+                                                   order=settings.order).reshape(r.shape).T
 
     return polarImage, settings
 
 
 def convertToCartesianImage(image, center=None, initialRadius=None, finalRadius=None, initialSrcRadius=None,
                             finalSrcRadius=None, initialAngle=None, finalAngle=None, initialSrcAngle=None,
-                            finalSrcAngle=None, imageSize=None, origin='upper', order=3, settings=None):
+                            finalSrcAngle=None, imageSize=None, origin='upper', order=3, border='constant',
+                            borderVal=0.0, settings=None):
     # Determines whether there are multiple bands or channels in image by checking for 3rd dimension
     isMultiChannel = image.ndim == 3
 
@@ -480,12 +483,13 @@ def convertToCartesianImage(image, center=None, initialRadius=None, finalRadius=
     # Flatten the desired x/y cartesian points into one 2xN array
     desiredCoords = np.vstack((r.flatten(), theta.flatten()))
 
-    # Add border to image, add one to theta and r
-    # axis = 0, append 0 and end
-    # image = np.pad(image, ((3, 3), (3, 3), (0, 0)), 'edge')
-    # r += 3
-    # theta += 3
-    # desiredCoords += 3
+    # If border is set to constant, then pad the image by the edges by 3 pixels.
+    # If one tries to convert back to cartesian without the borders padded then the border of the cartesian image will
+    # be corrupted because it will average the pixels with the border value
+    if border == 'constant':
+        # Pad image by 3 pixels and then offset all of the desired coordinates by 3
+        image = np.pad(image, ((3, 3), (3, 3), (0, 0)) if isMultiChannel else 3, 'edge')
+        desiredCoords += 3
 
     # Retrieve cartesian image using map_coordinates. Returns a linear array of the values that
     # must be reshaped into the desired size.
@@ -495,7 +499,7 @@ def convertToCartesianImage(image, center=None, initialRadius=None, finalRadius=
 
         # Assume that there are at least 3 bands in 3D matrix
         for k in range(3):
-            cartesianImage = scipy.ndimage.map_coordinates(image[:, :, k], desiredCoords,
+            cartesianImage = scipy.ndimage.map_coordinates(image[:, :, k], desiredCoords, mode=border, cval=borderVal,
                                                            order=settings.order).reshape(x.shape)
             cartesianImages.append(cartesianImage)
 
@@ -508,6 +512,7 @@ def convertToCartesianImage(image, center=None, initialRadius=None, finalRadius=
 
         cartesianImage = np.dstack(cartesianImages)
     else:
-        cartesianImage = scipy.ndimage.map_coordinates(image, desiredCoords, order=settings.order).reshape(x.shape)
+        cartesianImage = scipy.ndimage.map_coordinates(image, desiredCoords, mode=border, cval=borderVal,
+                                                       order=settings.order).reshape(x.shape)
 
     return cartesianImage, settings

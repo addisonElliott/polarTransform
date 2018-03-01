@@ -370,7 +370,7 @@ class TestCartesianConversion(unittest.TestCase):
             #
             # ('top-left', np.array([0, 256]), [128, 256], [0, 128], [0, 128], [128, 256]),
             # ('top-middle', np.array([128, 256]), [128, 256], [0, 256], [0, 128], [0, 256]),
-            ('top-right', [100, 100], np.array([256, 256]), [128, 256], [128, 256], [0, 128], [0, 128])
+            ('top-right', [100, 100], np.array([100, 100]), [128, 256], [128, 256], [0, 128], [0, 128])
         ]
 
         for row in orientations:
@@ -379,10 +379,8 @@ class TestCartesianConversion(unittest.TestCase):
                                                                                 initialRadius=30,
                                                                                 finalRadius=100)
 
-            # self.assertEqual(ptSettings.cartesianImageSize, row[1])
-            self.assertListEqual(ptSettings.cartesianImageSize, row[1])
-
-            # np.testing.assert_array_equal(ptSettings.center, row[1])
+            self.assertEqual(ptSettings.cartesianImageSize, row[1])
+            np.testing.assert_array_equal(ptSettings.center, row[1])
 
             # np.testing.assert_almost_equal(cartesianImage[row[2][0]:row[2][1], row[3][0]:row[3][1], :],
             #                                self.verticalLinesCartesianImage_scaled2[row[4][0]:row[4][1],

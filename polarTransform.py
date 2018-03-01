@@ -400,7 +400,7 @@ def convertToCartesianImage(image, center=None, initialSrcRadius=None, finalSrcR
             # Instead of typing abs for each one, an absolute value of the image size and center is done at the end to
             # make it easier.
             imageSize = np.ceil(np.abs(imageSize)).astype(int).tolist()
-            center = np.abs(center)
+            center = np.ceil(np.abs(center)).astype(int)
         elif isinstance(center, str):
             # Set the center based on the image size given
             if center == 'bottom-left':

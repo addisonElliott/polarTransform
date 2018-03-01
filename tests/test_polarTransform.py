@@ -189,32 +189,40 @@ class TestCartesianConversion(unittest.TestCase):
         self.verticalLinesCartesianImage_scaled2 = loadImage('verticalLinesCartesianImage_scaled2.png')
         self.verticalLinesCartesianImage_scaled3 = loadImage('verticalLinesCartesianImage_scaled3.png')
 
-    # def test_defaultCenter(self):
-    #     polarImage, ptSettings = polarTransform.convertToPolarImage(self.shortAxisApexImage)
-    #
-    #     np.testing.assert_array_equal(ptSettings.center, np.array([400, 304]))
-    #     self.assertEqual(ptSettings.initialRadius, 0)
-    #     self.assertEqual(ptSettings.finalRadius, 503)
-    #     self.assertEqual(ptSettings.initialAngle, 0.0)
-    #     self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
-    #     self.assertEqual(ptSettings.cartesianImageSize, self.shortAxisApexImage.shape)
-    #     np.testing.assert_array_equal(ptSettings.polarImageSize,
-    #                                   np.array([ptSettings.finalRadius, self.shortAxisApexImage.shape[1] * 2]))
-    #     self.assertEqual(ptSettings.origin, 'upper')
-    #
-    #     np.testing.assert_almost_equal(polarImage, self.shortAxisApexPolarImage_centerMiddle)
-    #
-    # def test_notNumpyArrayCenter(self):
-    #     polarImage, ptSettings = polarTransform.convertToPolarImage(self.shortAxisApexImage,
-    #                                                                 center=[401, 365])
-    #     np.testing.assert_array_equal(ptSettings.center, np.array([401, 365]))
-    #     np.testing.assert_almost_equal(polarImage, self.shortAxisApexPolarImage)
-    #
-    #     polarImage, ptSettings = polarTransform.convertToPolarImage(self.shortAxisApexImage,
-    #                                                                 center=(401, 365))
-    #     np.testing.assert_array_equal(ptSettings.center, np.array([401, 365]))
-    #     np.testing.assert_almost_equal(polarImage, self.shortAxisApexPolarImage)
-    #
+        self.shortAxisApexCartesianImage = loadImage('shortAxisApexCartesianImage.png')
+        self.shortAxisApexCartesianImage2 = loadImage('shortAxisApexCartesianImage2.png')
+
+    def test_defaultCenter(self):
+        cartesianImage, ptSettings = polarTransform.convertToCartesianImage(self.shortAxisApexPolarImage,
+                                                                            center=[401, 365], imageSize=[608, 800],
+                                                                            finalRadius=543)
+
+        np.testing.assert_array_equal(ptSettings.center, np.array([401, 365]))
+        self.assertEqual(ptSettings.initialRadius, 0)
+        self.assertEqual(ptSettings.finalRadius, 543)
+        self.assertEqual(ptSettings.initialAngle, 0.0)
+        self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
+        self.assertEqual(ptSettings.cartesianImageSize, [608, 800])
+        self.assertEqual(ptSettings.polarImageSize, self.shortAxisApexPolarImage.shape[0:2])
+        self.assertEqual(ptSettings.origin, 'upper')
+
+        np.testing.assert_almost_equal(cartesianImage, self.shortAxisApexCartesianImage)
+
+    def test_notNumpyArrayCenter(self):
+        cartesianImage, ptSettings = polarTransform.convertToCartesianImage(self.shortAxisApexPolarImage_centerMiddle,
+                                                                            imageSize=[608, 800], finalRadius=503)
+
+        np.testing.assert_array_equal(ptSettings.center, np.array([400, 304]))
+        self.assertEqual(ptSettings.initialRadius, 0)
+        self.assertEqual(ptSettings.finalRadius, 503)
+        self.assertEqual(ptSettings.initialAngle, 0.0)
+        self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
+        self.assertEqual(ptSettings.cartesianImageSize, [608, 800])
+        self.assertEqual(ptSettings.polarImageSize, self.shortAxisApexPolarImage_centerMiddle.shape[0:2])
+        self.assertEqual(ptSettings.origin, 'upper')
+
+        np.testing.assert_almost_equal(cartesianImage, self.shortAxisApexCartesianImage2)
+
     def test_RGBA(self):
         cartesianImage, ptSettings = polarTransform.convertToCartesianImage(self.verticalLinesPolarImage,
                                                                             center=[128, 128],

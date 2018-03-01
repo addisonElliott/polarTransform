@@ -409,13 +409,13 @@ def convertToCartesianImage(image, center=None, initialSrcRadius=None, finalSrcR
             elif center == 'bottom-middle':
                 center = imageSize[1::-1] * np.array([1 / 2, 0])
             elif center == 'bottom-right':
-                center = imageSize[1::-1] * np.array([1, 1 / 2])
+                center = imageSize[1::-1] * np.array([1, 0])
             elif center == 'middle-left':
                 center = imageSize[1::-1] * np.array([0, 1 / 2])
             elif center == 'middle-middle':
                 center = imageSize[1::-1] * np.array([1 / 2, 1 / 2])
             elif center == 'middle-right':
-                center = imageSize[1::-1] * np.array([1, 1])
+                center = imageSize[1::-1] * np.array([1, 1 / 2])
             elif center == 'top-left':
                 center = imageSize[1::-1] * np.array([0, 1])
             elif center == 'top-middle':

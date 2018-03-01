@@ -284,6 +284,7 @@ class TestCartesianConversion(unittest.TestCase):
         self.assertEqual(ptSettings.origin, 'upper')
 
         np.testing.assert_almost_equal(cartesianImage, self.verticalLinesCartesianImage_scaled)
+
     #
     # def test_origin(self):
     #     polarImage, ptSettings = polarTransform.convertToPolarImage(np.flipud(self.verticalLinesImage),
@@ -327,6 +328,63 @@ class TestCartesianConversion(unittest.TestCase):
     #
     #     polarImage2 = ptSettings1.convertToPolarImage(self.verticalLinesImage)
     #     np.testing.assert_almost_equal(polarImage2, self.verticalLinesPolarImage_scaled)
+
+    def test_centerOrientationsWithImageSize(self):
+        orientations = [
+            ('bottom-left', np.array([0, 0]), [0, 128], [0, 128], [128, 256], [128, 256]),
+            ('bottom-middle', np.array([128, 0]), [0, 128], [0, 256], [128, 256], [0, 256]),
+            ('bottom-right', np.array([256, 0]), [0, 128], [128, 256], [128, 256], [0, 128]),
+
+            ('middle-left', np.array([0, 128]), [0, 256], [0, 128], [0, 256], [128, 256]),
+            ('middle-middle', np.array([128, 128]), [0, 256], [0, 256], [0, 256], [0, 256]),
+            ('middle-right', np.array([256, 128]), [0, 256], [128, 256], [0, 256], [0, 128]),
+
+            ('top-left', np.array([0, 256]), [128, 256], [0, 128], [0, 128], [128, 256]),
+            ('top-middle', np.array([128, 256]), [128, 256], [0, 256], [0, 128], [0, 256]),
+            ('top-right', np.array([256, 256]), [128, 256], [128, 256], [0, 128], [0, 128])
+        ]
+
+        for row in orientations:
+            cartesianImage, ptSettings = polarTransform.convertToCartesianImage(self.verticalLinesPolarImage_scaled2,
+                                                                                center=row[0],
+                                                                                imageSize=[256, 256],
+                                                                                initialRadius=30,
+                                                                                finalRadius=100)
+
+            np.testing.assert_array_equal(ptSettings.center, row[1])
+            self.assertEqual(ptSettings.cartesianImageSize, [256, 256])
+
+            np.testing.assert_almost_equal(cartesianImage[row[2][0]:row[2][1], row[3][0]:row[3][1], :],
+                                           self.verticalLinesCartesianImage_scaled2[row[4][0]:row[4][1],
+                                           row[5][0]:row[5][1], :])
+
+    def test_centerOrientationsWithoutImageSize(self):
+        orientations = [
+            # ('bottom-left', np.array([0, 0]), [0, 128], [0, 128], [128, 256], [128, 256]),
+            # ('bottom-middle', np.array([128, 0]), [0, 128], [0, 256], [128, 256], [0, 256]),
+            # ('bottom-right', np.array([256, 0]), [0, 128], [128, 256], [128, 256], [0, 128]),
+            #
+            # ('middle-left', np.array([0, 128]), [0, 256], [0, 128], [0, 256], [128, 256]),
+            # ('middle-middle', np.array([128, 128]), [0, 256], [0, 256], [0, 256], [0, 256]),
+            # ('middle-right', np.array([256, 128]), [0, 256], [128, 256], [0, 256], [0, 128]),
+            #
+            # ('top-left', np.array([0, 256]), [128, 256], [0, 128], [0, 128], [128, 256]),
+            # ('top-middle', np.array([128, 256]), [128, 256], [0, 256], [0, 128], [0, 256]),
+            ('top-right', np.array([256, 256]), [128, 256], [128, 256], [0, 128], [0, 128])
+        ]
+
+        for row in orientations:
+            cartesianImage, ptSettings = polarTransform.convertToCartesianImage(self.verticalLinesPolarImage_scaled2,
+                                                                                center=row[0],
+                                                                                initialRadius=30,
+                                                                                finalRadius=100)
+
+            # np.testing.assert_array_equal(ptSettings.center, row[1])
+            # self.assertEqual(ptSettings.cartesianImageSize, [256, 256])
+
+            # np.testing.assert_almost_equal(cartesianImage[row[2][0]:row[2][1], row[3][0]:row[3][1], :],
+            #                                self.verticalLinesCartesianImage_scaled2[row[4][0]:row[4][1],
+            #                                row[5][0]:row[5][1], :])
 
 
 if __name__ == '__main__':

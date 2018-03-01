@@ -6,7 +6,6 @@ import os
 # from tests.util import loadImage, saveImage
 from util import loadImage, saveImage
 import skimage.transform
-from util import loadImage, saveImage
 
 shortAxisApexImage = loadImage('shortAxisApex.png', False)
 verticalLinesImage = loadImage('verticalLines.png', False)
@@ -71,7 +70,7 @@ plt.imshow(cartesianImage, cmap='gray', origin='lower')
 # plt.figure()
 # plt.imshow(shortAxisApexImage - cartesianImage, cmap='gray', origin='upper')
 
-plt.show()
+# plt.show()
 
 # Enable these functions as you see fit to generate the images
 # Note: It is up to the developer to ensure these images are created and look like they are supposed to

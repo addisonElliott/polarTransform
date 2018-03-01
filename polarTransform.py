@@ -302,9 +302,9 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
     return polarImage, settings
 
 
-def convertToCartesianImage(image, center=None, initialRadius=None, finalRadius=None, initialSrcRadius=None,
-                            finalSrcRadius=None, initialAngle=None, finalAngle=None, initialSrcAngle=None,
-                            finalSrcAngle=None, imageSize=None, origin='upper', order=3, border='constant',
+def convertToCartesianImage(image, center=None, initialRadius2=None, finalRadius2=None, initialRadius=None,
+                            finalRadius=None, initialAngle2=None, finalAngle2=None, initialAngle=None,
+                            finalAngle=None, imageSize=None, origin='upper', order=3, border='constant',
                             borderVal=0.0, settings=None):
     # Determines whether there are multiple bands or channels in image by checking for 3rd dimension
     isMultiChannel = image.ndim == 3
@@ -317,40 +317,40 @@ def convertToCartesianImage(image, center=None, initialRadius=None, finalRadius=
         # Initial radius of the source image
         # In other words, what radius does row 0 correspond to?
         # If not set, default is 0 to get the entire image
-        if initialSrcRadius is None:
-            initialSrcRadius = 0
+        if initialRadius is None:
+            initialRadius = 0
 
         # Final radius of the source image
         # In other words, what radius does the last row of polar image correspond to?
         # If not set, default is the largest radius from image
-        if finalSrcRadius is None:
-            finalSrcRadius = image.shape[0]
+        if finalRadius is None:
+            finalRadius = image.shape[0]
 
         # Initial angle of the source image
         # In other words, what angle does column 0 correspond to?
         # If not set, default is 0 to get the entire image
-        if initialSrcAngle is None:
-            initialSrcAngle = 0
+        if initialAngle is None:
+            initialAngle = 0
 
         # Final angle of the source image
         # In other words, what angle does the last column of polar image correspond to?
         # If not set, default is 2pi to get the entire image
-        if finalSrcAngle is None:
-            finalSrcAngle = 2 * np.pi
+        if finalAngle is None:
+            finalAngle = 2 * np.pi
 
         # This is used to scale the result of the radius to get the appropriate Cartesian value
-        scaleRadius = image.shape[0] / (finalSrcRadius - initialSrcRadius)
+        scaleRadius = image.shape[0] / (finalRadius - initialRadius)
 
         # This is used to scale the result of the angle to get the appropriate Cartesian value
-        scaleAngle = image.shape[1] / (finalSrcAngle - initialSrcAngle)
+        scaleAngle = image.shape[1] / (finalAngle - initialAngle)
 
         # This is the size of the cartesian image, should be set somehow...
         if imageSize is None:
             # Obtain the image size by looping from initial to final source angle (every possible theta in the image
             # basically)
-            thetas = np.mod(np.linspace(0, (finalSrcAngle - initialSrcAngle), image.shape[1]) + initialSrcAngle,
+            thetas = np.mod(np.linspace(0, (finalAngle - initialAngle), image.shape[1]) + initialAngle,
                             2 * np.pi)
-            maxRadius = finalSrcRadius / scaleRadius + initialSrcRadius * np.ones_like(thetas)
+            maxRadius = finalRadius / scaleRadius + initialRadius * np.ones_like(thetas)
 
             # Then get the maximum radius of the image and compute the x/y coordinates for each option
             # If a center is not specified, then use the origin as a default. This will be used to determine
@@ -423,7 +423,7 @@ def convertToCartesianImage(image, center=None, initialRadius=None, finalRadius=
             elif center == 'top-right':
                 center = imageSize[1::-1] * np.array([1, 1])
 
-        settings = ImageTransform(center, initialSrcRadius, finalSrcRadius, initialSrcAngle, finalSrcAngle, imageSize,
+        settings = ImageTransform(center, initialRadius, finalRadius, initialAngle, finalAngle, imageSize,
                                   image.shape[0:2], origin, order)
     else:
         # This is used to scale the result of the radius to get the appropriate Cartesian value
@@ -446,12 +446,12 @@ def convertToCartesianImage(image, center=None, initialRadius=None, finalRadius=
     # This is done by setting the radius to the polar image shape plus initial source radius which is just out
     # of bounds and will be set to the default value
     # TODO Factor in initialAngle/finalAngle into image size and center (ImageTransform, override existing angle)
-    if initialAngle is not None and finalAngle is not None:
-        r[np.logical_or(theta < initialAngle, theta > finalAngle)] = settings.polarImageSize[0] + settings.initialRadius
-    elif initialAngle is not None:
-        r[theta < initialAngle] = settings.polarImageSize[0] + settings.initialRadius
-    elif finalAngle is not None:
-        r[theta > finalAngle] = settings.polarImageSize[0] + settings.initialRadius
+    if initialAngle2 is not None and finalAngle2 is not None:
+        r[np.logical_or(theta < initialAngle2, theta > finalAngle2)] = settings.polarImageSize[0] + settings.initialRadius
+    elif initialAngle2 is not None:
+        r[theta < initialAngle2] = settings.polarImageSize[0] + settings.initialRadius
+    elif finalAngle2 is not None:
+        r[theta > finalAngle2] = settings.polarImageSize[0] + settings.initialRadius
 
     # Initial and final radius set the starting and stopping point that should be shown on the image
     # Set all radii that have a radius less than initial radius or greater than final radius to have a
@@ -459,12 +459,12 @@ def convertToCartesianImage(image, center=None, initialRadius=None, finalRadius=
     # This is done by setting the radius to the polar image shape plus initial source radius which is just out
     # of bounds and will be set to the default value
     # TODO Factor in initialRadius/finalRadius into image size and center (ImageTransform, override existing radius)
-    if initialRadius is not None and finalRadius is not None:
-        r[np.logical_or(r < initialRadius, r > finalRadius)] = settings.polarImageSize[0] + settings.initialRadius
-    elif initialRadius is not None:
-        r[r < initialRadius] = settings.polarImageSize[0] + settings.initialRadius
-    elif finalRadius is not None:
-        r[r > finalRadius] = settings.polarImageSize[0] + settings.initialRadius
+    if initialRadius2 is not None and finalRadius2 is not None:
+        r[np.logical_or(r < initialRadius2, r > finalRadius2)] = settings.polarImageSize[0] + settings.initialRadius
+    elif initialRadius2 is not None:
+        r[r < initialRadius2] = settings.polarImageSize[0] + settings.initialRadius
+    elif finalRadius2 is not None:
+        r[r > finalRadius2] = settings.polarImageSize[0] + settings.initialRadius
 
     # Offset the radius by the initial source radius
     r = r - settings.initialRadius

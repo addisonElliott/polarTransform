@@ -191,13 +191,16 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
         if initialRadius is None:
             initialRadius = 0
 
+        # Calculate the maximum radius possible
         # Get four corners (indices) of the cartesian image
         # Convert the corners to polar and get the largest radius
         # This will be the maximum radius to represent the entire image in polar
+        corners = np.array([[0, 0], [0, 1], [1, 0], [1, 1]]) * image.shape[0:1]
+        radii, _ = getPolarPoints2(corners[:, 1], corners[:, 0], center)
+        maxRadius = np.ceil(radii.max()).astype(int)
+
         if finalRadius is None:
-            corners = np.array([[0, 0], [0, 1], [1, 0], [1, 1]]) * image.shape[0:1]
-            radii, _ = getPolarPoints2(corners[:, 1], corners[:, 0], center)
-            finalRadius = np.ceil(radii.max()).astype(int)
+            finalRadius = maxRadius
 
         # Initial angle of zero if none is selected
         if initialAngle is None:
@@ -209,8 +212,15 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
             finalAngle = 2 * np.pi
 
         # If no radius size is given then the size will be the final minus initial radius.
+        # If no radius size is given, then the size will be set to
+        # Make the radius size twice the size of the largest dimension of the image
+        # There is a surpisingly close relationship between the maximum difference from
+        # width/height of image to center times two. At a very maximum, this can be the largest
+        # dimension times two. So, it is just assumed to use that and it has an added bonus of
+        # keeping the aspect ratio the same if no radius or angle size is given
+        # This radius size is proportional to the initial and final radius given.
         if radiusSize is None:
-            radiusSize = finalRadius - initialRadius
+            radiusSize = int(2 * np.max(image.shape) * (finalRadius - initialRadius) / maxRadius)
 
         # Make the angle size be twice the size of the largest dimension of the image
         # This angle size is proportional to the initial and final angle.
@@ -220,7 +230,7 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
         # Where the coordinates used in min are the four corners of the cartesian image with the center
         # subtracted from it. The minimum will be the corner that is the furthest away from the center
         if angleSize is None:
-            angleSize = 2 * int(np.max(image.shape) * (finalAngle - initialAngle) / (2 * np.pi))
+            angleSize = int(2 * np.max(image.shape) * (finalAngle - initialAngle) / (2 * np.pi))
 
         # Create the settings
         settings = ImageTransform(center, initialRadius, finalRadius, initialAngle, finalAngle, image.shape,
@@ -460,7 +470,8 @@ def convertToCartesianImage(image, center=None, initialRadius=None, finalRadius=
 
         # Assume that there are at least 3 bands in 3D matrix
         for k in range(3):
-            cartesianImage = scipy.ndimage.map_coordinates(image[:, :, k], desiredCoords, order=3).reshape(x.shape)
+            cartesianImage = scipy.ndimage.map_coordinates(image[:, :, k], desiredCoords, mode='nearest',
+                                                           order=3).reshape(x.shape)
             cartesianImages.append(cartesianImage)
 
         # If there are 4 bands, then assume the 4th band is alpha

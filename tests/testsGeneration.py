@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import imageio
 import os
-from tests.util import loadImage, saveImage
+from util import loadImage, saveImage
 
 shortAxisApexImage = loadImage('shortAxisApex.png', False)
 verticalLinesImage = loadImage('verticalLines.png', False)
@@ -38,7 +38,9 @@ def generateVerticalLinesPolar2():
     saveImage('verticalLinesPolarImage_scaled.png', polarImage)
 
 
-cartesianImage, ptSettings = polarTransform.convertToCartesianImage(verticalLinesPolarImage)
+polarImage, ptSettings = polarTransform.convertToPolarImage(verticalLinesImage, radiusSize=1024, angleSize=1024)
+
+cartesianImage = ptSettings.convertToCartesianImage(polarImage)
 # cartesianImage = np.flipud(cartesianImage)
 # saveImage('shortAxisApex.png', shortAxisApexImage)
 # saveImage('test.png', cartesianImage)

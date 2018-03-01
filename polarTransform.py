@@ -258,6 +258,8 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
             polarImage = scipy.ndimage.map_coordinates(image[:, :, k], desiredCoords, order=3).reshape(r.shape).T
             polarImages.append(polarImage)
 
+        # If there are 4 bands, then assume the 4th band is alpha
+        # We do not want to interpolate the transparency so we just make it all fully opaque
         if image.shape[2] == 4:
             imin, imax = skimage.util.dtype_limits(polarImages[0])
             polarImage = np.full_like(polarImages[0], imax)
@@ -273,6 +275,9 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
 def convertToCartesianImage(image, center=None, initialRadius=None, finalRadius=None, initialSrcRadius=None,
                             finalSrcRadius=None, initialAngle=None, finalAngle=None, initialSrcAngle=None,
                             finalSrcAngle=None, imageSize=None, origin='upper', settings=None):
+    # Determines whether there are multiple bands or channels in image by checking for 3rd dimension
+    isMultiChannel = image.ndim == 3
+
     if settings is None:
         # Center is set to middle-middle, which means all four quadrants will be shown
         if center is None:
@@ -369,26 +374,26 @@ def convertToCartesianImage(image, center=None, initialRadius=None, finalRadius=
         elif isinstance(center, str):
             # Set the center based on the image size given
             if center == 'bottom-left':
-                center = imageSize[::-1] * np.array([0, 0])
+                center = imageSize[1::-1] * np.array([0, 0])
             elif center == 'bottom-middle':
-                center = imageSize[::-1] * np.array([1 / 2, 0])
+                center = imageSize[1::-1] * np.array([1 / 2, 0])
             elif center == 'bottom-right':
-                center = imageSize[::-1] * np.array([1, 1 / 2])
+                center = imageSize[1::-1] * np.array([1, 1 / 2])
             elif center == 'middle-left':
-                center = imageSize[::-1] * np.array([0, 1 / 2])
+                center = imageSize[1::-1] * np.array([0, 1 / 2])
             elif center == 'middle-middle':
-                center = imageSize[::-1] * np.array([1 / 2, 1 / 2])
+                center = imageSize[1::-1] * np.array([1 / 2, 1 / 2])
             elif center == 'middle-right':
-                center = imageSize[::-1] * np.array([1, 1])
+                center = imageSize[1::-1] * np.array([1, 1])
             elif center == 'top-left':
-                center = imageSize[::-1] * np.array([0, 1])
+                center = imageSize[1::-1] * np.array([0, 1])
             elif center == 'top-middle':
-                center = imageSize[::-1] * np.array([1 / 2, 1])
+                center = imageSize[1::-1] * np.array([1 / 2, 1])
             elif center == 'top-right':
-                center = imageSize[::-1] * np.array([1, 1])
+                center = imageSize[1::-1] * np.array([1, 1])
 
         settings = ImageTransform(center, initialSrcRadius, finalSrcRadius, initialSrcAngle, finalSrcAngle, imageSize,
-                                  image.shape, origin)
+                                  image.shape[0:2], origin)
     else:
         # This is used to scale the result of the radius to get the appropriate Cartesian value
         scaleRadius = settings.polarImageSize[0] / (settings.finalRadius - settings.initialRadius)
@@ -445,12 +450,36 @@ def convertToCartesianImage(image, center=None, initialRadius=None, finalRadius=
     theta = theta * scaleAngle
 
     # Convert to 32-bit floats for OpenCV2, does not support double
-    r = r.astype(np.float32)
-    theta = theta.astype(np.float32)
+    # r = r.astype(np.float32)
+    # theta = theta.astype(np.float32)
 
     # Flatten the desired x/y cartesian points into one 2xN array
     desiredCoords = np.vstack((r.flatten(), theta.flatten()))
-    cartesianImage = scipy.ndimage.map_coordinates(image, desiredCoords, order=3).reshape(x.shape)
+    # cartesianImage = scipy.ndimage.map_coordinates(image, desiredCoords, order=3).reshape(x.shape)
+
+    # Retrieve cartesian image using map_coordinates. Returns a linear array of the values that
+    # must be reshaped into the desired size.
+    # For multiple channels, repeat this process for each band and concatenate them at end
+    # Take the transpose of the polar image such that first dimension is radius and second
+    # dimension is theta.
+    if isMultiChannel:
+        cartesianImages = []
+
+        # Assume that there are at least 3 bands in 3D matrix
+        for k in range(3):
+            cartesianImage = scipy.ndimage.map_coordinates(image[:, :, k], desiredCoords, order=3).reshape(x.shape)
+            cartesianImages.append(cartesianImage)
+
+        # If there are 4 bands, then assume the 4th band is alpha
+        # We do not want to interpolate the transparency so we just make it all fully opaque
+        if image.shape[2] == 4:
+            imin, imax = skimage.util.dtype_limits(cartesianImages[0])
+            cartesianImage = np.full_like(cartesianImages[0], imax)
+            cartesianImages.append(cartesianImage)
+
+        cartesianImage = np.dstack(cartesianImages)
+    else:
+        cartesianImage = scipy.ndimage.map_coordinates(image, desiredCoords, order=3).reshape(x.shape)
 
     # Use OpenCV2 to remap, allows use of their interpolation techniques
     # OpenCV wants x, y coordinates which is opposite of row, col system

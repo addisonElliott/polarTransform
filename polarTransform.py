@@ -302,8 +302,8 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
     return polarImage, settings
 
 
-def convertToCartesianImage(image, center=None, initialRadius2=None, finalRadius2=None, initialRadius=None,
-                            finalRadius=None, initialAngle2=None, finalAngle2=None, initialAngle=None,
+def convertToCartesianImage(image, center=None, initialSrcRadius=None, finalSrcRadius=None, initialRadius=None,
+                            finalRadius=None, initialSrcAngle=None, finalSrcAngle=None, initialAngle=None,
                             finalAngle=None, imageSize=None, origin='upper', order=3, border='constant',
                             borderVal=0.0, settings=None):
     # Determines whether there are multiple bands or channels in image by checking for 3rd dimension
@@ -446,12 +446,13 @@ def convertToCartesianImage(image, center=None, initialRadius2=None, finalRadius
     # This is done by setting the radius to the polar image shape plus initial source radius which is just out
     # of bounds and will be set to the default value
     # TODO Factor in initialAngle/finalAngle into image size and center (ImageTransform, override existing angle)
-    if initialAngle2 is not None and finalAngle2 is not None:
-        r[np.logical_or(theta < initialAngle2, theta > finalAngle2)] = settings.polarImageSize[0] + settings.initialRadius
-    elif initialAngle2 is not None:
-        r[theta < initialAngle2] = settings.polarImageSize[0] + settings.initialRadius
-    elif finalAngle2 is not None:
-        r[theta > finalAngle2] = settings.polarImageSize[0] + settings.initialRadius
+    if initialSrcAngle is not None and finalSrcAngle is not None:
+        r[np.logical_or(theta < initialSrcAngle, theta > finalSrcAngle)] = settings.polarImageSize[
+                                                                               0] + settings.initialRadius
+    elif initialSrcAngle is not None:
+        r[theta < initialSrcAngle] = settings.polarImageSize[0] + settings.initialRadius
+    elif finalSrcAngle is not None:
+        r[theta > finalSrcAngle] = settings.polarImageSize[0] + settings.initialRadius
 
     # Initial and final radius set the starting and stopping point that should be shown on the image
     # Set all radii that have a radius less than initial radius or greater than final radius to have a
@@ -459,12 +460,12 @@ def convertToCartesianImage(image, center=None, initialRadius2=None, finalRadius
     # This is done by setting the radius to the polar image shape plus initial source radius which is just out
     # of bounds and will be set to the default value
     # TODO Factor in initialRadius/finalRadius into image size and center (ImageTransform, override existing radius)
-    if initialRadius2 is not None and finalRadius2 is not None:
-        r[np.logical_or(r < initialRadius2, r > finalRadius2)] = settings.polarImageSize[0] + settings.initialRadius
-    elif initialRadius2 is not None:
-        r[r < initialRadius2] = settings.polarImageSize[0] + settings.initialRadius
-    elif finalRadius2 is not None:
-        r[r > finalRadius2] = settings.polarImageSize[0] + settings.initialRadius
+    if initialSrcRadius is not None and finalSrcRadius is not None:
+        r[np.logical_or(r < initialSrcRadius, r > finalSrcRadius)] = settings.polarImageSize[0] + settings.initialRadius
+    elif initialSrcRadius is not None:
+        r[r < initialSrcRadius] = settings.polarImageSize[0] + settings.initialRadius
+    elif finalSrcRadius is not None:
+        r[r > finalSrcRadius] = settings.polarImageSize[0] + settings.initialRadius
 
     # Offset the radius by the initial source radius
     r = r - settings.initialRadius

@@ -146,3 +146,4 @@ plt.imshow(diff, cmap='gray', origin='upper')
 # TODO Add note about angle size and radius size
 # TODO Test print(ptSettings)
 # TODO Explain order (0-5)
+# TODO Add note in docs that cartesianImageSize and polarImageSize only contain first 2 dimensions

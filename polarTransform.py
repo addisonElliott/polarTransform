@@ -503,7 +503,7 @@ def convertToCartesianImage(image, center=None, initialRadius=None, finalRadius=
 
         # Assume that there are at least 3 bands in 3D matrix
         for k in range(3):
-            cartesianImage = scipy.ndimage.map_coordinates(image[:, :, k], desiredCoords, mode='nearest',
+            cartesianImage = scipy.ndimage.map_coordinates(image[:, :, k], desiredCoords,
                                                            order=settings.order).reshape(x.shape)
             cartesianImages.append(cartesianImage)
 

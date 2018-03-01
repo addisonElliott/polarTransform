@@ -182,3 +182,12 @@ plt.show()
 # TODO Explain order (0-5)
 # TODO Add note in docs that cartesianImageSize and polarImageSize only contain first 2 dimensions
 # TODO Test using origin and center orientations too! Make note that they are specific to lower-left hand corner
+
+# Write origin test for cartesian
+# Write grayscale test for cartesian
+# Write border test for polar and cartesian
+# Write order test for polar and cartesian ( just do linear)
+# Write settings test for cartesian
+# Maybe write test for image orientation and size for no conditions (full thing)
+# What about initial/final Source Angle/Radius? Maybe just remove the features...
+# Write tests for polar and cartesian point conversion

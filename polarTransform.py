@@ -240,7 +240,7 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
                 angleSize = int(4 * np.max(image.shape) * (finalAngle - initialAngle) / (2 * np.pi))
 
         # Create the settings
-        settings = ImageTransform(center, initialRadius, finalRadius, initialAngle, finalAngle, image.shape[0:2],
+        settings = ImageTransform(center, initialRadius, finalRadius, initialAngle, finalAngle, list(image.shape[0:2]),
                                   [radiusSize, angleSize], order)
 
     # Create radii from start to finish with radiusSize, do same for theta

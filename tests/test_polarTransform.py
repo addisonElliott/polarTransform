@@ -12,6 +12,12 @@ import unittest
 from tests.util import loadImage
 
 
+def assert_image_equal(desired, actual, diff):
+    difference = np.abs(desired.astype(int) - actual.astype(int)).astype(np.uint8)
+
+    assert(np.all(difference <= diff))
+
+
 class TestPolarConversion(unittest.TestCase):
     def setUp(self):
         self.shortAxisApexImage = loadImage('shortAxisApex.png')
@@ -339,6 +345,7 @@ class TestCartesianConversion(unittest.TestCase):
             np.testing.assert_almost_equal(cartesianImage, self.verticalLinesCartesianImage_scaled2[row[3][0]:row[3][1],
                                                            row[4][0]:row[4][1], :])
 
+
 class TestPolarAndCartesianConversion(unittest.TestCase):
     def setUp(self):
         self.shortAxisApexImage = loadImage('shortAxisApex.png')
@@ -353,6 +360,14 @@ class TestPolarAndCartesianConversion(unittest.TestCase):
         self.verticalLinesPolarImage_scaled2 = loadImage('verticalLinesPolarImage_scaled2.png')
         self.verticalLinesPolarImage_scaled3 = loadImage('verticalLinesPolarImage_scaled3.png')
 
+        self.verticalLinesCartesianImage = loadImage('verticalLinesCartesianImage.png')
+        self.verticalLinesCartesianImage_scaled = loadImage('verticalLinesCartesianImage_scaled.png')
+        self.verticalLinesCartesianImage_scaled2 = loadImage('verticalLinesCartesianImage_scaled2.png')
+        self.verticalLinesCartesianImage_scaled3 = loadImage('verticalLinesCartesianImage_scaled3.png')
+
+        self.shortAxisApexCartesianImage = loadImage('shortAxisApexCartesianImage.png')
+        self.shortAxisApexCartesianImage2 = loadImage('shortAxisApexCartesianImage2.png')
+
     def test_default(self):
         polarImage, ptSettings = polarTransform.convertToPolarImage(self.shortAxisApexImage,
                                                                     center=np.array([401, 365]))
@@ -365,19 +380,28 @@ class TestPolarAndCartesianConversion(unittest.TestCase):
         self.assertEqual(ptSettings.initialAngle, 0.0)
         self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
         self.assertEqual(ptSettings.cartesianImageSize, (608, 800))
-        self.assertEqual(ptSettings.polarImageSize, list(self.shortAxisApexPolarImage.shape[0:2]))
+        self.assertEqual(ptSettings.polarImageSize, self.shortAxisApexPolarImage.shape[0:2])
 
-        np.testing.assert_almost_equal(cartesianImage, self.shortAxisApexImage)
-    #
-    #     np.testing.assert_array_equal(ptSettings.center, np.array([401, 365]))
-    #     self.assertEqual(ptSettings.initialRadius, 0)
-    #     self.assertEqual(ptSettings.finalRadius, 543)
-    #     self.assertEqual(ptSettings.initialAngle, 0.0)
-    #     self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
-    #     self.assertEqual(ptSettings.cartesianImageSize, self.shortAxisApexImage.shape)
-    #     np.testing.assert_array_equal(ptSettings.polarImageSize, np.array([802, 1600]))
-    #
-    #     np.testing.assert_almost_equal(polarImage, self.shortAxisApexPolarImage)
+        np.testing.assert_almost_equal(cartesianImage, self.shortAxisApexCartesianImage)
+
+    def test_default2(self):
+        polarImage1, ptSettings = polarTransform.convertToPolarImage(self.shortAxisApexImage,
+                                                                    center=np.array([401, 365]), radiusSize=2000,
+                                                                    angleSize=4000)
+
+        cartesianImage = ptSettings.convertToCartesianImage(polarImage1)
+        ptSettings.polarImageSize = self.shortAxisApexPolarImage.shape[0:2]
+        polarImage = ptSettings.convertToPolarImage(cartesianImage)
+
+        np.testing.assert_array_equal(ptSettings.center, np.array([401, 365]))
+        self.assertEqual(ptSettings.initialRadius, 0)
+        self.assertEqual(ptSettings.finalRadius, 543)
+        self.assertEqual(ptSettings.initialAngle, 0.0)
+        self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
+        self.assertEqual(ptSettings.cartesianImageSize, (608, 800))
+        self.assertEqual(ptSettings.polarImageSize, self.shortAxisApexPolarImage.shape[0:2])
+
+        assert_image_equal(polarImage, self.shortAxisApexPolarImage, 10)
     #
     # def test_RGBA(self):
     #     polarImage, ptSettings = polarTransform.convertToPolarImage(self.verticalLinesImage)
@@ -420,6 +444,7 @@ class TestPolarAndCartesianConversion(unittest.TestCase):
     #     np.testing.assert_array_equal(ptSettings.polarImageSize, np.array([99, 384]))
     #
     #     np.testing.assert_almost_equal(polarImage, self.verticalLinesPolarImage_scaled3)
+
 
 if __name__ == '__main__':
     unittest.main()

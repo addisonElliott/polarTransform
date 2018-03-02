@@ -5,10 +5,10 @@ from util import loadImage, saveImage
 
 import polarTransform
 
-shortAxisApexImage = loadImage('shortAxisApex.png', False)
-verticalLinesImage = loadImage('verticalLines.png', False)
-horizontalLinesImage = loadImage('horizontalLines.png', False)
-checkerboardImage = loadImage('checkerboard.png', False)
+shortAxisApexImage = loadImage('shortAxisApex.png')
+verticalLinesImage = loadImage('verticalLines.png')
+horizontalLinesImage = loadImage('horizontalLines.png')
+checkerboardImage = loadImage('checkerboard.png')
 
 shortAxisApexPolarImage = loadImage('shortAxisApexPolarImage.png')
 shortAxisApexPolarImage_centerMiddle = loadImage('shortAxisApexPolarImage_centerMiddle.png')
@@ -112,6 +112,20 @@ cartesianImage = ptSettings.convertToCartesianImage(polarImage)
 # cartesianImage, ptSettings = polarTransform.convertToCartesianImage(verticalLinesPolarImage_scaled, initialRadius=30, finalRadius=100,
 #                                                             initialAngle=2 / 4 * np.pi, finalAngle=5 / 4 * np.pi, imageSize=[256, 256], center=[128, 128])
 
+polarImage1, ptSettings = polarTransform.convertToPolarImage(shortAxisApexImage,
+                                                             center=np.array([401, 365]), radiusSize=2000,
+                                                             angleSize=4000)
+
+cartesianImage = ptSettings.convertToCartesianImage(polarImage1)
+ptSettings.polarImageSize = shortAxisApexPolarImage.shape[0:2]
+polarImage = ptSettings.convertToPolarImage(cartesianImage)
+
+diff = np.abs(polarImage.astype(float) - shortAxisApexPolarImage.astype(float))
+print(diff.min(), diff.max())
+# np.testing.assert_allclose(polarImage, self.shortAxisApexPolarImage, atol=30.0)
+print(cartesianImage.dtype)
+print(polarImage1.dtype)
+print(polarImage.dtype)
 
 # cartesianImage = np.flipud(cartesianImage)
 # saveImage('shortAxisApex.png', shortAxisApexImage)
@@ -123,15 +137,19 @@ cartesianImage = ptSettings.convertToCartesianImage(polarImage)
 # diff = np.abs(diff).astype(np.uint8)
 # print(diff.dtype, diff.min(), diff.max())
 plt.figure()
-plt.imshow(verticalLinesImage, cmap='gray', origin='lower')
+plt.imshow(polarImage1, cmap='gray', origin='lower')
 plt.figure()
-plt.imshow(cartesianImage, cmap='gray', origin='lower')
+plt.imshow(shortAxisApexPolarImage, cmap='gray', origin='lower')
+plt.figure()
+plt.imshow(polarImage, cmap='gray', origin='lower')
+plt.figure()
+plt.imshow(diff, cmap='gray', origin='lower')
 # plt.figure()
 # plt.imshow(verticalLinesCartesianImage_scaled2, origin='lower')
 # plt.figure()
 # plt.imshow(diff, cmap='gray', origin='upper')
 
-# plt.show()
+plt.show()
 
 # Enable these functions as you see fit to generate the images
 # Note: It is up to the developer to ensure these images are created and look like they are supposed to

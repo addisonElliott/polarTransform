@@ -147,8 +147,8 @@ plt.imshow(cartesianImage, cmap='gray', origin='lower')
 # generateVerticalLinesCartesian3()
 # generateVerticalLinesCartesian4()
 
-generateShortAxisApexCartesian()
-generateShortAxisApexCartesian2()
+# generateShortAxisApexCartesian()
+# generateShortAxisApexCartesian2()
 
 # TODO Dont forget note that finalRadius/Angle is NOT included. It is everything up to that
 # TODO Handle rotating 90 degrees

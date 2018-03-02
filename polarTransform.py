@@ -6,7 +6,7 @@ import skimage.util
 
 class ImageTransform:
     def __init__(self, center, initialRadius, finalRadius, initialAngle, finalAngle, cartesianImageSize,
-                 polarImageSize, origin, order):
+                 polarImageSize, order):
         self.center = center
         self.initialRadius = initialRadius
         self.finalRadius = finalRadius
@@ -14,9 +14,6 @@ class ImageTransform:
         self.finalAngle = finalAngle
         self.cartesianImageSize = cartesianImageSize
         self.polarImageSize = polarImageSize
-        # Note: Cartesian origin is whether the origin is in upper or lower and only applies for conversion to Cartesian
-        # image. The polar image does not matter because (0, 0) should correspond to r=0, theta=0
-        self.origin = origin
         self.order = order
 
     def convertToPolarImage(self, image):
@@ -35,9 +32,9 @@ class ImageTransform:
 
     def __repr__(self):
         return 'ImageTransform(center=%s, initialRadius=%i, finalRadius=%i, initialAngle=%f, finalAngle=%f, ' \
-               'cartesianImageSize=%s, polarImageSize=%s, origin=%s, order=%s)' % (
+               'cartesianImageSize=%s, polarImageSize=%s, order=%s)' % (
                    self.center, self.initialRadius, self.finalRadius, self.initialAngle, self.finalAngle,
-                   self.cartesianImageSize, self.polarImageSize, self.origin, self.order)
+                   self.cartesianImageSize, self.polarImageSize, self.order)
 
     def __str__(self):
         return self.__repr__()
@@ -172,7 +169,7 @@ def getCartesianPointsImage(points, settings):
 
 
 def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None, initialAngle=None, finalAngle=None,
-                        radiusSize=None, angleSize=None, origin='upper', order=3, border='constant', borderVal=0.0,
+                        radiusSize=None, angleSize=None, order=3, border='constant', borderVal=0.0,
                         settings=None):
     # Determines whether there are multiple bands or channels in image by checking for 3rd dimension
     isMultiChannel = image.ndim == 3
@@ -244,12 +241,7 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
 
         # Create the settings
         settings = ImageTransform(center, initialRadius, finalRadius, initialAngle, finalAngle, image.shape[0:2],
-                                  [radiusSize, angleSize], origin, order)
-
-    # Flip the image such that the origin is lower left
-    # If this does not happen, then 0->2pi rotates clockwise instead of counter-clockwise as is traditional for angles
-    if settings.origin == 'upper':
-        image = np.flipud(image)
+                                  [radiusSize, angleSize], order)
 
     # Create radii from start to finish with radiusSize, do same for theta
     # Then create a 2D grid of radius and theta using meshgrid
@@ -304,7 +296,7 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
 
 def convertToCartesianImage(image, center=None, initialSrcRadius=None, finalSrcRadius=None, initialRadius=None,
                             finalRadius=None, initialSrcAngle=None, finalSrcAngle=None, initialAngle=None,
-                            finalAngle=None, imageSize=None, origin='upper', order=3, border='constant',
+                            finalAngle=None, imageSize=None, order=3, border='constant',
                             borderVal=0.0, settings=None):
     # Determines whether there are multiple bands or channels in image by checking for 3rd dimension
     isMultiChannel = image.ndim == 3
@@ -423,7 +415,7 @@ def convertToCartesianImage(image, center=None, initialSrcRadius=None, finalSrcR
                 center = imageSize[1::-1] * np.array([1, 1])
 
         settings = ImageTransform(center, initialRadius, finalRadius, initialAngle, finalAngle, imageSize,
-                                  image.shape[0:2], origin, order)
+                                  image.shape[0:2], order)
     else:
         # This is used to scale the result of the radius to get the appropriate Cartesian value
         scaleRadius = settings.polarImageSize[0] / (settings.finalRadius - settings.initialRadius)
@@ -514,9 +506,5 @@ def convertToCartesianImage(image, center=None, initialSrcRadius=None, finalSrcR
     else:
         cartesianImage = scipy.ndimage.map_coordinates(image, desiredCoords, mode=border, cval=borderVal,
                                                        order=settings.order).reshape(x.shape)
-
-    # Flip the image such that the origin is upper left like desired
-    if settings.origin == 'upper':
-        cartesianImage = np.flipud(cartesianImage)
 
     return cartesianImage, settings

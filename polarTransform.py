@@ -294,8 +294,8 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
     return polarImage, settings
 
 
-def convertToCartesianImage(image, center=None, initialSrcRadius=None, finalSrcRadius=None, initialRadius=None,
-                            finalRadius=None, initialSrcAngle=None, finalSrcAngle=None, initialAngle=None,
+def convertToCartesianImage(image, center=None, initialRadius=None,
+                            finalRadius=None, initialAngle=None,
                             finalAngle=None, imageSize=None, order=3, border='constant',
                             borderVal=0.0, settings=None):
     # Determines whether there are multiple bands or channels in image by checking for 3rd dimension
@@ -430,33 +430,6 @@ def convertToCartesianImage(image, center=None, initialSrcRadius=None, finalSrcR
 
     # Take cartesian grid and convert to polar coordinates
     r, theta = getPolarPoints2(x, y, settings.center)
-
-    # Initial angle and final angle set the starting and stopping angle that should be shown on the image
-    # Even if the polar image has 0 -> 2*pi, the initial and final angle set the things to select
-    # Set all radii that have a theta not in the range of (initialAngle, finalAngle) to be out of bounds
-    # This is done by setting the radius to the polar image shape plus initial source radius which is just out
-    # of bounds and will be set to the default value
-    # TODO Factor in initialAngle/finalAngle into image size and center (ImageTransform, override existing angle)
-    if initialSrcAngle is not None and finalSrcAngle is not None:
-        r[np.logical_or(theta < initialSrcAngle, theta > finalSrcAngle)] = settings.polarImageSize[
-                                                                               0] + settings.initialRadius
-    elif initialSrcAngle is not None:
-        r[theta < initialSrcAngle] = settings.polarImageSize[0] + settings.initialRadius
-    elif finalSrcAngle is not None:
-        r[theta > finalSrcAngle] = settings.polarImageSize[0] + settings.initialRadius
-
-    # Initial and final radius set the starting and stopping point that should be shown on the image
-    # Set all radii that have a radius less than initial radius or greater than final radius to have a
-    # radius out of bounds
-    # This is done by setting the radius to the polar image shape plus initial source radius which is just out
-    # of bounds and will be set to the default value
-    # TODO Factor in initialRadius/finalRadius into image size and center (ImageTransform, override existing radius)
-    if initialSrcRadius is not None and finalSrcRadius is not None:
-        r[np.logical_or(r < initialSrcRadius, r > finalSrcRadius)] = settings.polarImageSize[0] + settings.initialRadius
-    elif initialSrcRadius is not None:
-        r[r < initialSrcRadius] = settings.polarImageSize[0] + settings.initialRadius
-    elif finalSrcRadius is not None:
-        r[r > finalSrcRadius] = settings.polarImageSize[0] + settings.initialRadius
 
     # Offset the radius by the initial source radius
     r = r - settings.initialRadius

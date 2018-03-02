@@ -515,4 +515,8 @@ def convertToCartesianImage(image, center=None, initialSrcRadius=None, finalSrcR
         cartesianImage = scipy.ndimage.map_coordinates(image, desiredCoords, mode=border, cval=borderVal,
                                                        order=settings.order).reshape(x.shape)
 
+    # Flip the image such that the origin is upper left like desired
+    if settings.origin == 'upper':
+        cartesianImage = np.flipud(cartesianImage)
+
     return cartesianImage, settings

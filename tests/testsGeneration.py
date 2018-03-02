@@ -172,3 +172,5 @@ generateShortAxisApexCartesian2()
 # Maybe write test for image orientation and size for no conditions (full thing)
 # What about initial/final Source Angle/Radius? Maybe just remove the features...
 # Write tests for polar and cartesian point conversion
+# Have another class that you convert from cartesian -> polar -> cartesian with settings and stuff
+# Test using origin for getting polar and cartesian points

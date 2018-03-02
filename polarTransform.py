@@ -16,12 +16,12 @@ class ImageTransform:
         self.polarImageSize = polarImageSize
         self.order = order
 
-    def convertToPolarImage(self, image):
-        image, ptSettings = convertToPolarImage(image, settings=self)
+    def convertToPolarImage(self, image, border='constant', borderVal=0.0):
+        image, ptSettings = convertToPolarImage(image, border, borderVal, settings=self)
         return image
 
-    def convertToCartesianImage(self, image):
-        image, ptSettings = convertToCartesianImage(image, settings=self)
+    def convertToCartesianImage(self, image, border='constant', borderVal=0.0):
+        image, ptSettings = convertToCartesianImage(image, border=border, borderVal=borderVal, settings=self)
         return image
 
     def getPolarPointsImage(self, points):

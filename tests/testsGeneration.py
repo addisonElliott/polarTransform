@@ -1,6 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
 # from tests.util import loadImage, saveImage
+import sys
+import os
+
 from util import loadImage, saveImage
 
 import polarTransform
@@ -117,56 +120,6 @@ def generateVerticalLinesBorders2():
     ptSettings.center = np.array([250, 250])
     cartesianImage = ptSettings.convertToCartesianImage(polarImage, border='nearest')
     saveImage('verticalLinesCartesianImageBorders4.png', cartesianImage)
-
-
-polarImage, ptSettings = polarTransform.convertToPolarImage(shortAxisApexImage, order=0, initialRadius=30,
-                                                            finalRadius=100, radiusSize=25)
-ptSettings.cartesianImageSize = (200, 200)
-ptSettings.center = np.array([100, 100])
-cartesianImage = ptSettings.convertToCartesianImage(polarImage, order=0)
-
-# polarImage, ptSettings = polarTransform.convertToPolarImage(verticalLinesImage, border='constant', borderVal=128.0)
-#
-# ptSettings.cartesianImageSize = (500, 500)
-# ptSettings.center = np.array([250, 250])
-# cartesianImage = ptSettings.convertToCartesianImage(polarImage, border='constant', borderVal=255.0)
-
-# polarImage, ptSettings = polarTransform.convertToPolarImage(verticalLinesImage, border='nearest')
-#
-# ptSettings.cartesianImageSize = (500, 500)
-# ptSettings.center = np.array([250, 250])
-# cartesianImage = ptSettings.convertToCartesianImage(polarImage, border='nearest')
-
-
-# cartesianImage, ptSettings = polarTransform.convertToCartesianImage(verticalLinesPolarImage_scaled2, center=[128, 128], imageSize=[256, 256], initialRadius=30,
-#                                                                 finalRadius=100)
-
-# cartesianImage, ptSettings = polarTransform.convertToCartesianImage(verticalLinesPolarImage_scaled3, initialRadius=30,
-#                                                             finalRadius=100, initialAngle=2 / 4 * np.pi,
-#                                                             finalAngle=5 / 4 * np.pi, center=[128, 128], imageSize=[256, 256])
-
-# cartesianImage, ptSettings = polarTransform.convertToCartesianImage(verticalLinesPolarImage_scaled, initialRadius=30, finalRadius=100,
-#                                                             initialAngle=2 / 4 * np.pi, finalAngle=5 / 4 * np.pi, imageSize=[256, 256], center=[128, 128])
-
-# cartesianImage = np.flipud(cartesianImage)
-# saveImage('shortAxisApex.png', shortAxisApexImage)
-# saveImage('test.png', cartesianImage)
-# np.testing.assert_almost_equal(cartesianImage, np.flipud(shortAxisApexImage))
-# shortAxisApexImage = np.flipud(shortAxisApexImage)
-
-# diff = verticalLinesImage[:, :, 0:3].astype(int) - np.flipud(cartesianImage[:, :, 0:3]).astype(int)
-# diff = np.abs(diff).astype(np.uint8)
-# print(diff.dtype, diff.min(), diff.max())
-plt.figure()
-plt.imshow(verticalLinesImage, cmap='gray', origin='lower')
-plt.figure()
-plt.imshow(polarImage, cmap='gray', origin='lower')
-# plt.figure()
-# plt.imshow(verticalLinesCartesianImage_scaled2, origin='lower')
-# plt.figure()
-# plt.imshow(diff, cmap='gray', origin='upper')
-
-plt.show()
 
 # Enable these functions as you see fit to generate the images
 # Note: It is up to the developer to ensure these images are created and look like they are supposed to

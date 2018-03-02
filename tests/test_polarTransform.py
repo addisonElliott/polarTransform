@@ -9,13 +9,7 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 import polarTransform
 import unittest
 
-from tests.util import loadImage
-
-
-def assert_image_equal(desired, actual, diff):
-    difference = np.abs(desired.astype(int) - actual.astype(int)).astype(np.uint8)
-
-    assert (np.all(difference <= diff))
+from tests.util import loadImage, assert_image_equal
 
 
 class TestPolarConversion(unittest.TestCase):

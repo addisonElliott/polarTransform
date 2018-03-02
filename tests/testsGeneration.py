@@ -1,12 +1,6 @@
-import matplotlib.pyplot as plt
 import numpy as np
-# from tests.util import loadImage, saveImage
-import sys
-import os
-
-from util import loadImage, saveImage
-
 import polarTransform
+from .util import loadImage, saveImage
 
 shortAxisApexImage = loadImage('shortAxisApex.png')
 verticalLinesImage = loadImage('verticalLines.png')

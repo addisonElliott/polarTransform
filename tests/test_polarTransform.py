@@ -35,8 +35,8 @@ class TestPolarConversion(unittest.TestCase):
         self.assertEqual(ptSettings.finalRadius, 543)
         self.assertEqual(ptSettings.initialAngle, 0.0)
         self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
-        self.assertEqual(ptSettings.cartesianImageSize, list(self.shortAxisApexImage.shape))
-        self.assertEqual(ptSettings.polarImageSize, [802, 1600])
+        self.assertEqual(ptSettings.cartesianImageSize, self.shortAxisApexImage.shape)
+        self.assertEqual(ptSettings.polarImageSize, (802, 1600))
 
         np.testing.assert_almost_equal(polarImage, self.shortAxisApexPolarImage)
 
@@ -48,8 +48,8 @@ class TestPolarConversion(unittest.TestCase):
         self.assertEqual(ptSettings.finalRadius, 503)
         self.assertEqual(ptSettings.initialAngle, 0.0)
         self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
-        self.assertEqual(ptSettings.cartesianImageSize, list(self.shortAxisApexImage.shape))
-        self.assertEqual(ptSettings.polarImageSize, [800, 1600])
+        self.assertEqual(ptSettings.cartesianImageSize, self.shortAxisApexImage.shape)
+        self.assertEqual(ptSettings.polarImageSize, (800, 1600))
 
         np.testing.assert_almost_equal(polarImage, self.shortAxisApexPolarImage_centerMiddle)
 
@@ -72,8 +72,8 @@ class TestPolarConversion(unittest.TestCase):
         self.assertEqual(ptSettings.finalRadius, 182)
         self.assertEqual(ptSettings.initialAngle, 0.0)
         self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
-        self.assertEqual(ptSettings.cartesianImageSize, list(self.verticalLinesImage.shape[0:2]))
-        self.assertEqual(ptSettings.polarImageSize, [256, 1024])
+        self.assertEqual(ptSettings.cartesianImageSize, self.verticalLinesImage.shape[0:2])
+        self.assertEqual(ptSettings.polarImageSize, (256, 1024))
 
         np.testing.assert_almost_equal(polarImage, self.verticalLinesPolarImage)
 
@@ -86,8 +86,8 @@ class TestPolarConversion(unittest.TestCase):
         self.assertEqual(ptSettings.finalRadius, 100)
         self.assertEqual(ptSettings.initialAngle, 0.0)
         self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
-        self.assertEqual(ptSettings.cartesianImageSize, list(self.verticalLinesImage.shape[0:2]))
-        self.assertEqual(ptSettings.polarImageSize, [99, 1024])
+        self.assertEqual(ptSettings.cartesianImageSize, self.verticalLinesImage.shape[0:2])
+        self.assertEqual(ptSettings.polarImageSize, (99, 1024))
 
         np.testing.assert_almost_equal(polarImage, self.verticalLinesPolarImage_scaled2)
 
@@ -101,8 +101,8 @@ class TestPolarConversion(unittest.TestCase):
         self.assertEqual(ptSettings.finalRadius, 100)
         self.assertEqual(ptSettings.initialAngle, 2 / 4 * np.pi)
         self.assertEqual(ptSettings.finalAngle, 5 / 4 * np.pi)
-        self.assertEqual(ptSettings.cartesianImageSize, list(self.verticalLinesImage.shape[0:2]))
-        self.assertEqual(ptSettings.polarImageSize, [99, 384])
+        self.assertEqual(ptSettings.cartesianImageSize, self.verticalLinesImage.shape[0:2])
+        self.assertEqual(ptSettings.polarImageSize, (99, 384))
 
         np.testing.assert_almost_equal(polarImage, self.verticalLinesPolarImage_scaled3)
 
@@ -117,8 +117,8 @@ class TestPolarConversion(unittest.TestCase):
         self.assertEqual(ptSettings.finalRadius, 100)
         self.assertEqual(ptSettings.initialAngle, 2 / 4 * np.pi)
         self.assertEqual(ptSettings.finalAngle, 5 / 4 * np.pi)
-        self.assertEqual(ptSettings.cartesianImageSize, list(self.verticalLinesImage.shape[0:2]))
-        self.assertEqual(ptSettings.polarImageSize, [140, 700])
+        self.assertEqual(ptSettings.cartesianImageSize, self.verticalLinesImage.shape[0:2])
+        self.assertEqual(ptSettings.polarImageSize, (140, 700))
 
         np.testing.assert_almost_equal(polarImage, self.verticalLinesPolarImage_scaled)
 
@@ -136,8 +136,8 @@ class TestPolarConversion(unittest.TestCase):
         self.assertEqual(ptSettings.finalRadius, 100)
         self.assertEqual(ptSettings.initialAngle, 2 / 4 * np.pi)
         self.assertEqual(ptSettings.finalAngle, 5 / 4 * np.pi)
-        self.assertEqual(ptSettings.cartesianImageSize, list(self.verticalLinesImage.shape[0:2]))
-        self.assertEqual(ptSettings.polarImageSize, [140, 700])
+        self.assertEqual(ptSettings.cartesianImageSize, self.verticalLinesImage.shape[0:2])
+        self.assertEqual(ptSettings.polarImageSize, (140, 700))
 
         np.testing.assert_almost_equal(polarImage, self.verticalLinesPolarImage_scaled)
 
@@ -177,7 +177,7 @@ class TestCartesianConversion(unittest.TestCase):
         self.assertEqual(ptSettings.finalRadius, 543)
         self.assertEqual(ptSettings.initialAngle, 0.0)
         self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
-        self.assertEqual(ptSettings.cartesianImageSize, [608, 800])
+        self.assertEqual(ptSettings.cartesianImageSize, (608, 800))
         self.assertEqual(ptSettings.polarImageSize, self.shortAxisApexPolarImage.shape[0:2])
 
         np.testing.assert_almost_equal(cartesianImage, self.shortAxisApexCartesianImage)
@@ -191,7 +191,7 @@ class TestCartesianConversion(unittest.TestCase):
         self.assertEqual(ptSettings.finalRadius, 503)
         self.assertEqual(ptSettings.initialAngle, 0.0)
         self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
-        self.assertEqual(ptSettings.cartesianImageSize, [608, 800])
+        self.assertEqual(ptSettings.cartesianImageSize, (608, 800))
         self.assertEqual(ptSettings.polarImageSize, self.shortAxisApexPolarImage_centerMiddle.shape[0:2])
 
         np.testing.assert_almost_equal(cartesianImage, self.shortAxisApexCartesianImage2)
@@ -206,7 +206,7 @@ class TestCartesianConversion(unittest.TestCase):
         self.assertEqual(ptSettings.finalRadius, 182)
         self.assertEqual(ptSettings.initialAngle, 0.0)
         self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
-        self.assertEqual(ptSettings.cartesianImageSize, [256, 256])
+        self.assertEqual(ptSettings.cartesianImageSize, (256, 256))
         self.assertEqual(ptSettings.polarImageSize, self.verticalLinesPolarImage.shape[0:2])
 
         np.testing.assert_almost_equal(cartesianImage, self.verticalLinesCartesianImage)
@@ -222,7 +222,7 @@ class TestCartesianConversion(unittest.TestCase):
         self.assertEqual(ptSettings.finalRadius, 100)
         self.assertEqual(ptSettings.initialAngle, 0.0)
         self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
-        self.assertEqual(ptSettings.cartesianImageSize, [256, 256])
+        self.assertEqual(ptSettings.cartesianImageSize, (256, 256))
         self.assertEqual(ptSettings.polarImageSize, self.verticalLinesPolarImage_scaled2.shape[0:2])
 
         np.testing.assert_almost_equal(cartesianImage, self.verticalLinesCartesianImage_scaled2)
@@ -239,7 +239,7 @@ class TestCartesianConversion(unittest.TestCase):
         self.assertEqual(ptSettings.finalRadius, 100)
         self.assertEqual(ptSettings.initialAngle, 2 / 4 * np.pi)
         self.assertEqual(ptSettings.finalAngle, 5 / 4 * np.pi)
-        self.assertEqual(ptSettings.cartesianImageSize, [256, 256])
+        self.assertEqual(ptSettings.cartesianImageSize, (256, 256))
         self.assertEqual(ptSettings.polarImageSize, self.verticalLinesPolarImage_scaled3.shape[0:2])
 
         np.testing.assert_almost_equal(cartesianImage, self.verticalLinesCartesianImage_scaled3)
@@ -257,7 +257,7 @@ class TestCartesianConversion(unittest.TestCase):
         self.assertEqual(ptSettings.finalRadius, 100)
         self.assertEqual(ptSettings.initialAngle, 2 / 4 * np.pi)
         self.assertEqual(ptSettings.finalAngle, 5 / 4 * np.pi)
-        self.assertEqual(ptSettings.cartesianImageSize, [256, 256])
+        self.assertEqual(ptSettings.cartesianImageSize, (256, 256))
         self.assertEqual(ptSettings.polarImageSize, self.verticalLinesPolarImage_scaled.shape[0:2])
 
         np.testing.assert_almost_equal(cartesianImage, self.verticalLinesCartesianImage_scaled)
@@ -278,7 +278,7 @@ class TestCartesianConversion(unittest.TestCase):
         self.assertEqual(ptSettings.finalRadius, 100)
         self.assertEqual(ptSettings.initialAngle, 2 / 4 * np.pi)
         self.assertEqual(ptSettings.finalAngle, 5 / 4 * np.pi)
-        self.assertEqual(ptSettings.cartesianImageSize, [256, 256])
+        self.assertEqual(ptSettings.cartesianImageSize, (256, 256))
         self.assertEqual(ptSettings.polarImageSize, self.verticalLinesPolarImage_scaled.shape[0:2])
 
         np.testing.assert_almost_equal(cartesianImage, self.verticalLinesCartesianImage_scaled)
@@ -306,7 +306,7 @@ class TestCartesianConversion(unittest.TestCase):
                                                                                 finalRadius=100)
 
             np.testing.assert_array_equal(ptSettings.center, row[1])
-            self.assertEqual(ptSettings.cartesianImageSize, [256, 256])
+            self.assertEqual(ptSettings.cartesianImageSize, (256, 256))
 
             np.testing.assert_almost_equal(cartesianImage[row[2][0]:row[2][1], row[3][0]:row[3][1], :],
                                            self.verticalLinesCartesianImage_scaled2[row[4][0]:row[4][1],
@@ -314,17 +314,17 @@ class TestCartesianConversion(unittest.TestCase):
 
     def test_centerOrientationsWithoutImageSize(self):
         orientations = [
-            ('bottom-left', [100, 100], np.array([0, 0]), [128, 228], [128, 228]),
-            ('bottom-middle', [100, 200], np.array([100, 0]), [128, 228], [28, 228]),
-            ('bottom-right', [100, 100], np.array([100, 0]), [128, 228], [28, 128]),
+            ('bottom-left', (100, 100), np.array([0, 0]), [128, 228], [128, 228]),
+            ('bottom-middle', (100, 200), np.array([100, 0]), [128, 228], [28, 228]),
+            ('bottom-right', (100, 100), np.array([100, 0]), [128, 228], [28, 128]),
 
-            ('middle-left', [200, 100], np.array([0, 100]), [28, 228], [128, 228]),
-            ('middle-middle', [200, 200], np.array([100, 100]), [28, 228], [28, 228]),
-            ('middle-right', [200, 100], np.array([100, 100]), [28, 228], [28, 128]),
+            ('middle-left', (200, 100), np.array([0, 100]), [28, 228], [128, 228]),
+            ('middle-middle', (200, 200), np.array([100, 100]), [28, 228], [28, 228]),
+            ('middle-right', (200, 100), np.array([100, 100]), [28, 228], [28, 128]),
 
-            ('top-left', [100, 100], np.array([0, 100]), [28, 128], [128, 228]),
-            ('top-middle', [100, 200], np.array([100, 100]), [28, 128], [28, 228]),
-            ('top-right', [100, 100], np.array([100, 100]), [28, 128], [28, 128])
+            ('top-left', (100, 100), np.array([0, 100]), [28, 128], [128, 228]),
+            ('top-middle', (100, 200), np.array([100, 100]), [28, 128], [28, 228]),
+            ('top-right', (100, 100), np.array([100, 100]), [28, 128], [28, 128])
         ]
 
         for row in orientations:
@@ -364,7 +364,7 @@ class TestPolarAndCartesianConversion(unittest.TestCase):
         self.assertEqual(ptSettings.finalRadius, 543)
         self.assertEqual(ptSettings.initialAngle, 0.0)
         self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
-        self.assertEqual(ptSettings.cartesianImageSize, [608, 800])
+        self.assertEqual(ptSettings.cartesianImageSize, (608, 800))
         self.assertEqual(ptSettings.polarImageSize, list(self.shortAxisApexPolarImage.shape[0:2]))
 
         np.testing.assert_almost_equal(cartesianImage, self.shortAxisApexImage)

@@ -240,8 +240,8 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
                 angleSize = int(4 * np.max(image.shape) * (finalAngle - initialAngle) / (2 * np.pi))
 
         # Create the settings
-        settings = ImageTransform(center, initialRadius, finalRadius, initialAngle, finalAngle, list(image.shape[0:2]),
-                                  [radiusSize, angleSize], order)
+        settings = ImageTransform(center, initialRadius, finalRadius, initialAngle, finalAngle, image.shape[0:2],
+                                  (radiusSize, angleSize), order)
 
     # Create radii from start to finish with radiusSize, do same for theta
     # Then create a 2D grid of radius and theta using meshgrid
@@ -391,7 +391,7 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
             # When the image size or center are set to x or y min, then that is a negative value
             # Instead of typing abs for each one, an absolute value of the image size and center is done at the end to
             # make it easier.
-            imageSize = np.ceil(np.abs(imageSize)).astype(int).tolist()
+            imageSize = np.ceil(np.abs(imageSize)).astype(int)
             center = np.ceil(np.abs(center)).astype(int)
         elif isinstance(center, str):
             # Set the center based on the image size given
@@ -413,6 +413,10 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
                 center = imageSize[1::-1] * np.array([1 / 2, 1])
             elif center == 'top-right':
                 center = imageSize[1::-1] * np.array([1, 1])
+
+        # Convert image size to tuple to standardize the variable type
+        # Some people may use list but we want to convert this
+        imageSize = tuple(imageSize)
 
         settings = ImageTransform(center, initialRadius, finalRadius, initialAngle, finalAngle, imageSize,
                                   image.shape[0:2], order)

@@ -151,10 +151,6 @@ plt.imshow(cartesianImage, cmap='gray', origin='lower')
 # generateShortAxisApexCartesian2()
 
 # TODO Dont forget note that finalRadius/Angle is NOT included. It is everything up to that
-# TODO Handle rotating 90 degrees
-# TODO Check ptSettings for validity
-# TODO Clip the radius
-# TODO Clip the angle
 # TODO Add method support
 # TODO Add border support and stuff
 # TODO Add note about origin and stuff (should I do that)?

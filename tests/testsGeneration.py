@@ -167,5 +167,5 @@ plt.imshow(cartesianImage, cmap='gray', origin='lower')
 # Write border test for polar and cartesian
 # Write order test for polar and cartesian ( just do linear)
 # Write settings test for cartesian
-# Write tests for polar and cartesian point conversion.
+# Write tests for polar and cartesian point conversion
 # Have another class that you convert from cartesian -> polar -> cartesian with settings and stuff

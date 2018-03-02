@@ -117,6 +117,13 @@ def generateVerticalLinesBorders2():
     saveImage('verticalLinesCartesianImageBorders4.png', cartesianImage)
 
 
+polarImage, ptSettings = polarTransform.convertToPolarImage(verticalLinesImage, order=0)
+
+ptSettings.cartesianImageSize = (500, 500)
+ptSettings.center = np.array([250, 250])
+cartesianImage = ptSettings.convertToCartesianImage(polarImage)
+
+
 # polarImage, ptSettings = polarTransform.convertToPolarImage(verticalLinesImage, border='constant', borderVal=128.0)
 #
 # ptSettings.cartesianImageSize = (500, 500)
@@ -158,14 +165,14 @@ def generateVerticalLinesBorders2():
 # print(diff.dtype, diff.min(), diff.max())
 plt.figure()
 plt.imshow(verticalLinesImage, cmap='gray', origin='lower')
-# plt.figure()
-# plt.imshow(cartesianImage, cmap='gray', origin='lower')
+plt.figure()
+plt.imshow(polarImage, cmap='gray', origin='lower')
 # plt.figure()
 # plt.imshow(verticalLinesCartesianImage_scaled2, origin='lower')
 # plt.figure()
 # plt.imshow(diff, cmap='gray', origin='upper')
 
-# plt.show()
+plt.show()
 
 # Enable these functions as you see fit to generate the images
 # Note: It is up to the developer to ensure these images are created and look like they are supposed to

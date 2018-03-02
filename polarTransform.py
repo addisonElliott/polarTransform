@@ -183,6 +183,27 @@ def getCartesianPointsImage(points, settings):
 def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None, initialAngle=None, finalAngle=None,
                         radiusSize=None, angleSize=None, order=3, border='constant', borderVal=0.0,
                         settings=None):
+    """Testing
+
+    More of a description here.
+
+    Parameters
+    ----------
+    image : Numpy (N, N, 3) or (N, N) array
+        Polar image with origin in lower-left corner.
+    :param center:
+    :param initialRadius:
+    :param finalRadius:
+    :param initialAngle:
+    :param finalAngle:
+    :param radiusSize:
+    :param angleSize:
+    :param order:
+    :param border:
+    :param borderVal:
+    :param settings:
+    :return:
+    """
     # Determines whether there are multiple bands or channels in image by checking for 3rd dimension
     isMultiChannel = image.ndim == 3
 
@@ -310,6 +331,26 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
                             finalRadius=None, initialAngle=None,
                             finalAngle=None, imageSize=None, order=3, border='constant',
                             borderVal=0.0, settings=None):
+    '''Converts a polar image to the cartesian domain.
+
+    :param image: Numpy NxNx3 array
+        Polar image with origin in lower-left corner.
+    :param center: Numpy array, list, tuple, str or None
+        Center of cartesian image where r=0, theta=0 will be placed.
+        If None, then the center will be automatically determined based on imageSize and/or initial
+    :param initialRadius: int or None
+        Start radius of the polar image at which row 0 corresponds to. For example, if initial radius is set to 30, then row 0 of the polar image corresponds to a radius of 30.
+    :param finalRadius: int or None
+        End radius of the polar image at which the last row corresponds to. For example, if the final radius is set to 100, then the final row of the polar image corresponds to a radius of 100.
+    :param initialAngle: float or None
+    :param finalAngle: float or None
+    :param imageSize:
+    :param order:
+    :param border:
+    :param borderVal:
+    :param settings:
+    :return:
+    '''
     # Determines whether there are multiple bands or channels in image by checking for 3rd dimension
     isMultiChannel = image.ndim == 3
 

@@ -91,6 +91,9 @@ def getPolarPoints2(x, y, center):
 
 
 def getPolarPointsImage(points, settings):
+    # Convert points to NumPy array
+    points = np.asanyarray(points)
+
     # If there is only one point specified and number of dimensions is only one, then make the array a 1x2 array so that
     # points[:, 0/1] will not throw an error
     if points.ndim == 1 and points.shape[0] == 2:
@@ -128,6 +131,9 @@ def getPolarPointsImage(points, settings):
 
 
 def getCartesianPointsImage(points, settings):
+    # Convert points to NumPy array
+    points = np.asanyarray(points)
+
     # If there is only one point specified and number of dimensions is only one, then make the array a 1x2 array so that
     # points[:, 0/1] will not throw an error
     if points.ndim == 1 and points.shape[0] == 2:

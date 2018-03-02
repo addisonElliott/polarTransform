@@ -98,6 +98,7 @@ def generateShortAxisApexCartesian2():
                                                                         imageSize=[608, 800], finalRadius=503)
     saveImage('shortAxisApexCartesianImage2.png', cartesianImage)
 
+
 def generateVerticalLinesBorders():
     polarImage, ptSettings = polarTransform.convertToPolarImage(verticalLinesImage, border='constant', borderVal=128.0)
     saveImage('verticalLinesPolarImageBorders.png', polarImage)
@@ -106,6 +107,7 @@ def generateVerticalLinesBorders():
     ptSettings.center = np.array([250, 250])
     cartesianImage = ptSettings.convertToCartesianImage(polarImage, border='constant', borderVal=255.0)
     saveImage('verticalLinesCartesianImageBorders2.png', cartesianImage)
+
 
 def generateVerticalLinesBorders2():
     polarImage, ptSettings = polarTransform.convertToPolarImage(verticalLinesImage, border='nearest')
@@ -123,7 +125,6 @@ ptSettings.cartesianImageSize = (200, 200)
 ptSettings.center = np.array([100, 100])
 cartesianImage = ptSettings.convertToCartesianImage(polarImage, order=0)
 
-
 # polarImage, ptSettings = polarTransform.convertToPolarImage(verticalLinesImage, border='constant', borderVal=128.0)
 #
 # ptSettings.cartesianImageSize = (500, 500)
@@ -135,13 +136,6 @@ cartesianImage = ptSettings.convertToCartesianImage(polarImage, order=0)
 # ptSettings.cartesianImageSize = (500, 500)
 # ptSettings.center = np.array([250, 250])
 # cartesianImage = ptSettings.convertToCartesianImage(polarImage, border='nearest')
-
-
-
-
-
-
-
 
 
 # cartesianImage, ptSettings = polarTransform.convertToCartesianImage(verticalLinesPolarImage_scaled2, center=[128, 128], imageSize=[256, 256], initialRadius=30,
@@ -201,6 +195,3 @@ plt.show()
 # TODO Add note about angle size and radius size
 # TODO Explain order (0-5)
 # TODO Add note in docs that cartesianImageSize and polarImageSize only contain first 2 dimensions
-
-# Write settings test for cartesian
-# Write tests for polar and cartesian point conversion

@@ -117,11 +117,11 @@ def generateVerticalLinesBorders2():
     saveImage('verticalLinesCartesianImageBorders4.png', cartesianImage)
 
 
-polarImage, ptSettings = polarTransform.convertToPolarImage(verticalLinesImage, order=0)
-
-ptSettings.cartesianImageSize = (500, 500)
-ptSettings.center = np.array([250, 250])
-cartesianImage = ptSettings.convertToCartesianImage(polarImage)
+polarImage, ptSettings = polarTransform.convertToPolarImage(shortAxisApexImage, order=0, initialRadius=30,
+                                                            finalRadius=100, radiusSize=25)
+ptSettings.cartesianImageSize = (200, 200)
+ptSettings.center = np.array([100, 100])
+cartesianImage = ptSettings.convertToCartesianImage(polarImage, order=0)
 
 
 # polarImage, ptSettings = polarTransform.convertToPolarImage(verticalLinesImage, border='constant', borderVal=128.0)
@@ -199,10 +199,8 @@ plt.show()
 # TODO Add note about origin and stuff (should I do that)?
 # TODO Check origin
 # TODO Add note about angle size and radius size
-# TODO Test print(ptSettings)
 # TODO Explain order (0-5)
 # TODO Add note in docs that cartesianImageSize and polarImageSize only contain first 2 dimensions
 
-# Write order test for polar and cartesian ( just do linear)
 # Write settings test for cartesian
 # Write tests for polar and cartesian point conversion

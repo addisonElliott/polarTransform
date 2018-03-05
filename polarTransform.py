@@ -222,6 +222,10 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
     ----------
     image : (N, M, 3) or (N, M, 4) :class:`numpy.ndarray`
         Cartesian image to convert to polar domain
+
+        .. note::
+            If an alpha band (4th channel of image is present, then it will be ignored during polar conversion. The
+            resulting polar image will contain four channels but the alpha channel will be all fully on.
     center : (2,) :class:`list`, :class:`tuple` or :class:`numpy.ndarray` of :class:`int`, optional
         Specifies the center in the cartesian image to use as the origin in polar domain. The center in the
         cartesian domain will be (0, 0) in the polar domain.
@@ -355,13 +359,23 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
 
         Default is 0.0
     settings : :class:`ImageTransform`, optional
-        XXX
+        Contains metadata for conversion between polar and cartesian image.
+
+        Settings contains many of the arguments in :func:`convertToPolarImage` and :func:`convertToCartesianImage` and
+        provides an easy way of passing these parameters along without having to specify them all again.
+
+        If settings is not specified, then the other arguments are used in this function and the defaults will be
+        calculated if necessary. If settings is given, then the values from that will be used.
 
     Returns
     -------
-    bool
-        Description of return value
+    polarImage : (N, M, 3) or (N, M, 4) :class:`numpy.ndarray`
+        Polar image where first dimension is radii and second dimension is angle
+    settings : :class:`ImageTransform`
+        Contains metadata for conversion between polar and cartesian image.
 
+        Settings contains many of the arguments in :func:`convertToPolarImage` and :func:`convertToCartesianImage` and
+        provides an easy way of passing these parameters along without having to specify them all again.
     """
     # Determines whether there are multiple bands or channels in image by checking for 3rd dimension
     isMultiChannel = image.ndim == 3

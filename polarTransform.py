@@ -320,15 +320,40 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
             The above logic **estimates** the necessary angleSize to reduce image information loss. No algorithm
             currently exists for determining the required angleSize.
     order : :class:`int` (0-5), optional
-        XXXX
+        The order of the spline interpolation, default is 3. The order has to be in the range 0-5.
+
+        The following orders have special names:
+
+            * 0 - nearest neighbor
+            * 1 - bilinear
+            * 3 - bicubic
     border : {'constant', 'nearest', 'wrap', 'reflect'}, optional
-        Refer to :func:`scipy.ndimage.interpolation.map_coordinates` for description.
+        Polar points outside the cartesian image boundaries are filled according to the given mode.
 
-        TODO Point to Numpy thing map_coordinates
-    borderVal : same datatype as :any:`image`, optional
-        XXX
+        Default is 'constant'
 
-        TODO Link to image parameter
+        The following table describes the mode and expected output when seeking past the boundaries. The input column
+        is the 1D input array whilst the Ext columns on either side of the input array correspond to the expected
+        values for the given mode if one extends past the boundaries.
+
+        .. table:: Valid border modes and expected output
+            :widths: auto
+
+            ==========  ======  =================  ======
+            Mode        Ext.    Input              Ext.
+            ==========  ======  =================  ======
+            mirror      4 3 2   1 2 3 4 5 6 7 8    7 6 5
+            reflect     3 2 1   1 2 3 4 5 6 7 8    8 7 6
+            nearest     1 1 1   1 2 3 4 5 6 7 8    8 8 8
+            constant    0 0 0   1 2 3 4 5 6 7 8    0 0 0
+            wrap        6 7 8   1 2 3 4 5 6 7 8    1 2 3
+            ==========  ======  =================  ======
+
+        Refer to :func:`scipy.ndimage.map_coordinates` for more details on this argument.
+    borderVal : same datatype as :obj:`image`, optional
+        Value used for polar points outside the cartesian image boundaries if :obj:`border`='constant'.
+
+        Default is 0.0
     settings : :class:`ImageTransform`, optional
         XXX
 

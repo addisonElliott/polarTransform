@@ -135,7 +135,6 @@ def generateVerticalLinesBorders2():
 # generateVerticalLinesBorders()
 # generateVerticalLinesBorders2()
 
-# TODO Dont forget note that finalRadius/Angle is NOT included. It is everything up to that
 # TODO Add method support
 # TODO Add note about origin and stuff (should I do that)?
 # TODO Check origin

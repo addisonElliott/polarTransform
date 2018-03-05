@@ -242,6 +242,12 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
         The polar image will end at this radius, i.e. the last row of the polar image will correspond to this ending
         radius.
 
+        .. note::
+            The polar image will **not** include this radius in the polar image. It will include all radii starting
+            from initial to final radii **excluding** the final radius. Rather, it will stop one step size before
+            the final radius. Assuming the radial resolution (see :obj:`radiusSize`) is small enough, this should not
+            matter.
+
         If finalRadius is not set, then it will default to the maximum radius of the cartesian image. Using the
         furthest corner from the center, the finalRadius can be calculated as:
 
@@ -263,11 +269,21 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
         The polar image will end at this angle, i.e. the last column of the polar image will correspond to this
         ending angle.
 
+        .. note::
+            The polar image will **not** include this angle in the polar image. It will include all angle starting
+            from initial to final angle **excluding** the final angle. Rather, it will stop one step size before
+            the final angle. Assuming the angular resolution (see :obj:`angleSize`) is small enough, this should not
+            matter.
+
         Radian angle is with respect to the x-axis and rotates counter-clockwise. The angle should be in the range of
         0 to :math:`2\pi`.
 
         If finalAngle is not set, then it will default to :math:`2\pi`.
     radiusSize : :class:`int`, optional
+        Size of polar image for radial (1st) dimension
+
+        This in effect determines the resolution of the radial dimension of the polar image based on the initialRadius and finalRadius.
+
         XXX
     angleSize : :class:`int`, optional
         XXX

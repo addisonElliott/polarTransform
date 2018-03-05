@@ -293,10 +293,32 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
         is not lost in the transformation. The minimum resolution necessary can be found by finding the smallest
         change in radius from two connected pixels in the cartesian image. Through experimentation, there is a
         surprisingly close relationship between the maximum difference from width or height of the cartesian image to
-        the :obj:`center` times two. The radiusSize is calculated based on this relationship and is proportional to
-        the final radius given.
+        the :obj:`center` times two.
+
+        The radiusSize is calculated based on this relationship and is proportional to the :obj:`initialRadius` and
+        :obj:`finalRadius` given.
     angleSize : :class:`int`, optional
-        XXX
+        Size of polar image for angular (2nd) dimension
+
+        This in effect determines the resolution of the angular dimension of the polar image based on the
+        :obj:`initialAngle` and :obj:`finalAngle`. Resolution can be calculated using equation below in angular
+        px per cartesian px:
+
+        .. math::
+            angularResolution = \\frac{angleSize}{finalAngle - initialAngle}
+
+        If angleSize is not set, then it will default to the minimum size necessary to ensure that image information
+        is not lost in the transformation. The minimum resolution necessary can be found by finding the smallest
+        change in angle from two connected pixels in the cartesian image.
+
+        For a cartesian image with either dimension greater than 500px, the angleSize is set to be **two** times larger
+        than the largest dimension proportional to :obj:`initialAngle` and :obj:`finalAngle`. Otherwise, for a
+        cartesian image with both dimensions less than 500px, the angleSize is set to be **four** times larger the
+        largest dimension proportional to :obj:`initialAngle` and :obj:`finalAngle`.
+
+        .. note::
+            The above logic **estimates** the necessary angleSize to reduce image information loss. No algorithm
+            currently exists for determining the required angleSize.
     order : :class:`int` (0-5), optional
         XXXX
     border : {'constant', 'nearest', 'wrap', 'reflect'}, optional
@@ -357,13 +379,12 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
         # dimension of the image
         # There is a surprisingly close relationship between the maximum difference from
         # width/height of image to center times two.
-        # The radius size is proportional to the final radius only because the resolution decreases based on the last
-        # radius
+        # The radius size is proportional to the final radius and initial radius
         if radiusSize is None:
             cross = np.array([[image.shape[1] - 1, center[1]], [0, center[1]], [center[0], image.shape[0] - 1],
                               [center[0], 0]])
 
-            radiusSize = np.ceil(np.abs(cross - center).max() * 2 * finalRadius / maxRadius) \
+            radiusSize = np.ceil(np.abs(cross - center).max() * 2 * (finalRadius - initialRadius) / maxRadius) \
                 .astype(int)
 
         # Make the angle size be twice the size of largest dimension for images above 500px, otherwise

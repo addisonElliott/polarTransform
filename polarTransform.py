@@ -222,45 +222,51 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
     ----------
     image : (N, M, 3) or (N, M, 4) :class:`numpy.ndarray`
         Cartesian image to convert to polar domain
-    center : :class:`str` or (2,) :class:`list`, :class:`tuple` or :class:`numpy.ndarray` of :class:`int`, optional
+    center : (2,) :class:`list`, :class:`tuple` or :class:`numpy.ndarray` of :class:`int`, optional
         Specifies the center in the cartesian image to use as the origin in polar domain. The center in the
         cartesian domain will be (0, 0) in the polar domain.
 
-        If center is not set, then it will default to ``middle-middle``. If the image size is :obj:`None`, the
-        center is calculated after the image size is determined.
+        The center is structured as (x, y) where the first item is the x-coordinate and second item is the y-coordinate.
 
-        For relative positioning within the image, center can be one of the string values in the table below. The
-        quadrant column contains the visible quadrants for the given center. initialAngle and finalAngle must contain
-        at least one of the quadrants, otherwise an error will be thrown because the resulting cartesian image is blank.
-        An example cartesian image is given below with annotations to what the center will be given a center string.
-
-        .. table:: Valid center strings
-            :widths: auto
-
-            ================  ===============  ====================
-                 Value            Quadrant       Location in image
-            ================  ===============  ====================
-            top-left          IV               1
-            top-middle        III, IV          2
-            top-right         III              3
-            middle-left       I, IV            4
-            middle-middle     I, II, III, IV   5
-            middle-right      II, III          6
-            bottom-left       I                7
-            bottom-middle     I, II            8
-            bottom-right      II               9
-            ================  ===============  ====================
-
-        .. image:: _static/centerAnnotations.png
-            :alt: Center locations for center strings
+        If center is not set, then it will default to ``round(image.shape[::-1] / 2)``.
     initialRadius : :class:`int`, optional
-        XXX
+        Starting radius in pixels from the center of the cartesian image that will appear in the polar image
+
+        The polar image will begin at this radius, i.e. the first row of the polar image will correspond to this
+        starting radius.
+
+        If initialRadius is not set, then it will default to ``0``.
     finalRadius : :class:`int`, optional
-        XXXXX
+        Final radius in pixels from the center of the cartesian image that will appear in the polar image
+
+        The polar image will end at this radius, i.e. the last row of the polar image will correspond to this ending
+        radius.
+
+        If finalRadius is not set, then it will default to the maximum radius of the cartesian image. Using the
+        furthest corner from the center, the finalRadius can be calculated as:
+
+        .. math::
+            finalRadius = \sqrt{((X_{max} - X_{center})^2 + (Y_{max} - Y_{center})^2)}
     initialAngle : :class:`float`, optional
-        XXX
+        Starting angle in radians that will appear in the polar image
+
+        The polar image will begin at this angle, i.e. the first column of the polar image will correspond to this
+        starting angle.
+
+        Radian angle is with respect to the x-axis and rotates counter-clockwise. The angle should be in the range of
+        0 to :math:`2\pi`.
+
+        If initialAngle is not set, then it will default to ``0.0``.
     finalAngle : :class:`float`, optional
-        XXX
+        Final angle in radians that will appear in the polar image
+
+        The polar image will end at this angle, i.e. the last column of the polar image will correspond to this
+        ending angle.
+
+        Radian angle is with respect to the x-axis and rotates counter-clockwise. The angle should be in the range of
+        0 to :math:`2\pi`.
+
+        If finalAngle is not set, then it will default to :math:`2\pi`.
     radiusSize : :class:`int`, optional
         XXX
     angleSize : :class:`int`, optional

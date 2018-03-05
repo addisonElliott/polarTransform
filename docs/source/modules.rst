@@ -5,4 +5,3 @@ polar-transform
    :maxdepth: 4
 
    polarTransform
-   tests

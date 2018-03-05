@@ -183,27 +183,66 @@ def getCartesianPointsImage(points, settings):
 def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None, initialAngle=None, finalAngle=None,
                         radiusSize=None, angleSize=None, order=3, border='constant', borderVal=0.0,
                         settings=None):
-    """Testing
+    """Convert cartesian image to polar image.
 
-    More of a description here.
+        Using a cartesian image, this function creates a polar domain image where the first dimension is radius and
+        second dimension is the angle. This function is versatile because it allows different starting and stopping
+        radii and angles to extract the polar region you are interested in.
 
-    Parameters
-    ----------
-    image : Numpy (N, N, 3) or (N, N) array
-        Polar image with origin in lower-left corner.
-    :param center:
-    :param initialRadius:
-    :param finalRadius:
-    :param initialAngle:
-    :param finalAngle:
-    :param radiusSize:
-    :param angleSize:
-    :param order:
-    :param border:
-    :param borderVal:
-    :param settings:
-    :return:
+        Parameters
+        ----------
+        image : (N, M, 3) or (N, M, 4) `numpy.ndarray`
+            Cartesian image to convert to polar domain
+        center : `str` or (2,) `list`, `tuple` or `numpy.ndarray` of `int`, optional
+            Specifies the center in the cartesian image to use as the origin in polar domain.
+            The center in the cartesian domain will be (0, 0) in the polar domain.
+            If center is not set, then it will be set to 'middle-middle'
+
+            TODO Make a table!
+            Center can be one of the following string values:
+            * top-left - Displays Quadrant IV of cartesian image
+            * top-middle - Displays Quadrant III & IV of cartesian image
+            * top-right - Displays Quadrant III of cartesian image
+            * middle-left - Displays Quadrant I & IV of cartesian image
+            * middle-middle - Displays Quadrant I, II, III & IV of cartesian image
+            * middle-right - Displays Quadrant II & III of cartesian image
+            * bottom-left - Displays Quadrant I of cartesian image
+            * bottom-middle - Displays Quadrant I & II of cartesian image
+            * bottom-right - Displays Quadrant II of cartesian image
+
+            TODO Show an image that is annotated!
+            The center is set after the image size is set if the image size is None. The center is relative to the
+            image size.
+        initialRadius : `int`, optional
+            XXX
+        finalRadius : `int`, optional
+            XXX
+        initialAngle : `float`, optional
+            XXX
+        finalAngle : `float`, optional
+            XXX
+        radiusSize : `int`, optional
+            XXX
+        angleSize : `int`, optional
+            XXX
+        order : `int` (0-5), optional
+            XXX
+        border : {'constant', 'nearest', 'wrap', 'reflect'}, optional
+            XXX
+            TODO Point to Numpy thing map_coordinates
+        borderVal : same datatype as image, optional
+            XXX
+            TODO Link to image parameter
+        settings : `ImageTransform`, optional
+            XXX
+
+        Returns
+        -------
+        bool
+            Description of return value
+
     """
+
     # Determines whether there are multiple bands or channels in image by checking for 3rd dimension
     isMultiChannel = image.ndim == 3
 
@@ -334,7 +373,7 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
     '''Converts a polar image to the cartesian domain.
 
     :param image: Numpy NxNx3 array
-        Polar image with origin in lower-left corner.
+    Polar image with origin in lower-left corner.
     :param center: Numpy array, list, tuple, str or None
         Center of cartesian image where r=0, theta=0 will be placed.
         If None, then the center will be automatically determined based on imageSize and/or initial

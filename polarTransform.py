@@ -41,6 +41,32 @@ class ImageTransform:
 
 
 def getCartesianPoints(rTheta, center):
+    """Convert list of polar points to cartesian points
+
+    The returned points are not rounded to the nearest point. User must do that by hand if desired.
+
+    Parameters
+    ----------
+    rTheta : (N, 2) or (2,) :class:`numpy.ndarray`
+        List of cartesian points to convert to polar domain
+
+        First column is r and second column is theta
+    center : (2,) :class:`numpy.ndarray`
+        Center to use for conversion to cartesian domain of polar points
+
+        Format of center is (x, y)
+
+    Returns
+    -------
+    cartesianPoints : (N, 2) :class:`numpy.ndarray`
+        Corresponding cartesian points from cartesian :obj:`rTheta`
+
+        First column is x and second column is y
+
+    See Also
+    --------
+    :meth:`getCartesianPoints2`
+    """
     if rTheta.ndim == 2:
         x = rTheta[:, 0] * np.cos(rTheta[:, 1]) + center[0]
         y = rTheta[:, 0] * np.sin(rTheta[:, 1]) + center[1]
@@ -52,6 +78,32 @@ def getCartesianPoints(rTheta, center):
 
 
 def getCartesianPoints2(r, theta, center):
+    """Convert list of polar points to cartesian points
+
+    The returned points are not rounded to the nearest point. User must do that by hand if desired.
+
+    Parameters
+    ----------
+    r : (N,) :class:`numpy.ndarray`
+        List of polar r points to convert to cartesian domain
+    theta : (N,) :class:`numpy.ndarray`
+        List of polar theta points to convert to cartesian domain
+    center : (2,) :class:`numpy.ndarray`
+        Center to use for conversion to cartesian domain of polar points
+
+        Format of center is (x, y)
+
+    Returns
+    -------
+    x : (N,) :class:`numpy.ndarray`
+        Corresponding x points from polar :obj:`r` and :obj:`theta`
+    y : (N,) :class:`numpy.ndarray`
+        Corresponding y points from polar :obj:`r` and :obj:`theta`
+
+    See Also
+    --------
+    :meth:`getCartesianPoints`
+    """
     x = r * np.cos(theta) + center[0]
     y = r * np.sin(theta) + center[1]
 
@@ -79,7 +131,7 @@ def getPolarPoints(xy, center):
     polarPoints : (N, 2) :class:`numpy.ndarray`
         Corresponding polar points from cartesian :obj:`xy`
         
-        First dimension is r and second dimension is theta
+        First column is r and second column is theta
         
     See Also
     --------

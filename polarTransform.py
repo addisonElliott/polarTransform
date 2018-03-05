@@ -59,6 +59,32 @@ def getCartesianPoints2(r, theta, center):
 
 
 def getPolarPoints(xy, center):
+    """Convert list of cartesian points to polar points
+    
+    The returned points are not rounded to the nearest point. User must do that by hand if desired.
+    
+    Parameters
+    ----------
+    xy : (N, 2) or (2,) :class:`numpy.ndarray`
+        List of cartesian points to convert to polar domain
+
+        First column is x and second column is y
+    center : (2,) :class:`numpy.ndarray`
+        Center to use for conversion to polar domain of cartesian points
+        
+        Format of center is (x, y)
+
+    Returns
+    -------
+    polarPoints : (N, 2) :class:`numpy.ndarray`
+        Corresponding polar points from cartesian :obj:`xy`
+        
+        First dimension is r and second dimension is theta
+        
+    See Also
+    --------
+    :meth:`getPolarPoints2`
+    """
     if xy.ndim == 2:
         cX, cY = xy[:, 0] - center[0], xy[:, 1] - center[1]
     else:
@@ -76,6 +102,32 @@ def getPolarPoints(xy, center):
 
 
 def getPolarPoints2(x, y, center):
+    """Convert list of cartesian points to polar points
+
+    The returned points are not rounded to the nearest point. User must do that by hand if desired.
+
+    Parameters
+    ----------
+    x : (N,) :class:`numpy.ndarray`
+        List of cartesian x points to convert to polar domain
+    y : (N,) :class:`numpy.ndarray`
+        List of cartesian y points to convert to polar domain
+    center : (2,) :class:`numpy.ndarray`
+        Center to use for conversion to polar domain of cartesian points
+
+        Format of center is (x, y)
+
+    Returns
+    -------
+    r : (N,) :class:`numpy.ndarray`
+        Corresponding radii points from cartesian :obj:`x` and :obj:`y`
+    theta : (N,) :class:`numpy.ndarray`
+        Corresponding theta points from cartesian :obj:`x` and :obj:`y`
+
+    See Also
+    --------
+    :meth:`getPolarPoints`
+    """
     cX, cY = x - center[0], y - center[1]
 
     r = np.sqrt(cX ** 2 + cY ** 2)
@@ -106,6 +158,8 @@ def getPolarPointsImage(points, settings):
     ----------
     points : (N, 2) or (2,) :class:`numpy.ndarray`
         List of cartesian points to convert to polar domain
+
+        First column is x and second column is y
     settings : :class:`ImageTransform`
         Contains metadata for conversion from polar to cartesian domain
 
@@ -176,6 +230,8 @@ def getCartesianPointsImage(points, settings):
     ----------
     points : (N, 2) or (2,) :class:`numpy.ndarray`
         List of polar points to convert to cartesian domain
+
+        First column is r and second column is theta
     settings : :class:`ImageTransform`
         Contains metadata for conversion from polar to cartesian domain
 

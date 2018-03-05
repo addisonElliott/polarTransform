@@ -131,41 +131,6 @@ def getPolarPointsImage(points, settings):
 
 
 def getCartesianPointsImage(points, settings):
-    """
-    :param path: The path of the file to wrap
-    :type path: str
-
-    :param path2: The path of the file to wrap
-    :type path2: :class:`str`, :class:`float`, :class:`bool`, :class:`tuple` of :class:`int`, :class:`list` of
-        :class:`int`, optional
-
-    :param path3: The path of the file to wrap
-    :type path3: str
-    :type path3: float
-    :type path3: ``bool``
-    :type path3: ImageTransform
-
-    :param path4: The path of the file to wrap
-        Make this a bit longer to see how things goes.
-
-        |  Double enter here
-
-        * list
-        * list
-        * list
-        * list
-
-        |  Another text
-    :type path4: :class:`numpy.ndarray`
-
-    :param field_storage: The :class:`FileStorage` instance to wrap
-    :type field_storage: FileStorage
-    :param temporary: Whether or not to delete the file when the File
-       instance is destructed
-    :type temporary: bool
-    :returns: A buffered writable file descriptor
-    :rtype: BufferedFileStorage
-    """
     # Convert points to NumPy array
     points = np.asanyarray(points)
 
@@ -247,7 +212,7 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
         radius.
 
         .. note::
-            The polar image will **not** include this radius in the polar image. It will include all radii starting
+            The polar image will **not** include this radius. It will include all radii starting
             from initial to final radii **excluding** the final radius. Rather, it will stop one step size before
             the final radius. Assuming the radial resolution (see :obj:`radiusSize`) is small enough, this should not
             matter.
@@ -274,7 +239,7 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
         ending angle.
 
         .. note::
-            The polar image will **not** include this angle in the polar image. It will include all angle starting
+            The polar image will **not** include this angle. It will include all angle starting
             from initial to final angle **excluding** the final angle. Rather, it will stop one step size before
             the final angle. Assuming the angular resolution (see :obj:`angleSize`) is small enough, this should not
             matter.
@@ -337,7 +302,7 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
         Default is 'constant'
 
         The following table describes the mode and expected output when seeking past the boundaries. The input column
-        is the 1D input array whilst the Ext columns on either side of the input array correspond to the expected
+        is the 1D input array whilst the extended columns on either side of the input array correspond to the expected
         values for the given mode if one extends past the boundaries.
 
         .. table:: Valid border modes and expected output
@@ -355,7 +320,7 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
 
         Refer to :func:`scipy.ndimage.map_coordinates` for more details on this argument.
     borderVal : same datatype as :obj:`image`, optional
-        Value used for polar points outside the cartesian image boundaries if :obj:`border`='constant'.
+        Value used for polar points outside the cartesian image boundaries if :obj:`border` = 'constant'.
 
         Default is 0.0
     settings : :class:`ImageTransform`, optional
@@ -365,7 +330,7 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
         provides an easy way of passing these parameters along without having to specify them all again.
 
         If settings is not specified, then the other arguments are used in this function and the defaults will be
-        calculated if necessary. If settings is given, then the values from that will be used.
+        calculated if necessary. If settings is given, then the values from settings will be used.
 
     Returns
     -------
@@ -377,6 +342,7 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
         Settings contains many of the arguments in :func:`convertToPolarImage` and :func:`convertToCartesianImage` and
         provides an easy way of passing these parameters along without having to specify them all again.
     """
+
     # Determines whether there are multiple bands or channels in image by checking for 3rd dimension
     isMultiChannel = image.ndim == 3
 
@@ -511,7 +477,11 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
     Parameters
     ----------
     image : (N, M, 3) or (N, M, 4) :class:`numpy.ndarray`
-        Cartesian image to convert to polar domain
+        Polar image to convert to cartesian domain
+
+        .. note::
+            If an alpha band (4th channel of image is present, then it will be ignored during cartesian conversion. The
+            resulting polar image will contain four channels but the alpha channel will be all fully on.
     center : :class:`str` or (2,) :class:`list`, :class:`tuple` or :class:`numpy.ndarray` of :class:`int`, optional
         Specifies the center in the cartesian image to use as the origin in polar domain. The center in the
         cartesian domain will be (0, 0) in the polar domain.
@@ -544,35 +514,110 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
         .. image:: _static/centerAnnotations.png
             :alt: Center locations for center strings
     initialRadius : :class:`int`, optional
-        XXX
+        Starting radius in pixels from the center of the cartesian image in the polar image
+
+        The polar image begins at this radius, i.e. the first row of the polar image corresponds to this
+        starting radius.
+
+        If initialRadius is not set, then it will default to ``0``.
     finalRadius : :class:`int`, optional
-        XXXXX
+        Final radius in pixels from the center of the cartesian image in the polar image
+
+        The polar image ends at this radius, i.e. the last row of the polar image corresponds to this ending
+        radius.
+
+        .. note::
+            The polar image does **not** include this radius. It includes all radii starting
+            from initial to final radii **excluding** the final radius. Rather, it will stop one step size before
+            the final radius. Assuming the radial resolution (see :obj:`radiusSize`) is small enough, this should not
+            matter.
+
+        If finalRadius is not set, then it will default to the maximum radius which is the size of the radial (1st)
+        dimension of the polar image.
     initialAngle : :class:`float`, optional
-        XXX
+        Starting angle in radians in the polar image
+
+        The polar image begins at this angle, i.e. the first column of the polar image corresponds to this
+        starting angle.
+
+        Radian angle is with respect to the x-axis and rotates counter-clockwise. The angle should be in the range of
+        0 to :math:`2\pi`.
+
+        If initialAngle is not set, then it will default to ``0.0``.
     finalAngle : :class:`float`, optional
-        XXX
-    radiusSize : :class:`int`, optional
-        XXX
-    angleSize : :class:`int`, optional
-        XXX
+        Final angle in radians in the polar image
+
+        The polar image ends at this angle, i.e. the last column of the polar image corresponds to this
+        ending angle.
+
+        .. note::
+            The polar image does **not** include this angle. It includes all angles starting
+            from initial to final angle **excluding** the final angle. Rather, it stops one step size before
+            the final angle. Assuming the angular resolution (see :obj:`angleSize`) is small enough, this should not
+            matter.
+
+        Radian angle is with respect to the x-axis and rotates counter-clockwise. The angle should be in the range of
+        0 to :math:`2\pi`.
+
+        If finalAngle is not set, then it will default to :math:`2\pi`.
+    imageSize : (2,) :class:`list`, :class:`tuple` or :class:`numpy.ndarray` of :class:`int`, optional
+        Desired size of cartesian image where 1st dimension is number of rows and 2nd dimension is number of columns
+
+        If imageSize is not set, then it defaults to the size required to fit the entire polar image on a cartesian
+        image.
     order : :class:`int` (0-5), optional
-        XXXX
+        The order of the spline interpolation, default is 3. The order has to be in the range 0-5.
+
+        The following orders have special names:
+
+            * 0 - nearest neighbor
+            * 1 - bilinear
+            * 3 - bicubic
     border : {'constant', 'nearest', 'wrap', 'reflect'}, optional
-        Refer to :func:`scipy.ndimage.interpolation.map_coordinates` for description.
+        Polar points outside the cartesian image boundaries are filled according to the given mode.
 
-        TODO Point to Numpy thing map_coordinates
-    borderVal : same datatype as :any:`image`, optional
-        XXX
+        Default is 'constant'
 
-        TODO Link to image parameter
+        The following table describes the mode and expected output when seeking past the boundaries. The input column
+        is the 1D input array whilst the extended columns on either side of the input array correspond to the expected
+        values for the given mode if one extends past the boundaries.
+
+        .. table:: Valid border modes and expected output
+            :widths: auto
+
+            ==========  ======  =================  ======
+            Mode        Ext.    Input              Ext.
+            ==========  ======  =================  ======
+            mirror      4 3 2   1 2 3 4 5 6 7 8    7 6 5
+            reflect     3 2 1   1 2 3 4 5 6 7 8    8 7 6
+            nearest     1 1 1   1 2 3 4 5 6 7 8    8 8 8
+            constant    0 0 0   1 2 3 4 5 6 7 8    0 0 0
+            wrap        6 7 8   1 2 3 4 5 6 7 8    1 2 3
+            ==========  ======  =================  ======
+
+        Refer to :func:`scipy.ndimage.map_coordinates` for more details on this argument.
+    borderVal : same datatype as :obj:`image`, optional
+        Value used for polar points outside the cartesian image boundaries if :obj:`border` = 'constant'.
+
+        Default is 0.0
     settings : :class:`ImageTransform`, optional
-        XXX
+        Contains metadata for conversion between polar and cartesian image.
+
+        Settings contains many of the arguments in :func:`convertToPolarImage` and :func:`convertToCartesianImage` and
+        provides an easy way of passing these parameters along without having to specify them all again.
+
+        If settings is not specified, then the other arguments are used in this function and the defaults will be
+        calculated if necessary. If settings is given, then the values from settings will be used.
 
     Returns
     -------
-    bool
-        Description of return value
+    cartesianImage : (N, M, 3) or (N, M, 4) :class:`numpy.ndarray`
+        Cartesian image
+    settings : :class:`ImageTransform`
+        Contains metadata for conversion between polar and cartesian image.
 
+        Settings contains many of the arguments in :func:`convertToPolarImage` and :func:`convertToCartesianImage` and
+        provides an easy way of passing these parameters along without having to specify them all again.
     """
     # Determines whether there are multiple bands or channels in image by checking for 3rd dimension
     isMultiChannel = image.ndim == 3

@@ -91,6 +91,36 @@ def getPolarPoints2(x, y, center):
 
 
 def getPolarPointsImage(points, settings):
+    """Convert list of cartesian points from image to polar image points based on transform metadata
+
+    .. warning::
+        Cleaner and more succinct to use :meth:`ImageTransform.getPolarPointsImage`
+
+    .. note::
+        This does **not** convert from cartesian to polar points, but rather converts pixels from cartesian image to
+        pixels from polar image using :class:`ImageTransform`.
+
+    The returned points are not rounded to the nearest point. User must do that by hand if desired.
+
+    Parameters
+    ----------
+    points : (N, 2) or (2,) :class:`numpy.ndarray`
+        List of cartesian points to convert to polar domain
+    settings : :class:`ImageTransform`
+        Contains metadata for conversion from polar to cartesian domain
+
+        Settings contains many of the arguments in :func:`convertToPolarImage` and :func:`convertToCartesianImage` and
+        provides an easy way of passing these parameters along without having to specify them all again.
+
+    Returns
+    -------
+    polarPoints : (N, 2) or (2,) :class:`numpy.ndarray`
+        Corresponding polar points from cartesian :obj:`points` using :obj:`settings`
+
+    See Also
+    --------
+    :meth:`ImageTransform.getPolarPointsImage`, :meth:`getPolarPoints`, :meth:`getPolarPoints2`
+    """
     # Convert points to NumPy array
     points = np.asanyarray(points)
 
@@ -131,6 +161,36 @@ def getPolarPointsImage(points, settings):
 
 
 def getCartesianPointsImage(points, settings):
+    """Convert list of polar points from image to cartesian image points based on transform metadata
+
+    .. warning::
+        Cleaner and more succinct to use :meth:`ImageTransform.getCartesianPointsImage`
+
+    .. note::
+        This does **not** convert from polar to cartesian points, but rather converts pixels from polar image to
+        pixels from cartesian image using :class:`ImageTransform`.
+
+    The returned points are not rounded to the nearest point. User must do that by hand if desired.
+
+    Parameters
+    ----------
+    points : (N, 2) or (2,) :class:`numpy.ndarray`
+        List of polar points to convert to cartesian domain
+    settings : :class:`ImageTransform`
+        Contains metadata for conversion from polar to cartesian domain
+
+        Settings contains many of the arguments in :func:`convertToPolarImage` and :func:`convertToCartesianImage` and
+        provides an easy way of passing these parameters along without having to specify them all again.
+
+    Returns
+    -------
+    cartesianPoints : (N, 2) or (2,) :class:`numpy.ndarray`
+        Corresponding cartesian points from polar :obj:`points` using :obj:`settings`
+
+    See Also
+    --------
+    :meth:`ImageTransform.getCartesianPointsImage`, :meth:`getCartesianPoints`, :meth:`getCartesianPoints2`
+    """
     # Convert points to NumPy array
     points = np.asanyarray(points)
 

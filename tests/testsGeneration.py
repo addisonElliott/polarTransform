@@ -135,6 +135,7 @@ def generateVerticalLinesBorders2():
 # generateVerticalLinesBorders()
 # generateVerticalLinesBorders2()
 
+# TODO Rerun tests and correct for adjusted radiusSize
 # TODO Add method support
 # TODO Add note about origin and stuff (should I do that)?
 # TODO Check origin

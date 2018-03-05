@@ -282,9 +282,19 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
     radiusSize : :class:`int`, optional
         Size of polar image for radial (1st) dimension
 
-        This in effect determines the resolution of the radial dimension of the polar image based on the initialRadius and finalRadius.
+        This in effect determines the resolution of the radial dimension of the polar image based on the
+        :obj:`initialRadius` and :obj:`finalRadius`. Resolution can be calculated using equation below in radial
+        px per cartesian px:
 
-        XXX
+        .. math::
+            radialResolution = \\frac{radiusSize}{finalRadius - initialRadius}
+
+        If radiusSize is not set, then it will default to the minimum size necessary to ensure that image information
+        is not lost in the transformation. The minimum resolution necessary can be found by finding the smallest
+        change in radius from two connected pixels in the cartesian image. Through experimentation, there is a
+        surprisingly close relationship between the maximum difference from width or height of the cartesian image to
+        the :obj:`center` times two. The radiusSize is calculated based on this relationship and is proportional to
+        the final radius given.
     angleSize : :class:`int`, optional
         XXX
     order : :class:`int` (0-5), optional
@@ -343,18 +353,17 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
         if finalAngle is None:
             finalAngle = 2 * np.pi
 
-        # If no radius size is given, then the size will be set to
-        # Make the radius size twice the size of the largest dimension of the image
-        # There is a surpisingly close relationship between the maximum difference from
-        # width/height of image to center times two. At a very maximum, this can be the largest
-        # dimension times two. So, it is just assumed to use that and it has an added bonus of
-        # keeping the aspect ratio the same if no radius or angle size is given
-        # This radius size is proportional to the initial and final radius given.
+        # If no radius size is given, then the size will be set to make the radius size twice the size of the largest
+        # dimension of the image
+        # There is a surprisingly close relationship between the maximum difference from
+        # width/height of image to center times two.
+        # The radius size is proportional to the final radius only because the resolution decreases based on the last
+        # radius
         if radiusSize is None:
             cross = np.array([[image.shape[1] - 1, center[1]], [0, center[1]], [center[0], image.shape[0] - 1],
                               [center[0], 0]])
 
-            radiusSize = np.ceil(np.abs(cross - center).max() * 2 * (finalRadius - initialRadius) / maxRadius) \
+            radiusSize = np.ceil(np.abs(cross - center).max() * 2 * finalRadius / maxRadius) \
                 .astype(int)
 
         # Make the angle size be twice the size of largest dimension for images above 500px, otherwise

@@ -59,12 +59,6 @@ def getCartesianPoints2(r, theta, center):
 
 
 def getPolarPoints(xy, center):
-    """
-
-    :param xy: Test
-    :param center: Test
-    :return: Test
-    """
     if xy.ndim == 2:
         cX, cY = xy[:, 0] - center[0], xy[:, 1] - center[1]
     else:
@@ -137,6 +131,41 @@ def getPolarPointsImage(points, settings):
 
 
 def getCartesianPointsImage(points, settings):
+    """
+    :param path: The path of the file to wrap
+    :type path: str
+
+    :param path2: The path of the file to wrap
+    :type path2: :class:`str`, :class:`float`, :class:`bool`, :class:`tuple` of :class:`int`, :class:`list` of
+        :class:`int`, optional
+
+    :param path3: The path of the file to wrap
+    :type path3: str
+    :type path3: float
+    :type path3: ``bool``
+    :type path3: ImageTransform
+
+    :param path4: The path of the file to wrap
+        Make this a bit longer to see how things goes.
+
+        |  Double enter here
+
+        * list
+        * list
+        * list
+        * list
+
+        |  Another text
+    :type path4: :class:`numpy.ndarray`
+
+    :param field_storage: The :class:`FileStorage` instance to wrap
+    :type field_storage: FileStorage
+    :param temporary: Whether or not to delete the file when the File
+       instance is destructed
+    :type temporary: bool
+    :returns: A buffered writable file descriptor
+    :rtype: BufferedFileStorage
+    """
     # Convert points to NumPy array
     points = np.asanyarray(points)
 
@@ -185,64 +214,76 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
                         settings=None):
     """Convert cartesian image to polar image.
 
-        Using a cartesian image, this function creates a polar domain image where the first dimension is radius and
-        second dimension is the angle. This function is versatile because it allows different starting and stopping
-        radii and angles to extract the polar region you are interested in.
+    Using a cartesian image, this function creates a polar domain image where the first dimension is radius and
+    second dimension is the angle. This function is versatile because it allows different starting and stopping
+    radii and angles to extract the polar region you are interested in.
 
-        Parameters
-        ----------
-        image : (N, M, 3) or (N, M, 4) `numpy.ndarray`
-            Cartesian image to convert to polar domain
-        center : `str` or (2,) `list`, `tuple` or `numpy.ndarray` of `int`, optional
-            Specifies the center in the cartesian image to use as the origin in polar domain.
-            The center in the cartesian domain will be (0, 0) in the polar domain.
-            If center is not set, then it will be set to 'middle-middle'
+    Parameters
+    ----------
+    image : (N, M, 3) or (N, M, 4) :class:`numpy.ndarray`
+        Cartesian image to convert to polar domain
+    center : :class:`str` or (2,) :class:`list`, :class:`tuple` or :class:`numpy.ndarray` of :class:`int`, optional
+        Specifies the center in the cartesian image to use as the origin in polar domain. The center in the
+        cartesian domain will be (0, 0) in the polar domain.
 
-            TODO Make a table!
-            Center can be one of the following string values:
-            * top-left - Displays Quadrant IV of cartesian image
-            * top-middle - Displays Quadrant III & IV of cartesian image
-            * top-right - Displays Quadrant III of cartesian image
-            * middle-left - Displays Quadrant I & IV of cartesian image
-            * middle-middle - Displays Quadrant I, II, III & IV of cartesian image
-            * middle-right - Displays Quadrant II & III of cartesian image
-            * bottom-left - Displays Quadrant I of cartesian image
-            * bottom-middle - Displays Quadrant I & II of cartesian image
-            * bottom-right - Displays Quadrant II of cartesian image
+        If center is not set, then it will default to ``middle-middle``. If the image size is :obj:`None`, the
+        center is calculated after the image size is determined.
 
-            TODO Show an image that is annotated!
-            The center is set after the image size is set if the image size is None. The center is relative to the
-            image size.
-        initialRadius : `int`, optional
-            XXX
-        finalRadius : `int`, optional
-            XXX
-        initialAngle : `float`, optional
-            XXX
-        finalAngle : `float`, optional
-            XXX
-        radiusSize : `int`, optional
-            XXX
-        angleSize : `int`, optional
-            XXX
-        order : `int` (0-5), optional
-            XXX
-        border : {'constant', 'nearest', 'wrap', 'reflect'}, optional
-            XXX
-            TODO Point to Numpy thing map_coordinates
-        borderVal : same datatype as image, optional
-            XXX
-            TODO Link to image parameter
-        settings : `ImageTransform`, optional
-            XXX
+        For relative positioning within the image, center can be one of the string values in the table below. The
+        quadrant column contains the visible quadrants for the given center. initialAngle and finalAngle must contain
+        at least one of the quadrants, otherwise an error will be thrown because the resulting cartesian image is blank.
+        An example cartesian image is given below with annotations to what the center will be given a center string.
 
-        Returns
-        -------
-        bool
-            Description of return value
+        .. table:: Valid center strings
+            :widths: auto
+
+            ================  ===============  ====================
+                 Value            Quadrant       Location in image
+            ================  ===============  ====================
+            top-left          IV               1
+            top-middle        III, IV          2
+            top-right         III              3
+            middle-left       I, IV            4
+            middle-middle     I, II, III, IV   5
+            middle-right      II, III          6
+            bottom-left       I                7
+            bottom-middle     I, II            8
+            bottom-right      II               9
+            ================  ===============  ====================
+
+        .. image:: _static/centerAnnotations.png
+            :alt: Center locations for center strings
+    initialRadius : :class:`int`, optional
+        XXX
+    finalRadius : :class:`int`, optional
+        XXXXX
+    initialAngle : :class:`float`, optional
+        XXX
+    finalAngle : :class:`float`, optional
+        XXX
+    radiusSize : :class:`int`, optional
+        XXX
+    angleSize : :class:`int`, optional
+        XXX
+    order : :class:`int` (0-5), optional
+        XXXX
+    border : {'constant', 'nearest', 'wrap', 'reflect'}, optional
+        Refer to :func:`scipy.ndimage.interpolation.map_coordinates` for description.
+
+        TODO Point to Numpy thing map_coordinates
+    borderVal : same datatype as :any:`image`, optional
+        XXX
+
+        TODO Link to image parameter
+    settings : :class:`ImageTransform`, optional
+        XXX
+
+    Returns
+    -------
+    bool
+        Description of return value
 
     """
-
     # Determines whether there are multiple bands or channels in image by checking for 3rd dimension
     isMultiChannel = image.ndim == 3
 
@@ -370,26 +411,78 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
                             finalRadius=None, initialAngle=None,
                             finalAngle=None, imageSize=None, order=3, border='constant',
                             borderVal=0.0, settings=None):
-    '''Converts a polar image to the cartesian domain.
+    """Convert polar image to cartesian image.
 
-    :param image: Numpy NxNx3 array
-    Polar image with origin in lower-left corner.
-    :param center: Numpy array, list, tuple, str or None
-        Center of cartesian image where r=0, theta=0 will be placed.
-        If None, then the center will be automatically determined based on imageSize and/or initial
-    :param initialRadius: int or None
-        Start radius of the polar image at which row 0 corresponds to. For example, if initial radius is set to 30, then row 0 of the polar image corresponds to a radius of 30.
-    :param finalRadius: int or None
-        End radius of the polar image at which the last row corresponds to. For example, if the final radius is set to 100, then the final row of the polar image corresponds to a radius of 100.
-    :param initialAngle: float or None
-    :param finalAngle: float or None
-    :param imageSize:
-    :param order:
-    :param border:
-    :param borderVal:
-    :param settings:
-    :return:
-    '''
+    Using a polar image, this function creates a cartesian image. This function is versatile because it can
+    automatically calculate an appropiate cartesian image size and center given the polar image. In addition,
+    parameters for converting to the polar domain are necessary for the conversion back to the cartesian domain.
+
+    Parameters
+    ----------
+    image : (N, M, 3) or (N, M, 4) :class:`numpy.ndarray`
+        Cartesian image to convert to polar domain
+    center : :class:`str` or (2,) :class:`list`, :class:`tuple` or :class:`numpy.ndarray` of :class:`int`, optional
+        Specifies the center in the cartesian image to use as the origin in polar domain. The center in the
+        cartesian domain will be (0, 0) in the polar domain.
+
+        If center is not set, then it will default to ``middle-middle``. If the image size is :obj:`None`, the
+        center is calculated after the image size is determined.
+
+        For relative positioning within the image, center can be one of the string values in the table below. The
+        quadrant column contains the visible quadrants for the given center. initialAngle and finalAngle must contain
+        at least one of the quadrants, otherwise an error will be thrown because the resulting cartesian image is blank.
+        An example cartesian image is given below with annotations to what the center will be given a center string.
+
+        .. table:: Valid center strings
+            :widths: auto
+
+            ================  ===============  ====================
+                 Value            Quadrant       Location in image
+            ================  ===============  ====================
+            top-left          IV               1
+            top-middle        III, IV          2
+            top-right         III              3
+            middle-left       I, IV            4
+            middle-middle     I, II, III, IV   5
+            middle-right      II, III          6
+            bottom-left       I                7
+            bottom-middle     I, II            8
+            bottom-right      II               9
+            ================  ===============  ====================
+
+        .. image:: _static/centerAnnotations.png
+            :alt: Center locations for center strings
+    initialRadius : :class:`int`, optional
+        XXX
+    finalRadius : :class:`int`, optional
+        XXXXX
+    initialAngle : :class:`float`, optional
+        XXX
+    finalAngle : :class:`float`, optional
+        XXX
+    radiusSize : :class:`int`, optional
+        XXX
+    angleSize : :class:`int`, optional
+        XXX
+    order : :class:`int` (0-5), optional
+        XXXX
+    border : {'constant', 'nearest', 'wrap', 'reflect'}, optional
+        Refer to :func:`scipy.ndimage.interpolation.map_coordinates` for description.
+
+        TODO Point to Numpy thing map_coordinates
+    borderVal : same datatype as :any:`image`, optional
+        XXX
+
+        TODO Link to image parameter
+    settings : :class:`ImageTransform`, optional
+        XXX
+
+    Returns
+    -------
+    bool
+        Description of return value
+
+    """
     # Determines whether there are multiple bands or channels in image by checking for 3rd dimension
     isMultiChannel = image.ndim == 3
 

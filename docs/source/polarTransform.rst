@@ -1,5 +1,5 @@
-polarTransform module
-=====================
+Documentation for the Code
+==========================
 
 .. automodule:: polarTransform
     :members:

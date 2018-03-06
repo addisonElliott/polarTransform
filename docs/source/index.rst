@@ -10,7 +10,8 @@ Welcome to polar-transform's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   modules
+   getting-started
+   polarTransform
 
 
 
@@ -19,4 +20,3 @@ Indices and tables
 
 * :ref:`genindex`
 * :ref:`modindex`
-* :ref:`search`

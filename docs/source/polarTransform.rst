@@ -1,5 +1,6 @@
-Documentation for the Code
-==========================
+===============
+Reference Guide
+===============
 
 .. automodule:: polarTransform
     :members:

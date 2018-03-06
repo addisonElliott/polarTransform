@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# polar-transform documentation build configuration file, created by
+# polarTransform documentation build configuration file, created by
 # sphinx-quickstart on Fri Mar  2 01:25:32 2018.
 #
 # This file is execfile()d with the current directory set to its
@@ -125,7 +125,7 @@ html_sidebars = {
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'polar-transformdoc'
+htmlhelp_basename = 'polarTransformdoc'
 
 
 # -- Options for LaTeX output ---------------------------------------------

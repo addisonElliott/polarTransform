@@ -1,7 +1,11 @@
 import unittest
 import numpy as np
 import polarTransform
-from .util import loadImage, assert_image_equal
+import sys
+import os
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+from util import loadImage, assert_image_equal
 
 
 class TestPolarConversion(unittest.TestCase):

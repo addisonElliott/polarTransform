@@ -66,6 +66,11 @@ class ImageTransform:
         second dimension is the angle. This function is versatile because it allows different starting and stopping
         radii and angles to extract the polar region you are interested in.
 
+        .. note::
+            Traditionally images are loaded such that the origin is in the upper-left hand corner. In these cases the
+            :obj:`initialAngle` and :obj:`finalAngle` will rotate clockwise from the x-axis. For simplicitly, it is
+            recommended to flip the image along first dimension before passing to this function.
+
         Parameters
         ----------
         image : (N, M, 3) or (N, M, 4) :class:`numpy.ndarray`
@@ -557,6 +562,11 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
     Using a cartesian image, this function creates a polar domain image where the first dimension is radius and
     second dimension is the angle. This function is versatile because it allows different starting and stopping
     radii and angles to extract the polar region you are interested in.
+
+    .. note::
+        Traditionally images are loaded such that the origin is in the upper-left hand corner. In these cases the
+        :obj:`initialAngle` and :obj:`finalAngle` will rotate clockwise from the x-axis. For simplicitly, it is
+        recommended to flip the image along first dimension before passing to this function.
 
     Parameters
     ----------

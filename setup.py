@@ -1,7 +1,4 @@
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
+from setuptools import setup
 
 long_description = """
 Library that can converts between polar and cartesian domain. See the github page for more information.

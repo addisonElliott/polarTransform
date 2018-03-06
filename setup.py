@@ -57,11 +57,11 @@ To test the code on any platform, make sure to clone the GitHub repository to ge
 
 License
 ============
-polar-transform has an MIT-based `license <https://github.com/addisonElliott/polarTransform/blob/master/LICENSE>`_.
+polarTransform has an MIT-based `license <https://github.com/addisonElliott/polarTransform/blob/master/LICENSE>`_.
 
 Next Steps
 ===============
-To start learning how to use polar-transform, see the :doc:`user-guide`.
+To start learning how to use polarTransform, see the :doc:`user-guide`.
 
 Example
 ===============

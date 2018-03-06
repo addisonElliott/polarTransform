@@ -7,13 +7,13 @@ long_description = """
 Library that can converts between polar and cartesian domain. See the github page for more information.
 """
 
-setup(name='polar-transform',
+setup(name='polarTransform',
       version='1.0.0',
       description='Library that can converts between polar and cartesian domain.',
-      long_description=long_description'Library that can converts between polar and cartesian domain. See the github page for more information.',
+      long_description=long_description,
       author='Addison Elliott',
       author_email='addison.elliott@gmail.com',
-      url='https://github.com/addisonElliott/polar-transform',
+      url='https://github.com/addisonElliott/polarTransform',
       classifiers=[
           'Development Status :: 4 - Beta',
           'Topic :: Scientific/Engineering',
@@ -22,12 +22,13 @@ setup(name='polar-transform',
       ],
       keywords='polar transform cartesian conversion logPolar linearPolar cv2 opencv radius theta angle',
       project_urls={
-          'Documentation': 'https://github.com/addisonElliott/polar-transform/issues',
-          'Source': 'https://github.com/addisonElliott/polar-transform',
-          'Tracker': 'https://github.com/addisonElliott/polar-transform/issues',
+          'Documentation': 'https://github.com/addisonElliott/polarTransform/issues',
+          'Source': 'https://github.com/addisonElliott/polarTransform',
+          'Tracker': 'https://github.com/addisonElliott/polarTransform/issues',
       },
       python_requires='>=3',
       py_modules=['polarTransform'],
       license="MIT License",
-      install_requires=['numpy', 'scipy', 'scikit-image']
-     )
+      install_requires=[
+          'numpy', 'scipy', 'scikit-image']
+      )

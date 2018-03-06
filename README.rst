@@ -1,32 +1,93 @@
-A sample Python project
-=======================
+Introduction
+=================
+polarTransform is a Python package for converting images between the polar and Cartesian domain. It contains many
+features such as specifying the start/stop radius and angle, interpolation order (bicubic, linear, nearest, etc), and
+much more.
 
-A sample project that exists as an aid to the `Python Packaging User Guide
-<https://packaging.python.org>`_'s `Tutorial on Packaging and Distributing
-Projects <https://packaging.python.org/en/latest/distributing.html>`_.
+Installing
+=================
+Prerequisites
+-------------
+* Python 3
+* Dependencies:
+   * numpy
+   * scipy
+   * scikit-image
 
-This projects does not aim to cover best practices for Python project
-development as a whole. For example, it does not provide guidance or tool
-recommendations for version control, documentation, or testing.
+Installing polarTransform
+-------------------------
+polarTransform is currently available on `PyPi <https://pypi.python.org/pypi/polarTransform/>`_. The simplest way to
+install alone is using ``pip`` at a command line::
 
-`The source for this project is available here
-<https://github.com/pypa/sampleproject>`_.
+  pip install polarTransform
 
-Most of the configuration for a Python project is done in the ``setup.py``
-file, an example of which is included in this project. You should edit this
-file accordingly to adapt this sample project to your needs.
+which installs the latest release.  To install the latest code from the repository (usually stable, but may have
+undocumented changes or bugs)::
 
-----
+  pip install git+https://github.com/addisonElliott/polarTransform.git
 
-This is the README file for the project.
 
-The file should use UTF-8 encoding and be written using `reStructuredText
-<http://docutils.sourceforge.net/rst.html>`_. It
-will be used to generate the project webpage on PyPI and will be displayed as
-the project homepage on common code-hosting services, and should be written for
-that purpose.
+For developers, you can clone the pydicom repository and run the ``setup.py`` file. Use the following commands to get
+a copy from GitHub and install all dependencies::
 
-Typical contents for this file would include an overview of the project, basic
-usage examples, etc. Generally, including the project changelog in here is not
-a good idea, although a simple "What's New" section for the most recent version
-may be appropriate.
+  git clone pip install git+https://github.com/addisonElliott/polarTransform.git
+  cd polarTransform
+  pip install .
+
+or, for the last line, instead use::
+
+  pip install -e .
+
+to install in 'develop' or 'editable' mode, where changes can be made to the local working code and Python will use
+the updated polarTransform code.
+
+Test and coverage
+=================
+To test the code on any platform, make sure to clone the GitHub repository to get the tests and::
+
+  python tests/test_polarTransform.py
+
+Example
+=================
+Input image:
+
+.. image:: http://polartransform.readthedocs.io/en/latest/_images/verticalLines.png
+    :alt: Cartesian image
+
+.. code-block:: python
+
+    import polarTransform
+    import matplotlib.pyplot as plt
+    import imageio
+
+    verticalLinesImage = imageio.imread('IMAGE_PATH_HERE')
+
+    polarImage, ptSettings = polarTransform.convertToPolarImage(verticalLinesImage, initialRadius=30,
+                                                                finalRadius=100, initialAngle=2 / 4 * np.pi,
+                                                                finalAngle=5 / 4 * np.pi)
+
+    cartesianImage = ptSettings.convertToCartesianImage(polarImage)
+
+    plt.figure()
+    plt.imshow(polarImage, origin='lower')
+
+    plt.figure()
+    plt.imshow(cartesianImage, origin='lower')
+
+Resulting polar domain image:
+
+.. image:: http://polartransform.readthedocs.io/en/latest/_images/verticalLinesPolarImage_scaled3.png
+    :alt: Polar image
+
+Converting back to the cartesian image results in:
+
+.. image:: http://polartransform.readthedocs.io/en/latest/_images/verticalLinesCartesianImage_scaled.png
+    :alt: Cartesian image
+
+Next Steps
+=================
+To learn more about polarTransform, see the `documentation <http://polartransform.readthedocs.io/>`_.
+
+License
+=================
+polarTransform has an MIT-based `license <https://github.com/addisonElliott/polarTransform/blob/master/LICENSE>`_.

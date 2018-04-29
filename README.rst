@@ -27,7 +27,7 @@ undocumented changes or bugs)::
   pip install git+https://github.com/addisonElliott/polarTransform.git
 
 
-For developers, you can clone the pydicom repository and run the ``setup.py`` file. Use the following commands to get
+For developers, you can clone the polarTransform repository and run the ``setup.py`` file. Use the following commands to get
 a copy from GitHub and install all dependencies::
 
   git clone pip install git+https://github.com/addisonElliott/polarTransform.git

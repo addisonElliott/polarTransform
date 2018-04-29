@@ -29,7 +29,7 @@ setup(name='polarTransform',
       },
       python_requires='>=3',
       py_modules=['polarTransform'],
-      license="MIT License",
+      license='MIT License',
       install_requires=[
           'numpy', 'scipy', 'scikit-image']
       )

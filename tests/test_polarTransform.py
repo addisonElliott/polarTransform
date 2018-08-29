@@ -1,19 +1,19 @@
-import unittest
-import numpy as np
-import polarTransform
-import sys
 import os
+import sys
+import unittest
 
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+import numpy as np
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from util import loadImage, assert_image_equal
+
+import polarTransform
 
 
 class TestPolarConversion(unittest.TestCase):
     def setUp(self):
         self.shortAxisApexImage = loadImage('shortAxisApex.png')
         self.verticalLinesImage = loadImage('verticalLines.png')
-        # self.horizontalLinesImage = loadImage('horizontalLines.png')
-        # self.checkerboardImage = loadImage('checkerboard.png')
 
         self.shortAxisApexPolarImage = loadImage('shortAxisApexPolarImage.png')
         self.shortAxisApexPolarImage_centerMiddle = loadImage('shortAxisApexPolarImage_centerMiddle.png')
@@ -158,8 +158,6 @@ class TestCartesianConversion(unittest.TestCase):
     def setUp(self):
         self.shortAxisApexImage = loadImage('shortAxisApex.png')
         self.verticalLinesImage = loadImage('verticalLines.png')
-        # self.horizontalLinesImage = loadImage('horizontalLines.png')
-        # self.checkerboardImage = loadImage('checkerboard.png')
 
         self.shortAxisApexPolarImage = loadImage('shortAxisApexPolarImage.png')
         self.shortAxisApexPolarImage_centerMiddle = loadImage('shortAxisApexPolarImage_centerMiddle.png')
@@ -354,8 +352,6 @@ class TestPolarAndCartesianConversion(unittest.TestCase):
     def setUp(self):
         self.shortAxisApexImage = loadImage('shortAxisApex.png')
         self.verticalLinesImage = loadImage('verticalLines.png')
-        # self.horizontalLinesImage = loadImage('horizontalLines.png')
-        # self.checkerboardImage = loadImage('checkerboard.png')
 
         self.shortAxisApexPolarImage = loadImage('shortAxisApexPolarImage.png')
         self.shortAxisApexPolarImage_centerMiddle = loadImage('shortAxisApexPolarImage_centerMiddle.png')
@@ -440,8 +436,6 @@ class TestPointConversion(unittest.TestCase):
     def setUp(self):
         self.shortAxisApexImage = loadImage('shortAxisApex.png')
         self.verticalLinesImage = loadImage('verticalLines.png')
-        # self.horizontalLinesImage = loadImage('horizontalLines.png')
-        # self.checkerboardImage = loadImage('checkerboard.png')
 
         self.shortAxisApexPolarImage = loadImage('shortAxisApexPolarImage.png')
         self.shortAxisApexPolarImage_centerMiddle = loadImage('shortAxisApexPolarImage_centerMiddle.png')

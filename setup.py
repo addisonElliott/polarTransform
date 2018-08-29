@@ -9,7 +9,7 @@ with open(os.path.join(currentPath, 'README.rst'), 'r') as f:
 
 long_description = '\n' + long_description
 setup(name='polarTransform',
-      version='1.0.0',
+      version='1.0.1',
       description='Library that can converts between polar and cartesian domain.',
       long_description=long_description,
       author='Addison Elliott',

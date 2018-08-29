@@ -752,7 +752,7 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
         # Get four corners (indices) of the cartesian image
         # Convert the corners to polar and get the largest radius
         # This will be the maximum radius to represent the entire image in polar
-        corners = np.array([[0, 0], [0, 1], [1, 0], [1, 1]]) * image.shape[0:1]
+        corners = np.array([[0, 0], [0, 1], [1, 0], [1, 1]]) * image.shape[0:2]
         radii, _ = getPolarPoints2(corners[:, 1], corners[:, 0], center)
         maxRadius = np.ceil(radii.max()).astype(int)
 

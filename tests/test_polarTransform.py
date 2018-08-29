@@ -12,8 +12,8 @@ class TestPolarConversion(unittest.TestCase):
     def setUp(self):
         self.shortAxisApexImage = loadImage('shortAxisApex.png')
         self.verticalLinesImage = loadImage('verticalLines.png')
-        self.horizontalLinesImage = loadImage('horizontalLines.png')
-        self.checkerboardImage = loadImage('checkerboard.png')
+        # self.horizontalLinesImage = loadImage('horizontalLines.png')
+        # self.checkerboardImage = loadImage('checkerboard.png')
 
         self.shortAxisApexPolarImage = loadImage('shortAxisApexPolarImage.png')
         self.shortAxisApexPolarImage_centerMiddle = loadImage('shortAxisApexPolarImage_centerMiddle.png')
@@ -35,6 +35,19 @@ class TestPolarConversion(unittest.TestCase):
         self.assertEqual(ptSettings.polarImageSize, (802, 1600))
 
         np.testing.assert_almost_equal(polarImage, self.shortAxisApexPolarImage)
+
+    def test_final_radius(self):
+        polarImage, ptSettings = polarTransform.convertToPolarImage(self.shortAxisApexImage,
+                                                                    center=np.array([350, 365]))
+
+        np.testing.assert_array_equal(ptSettings.center, np.array([350, 365]))
+        self.assertEqual(ptSettings.initialRadius, 0)
+        self.assertEqual(ptSettings.finalRadius, 580)
+        self.assertEqual(ptSettings.initialAngle, 0.0)
+        self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
+        self.assertEqual(ptSettings.cartesianImageSize,
+                         self.shortAxisApexImage.shape)
+        self.assertEqual(ptSettings.polarImageSize, (898, 1600))
 
     def test_defaultCenter(self):
         polarImage, ptSettings = polarTransform.convertToPolarImage(self.shortAxisApexImage)
@@ -145,8 +158,8 @@ class TestCartesianConversion(unittest.TestCase):
     def setUp(self):
         self.shortAxisApexImage = loadImage('shortAxisApex.png')
         self.verticalLinesImage = loadImage('verticalLines.png')
-        self.horizontalLinesImage = loadImage('horizontalLines.png')
-        self.checkerboardImage = loadImage('checkerboard.png')
+        # self.horizontalLinesImage = loadImage('horizontalLines.png')
+        # self.checkerboardImage = loadImage('checkerboard.png')
 
         self.shortAxisApexPolarImage = loadImage('shortAxisApexPolarImage.png')
         self.shortAxisApexPolarImage_centerMiddle = loadImage('shortAxisApexPolarImage_centerMiddle.png')
@@ -341,8 +354,8 @@ class TestPolarAndCartesianConversion(unittest.TestCase):
     def setUp(self):
         self.shortAxisApexImage = loadImage('shortAxisApex.png')
         self.verticalLinesImage = loadImage('verticalLines.png')
-        self.horizontalLinesImage = loadImage('horizontalLines.png')
-        self.checkerboardImage = loadImage('checkerboard.png')
+        # self.horizontalLinesImage = loadImage('horizontalLines.png')
+        # self.checkerboardImage = loadImage('checkerboard.png')
 
         self.shortAxisApexPolarImage = loadImage('shortAxisApexPolarImage.png')
         self.shortAxisApexPolarImage_centerMiddle = loadImage('shortAxisApexPolarImage_centerMiddle.png')
@@ -427,8 +440,8 @@ class TestPointConversion(unittest.TestCase):
     def setUp(self):
         self.shortAxisApexImage = loadImage('shortAxisApex.png')
         self.verticalLinesImage = loadImage('verticalLines.png')
-        self.horizontalLinesImage = loadImage('horizontalLines.png')
-        self.checkerboardImage = loadImage('checkerboard.png')
+        # self.horizontalLinesImage = loadImage('horizontalLines.png')
+        # self.checkerboardImage = loadImage('checkerboard.png')
 
         self.shortAxisApexPolarImage = loadImage('shortAxisApexPolarImage.png')
         self.shortAxisApexPolarImage_centerMiddle = loadImage('shortAxisApexPolarImage_centerMiddle.png')
@@ -491,5 +504,6 @@ class TestPointConversion(unittest.TestCase):
             np.array([[50 * 802 / 543, 0], [35 * 802 / 543, 400], [53 * 802 / 543, 800],
                       [60 * 802 / 543, 1200]])), np.array([[451, 365], [401, 400], [348, 365], [401, 305]]))
 
-    if __name__ == '__main__':
-        unittest.main()
+
+if __name__ == '__main__':
+    unittest.main()

@@ -1,11 +1,14 @@
+import sys
+import os
 import numpy as np
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import polarTransform
-from .util import loadImage, saveImage
+from tests.util import loadImage, saveImage
 
 shortAxisApexImage = loadImage('shortAxisApex.png')
 verticalLinesImage = loadImage('verticalLines.png')
-horizontalLinesImage = loadImage('horizontalLines.png')
-checkerboardImage = loadImage('checkerboard.png')
 
 shortAxisApexPolarImage = loadImage('shortAxisApexPolarImage.png')
 shortAxisApexPolarImage_centerMiddle = loadImage('shortAxisApexPolarImage_centerMiddle.png')
@@ -115,6 +118,24 @@ def generateVerticalLinesBorders2():
     cartesianImage = ptSettings.convertToCartesianImage(polarImage, border='nearest')
     saveImage('verticalLinesCartesianImageBorders4.png', cartesianImage)
 
+
+def generateVerticalLinesAnimated():
+    frameSize = 60
+    fps = 20
+
+    # fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+    # fourcc = cv2.VideoWriter_fourcc(*'PIM1') # Use avi
+    # fourcc = cv2.VideoWriter_fourcc(*'MPG4') # Use mp4
+    fourcc = cv2.VideoWriter_fourcc(*'X264')  # Use mp4
+    out = cv2.VideoWriter(os.path.join(dataDirectory, 'anisotropic.mp4'), fourcc, fps, verticalLinesImage.shape[::-1])
+
+    for x in range(0, frameSize):
+        image = np.roll(verticalLinesImage, 12, axis=1)
+        out.write(image)
+
+    out.release()
+
+
 # Enable these functions as you see fit to generate the images
 # Note: It is up to the developer to ensure these images are created and look like they are supposed to
 # generateShortAxisPolar()
@@ -134,6 +155,8 @@ def generateVerticalLinesBorders2():
 
 # generateVerticalLinesBorders()
 # generateVerticalLinesBorders2()
+
+generateVerticalLinesAnimated()
 
 # TODO Rerun tests and correct for adjusted radiusSize
 # TODO Add method support

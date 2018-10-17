@@ -1,11 +1,12 @@
 import sys
 import os
 import numpy as np
+import cv2
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import polarTransform
-from tests.util import loadImage, saveImage
+from tests.util import loadImage, saveImage, dataDirectory
 
 shortAxisApexImage = loadImage('shortAxisApex.png')
 verticalLinesImage = loadImage('verticalLines.png')

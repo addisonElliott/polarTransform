@@ -123,7 +123,7 @@ class ImageTransform:
         image, ptSettings = convertToPolarImage(image, order=order, border=border, borderVal=borderVal, settings=self)
         return image
 
-    def convertToCartesianImage(self, image, order=3, border='constant', borderVal=0.0):
+    def convertToCartesianImage(self, image, order=3, border='constant', borderVal=0.0, useMultiThreading=False):
         """Convert polar image to cartesian image.
 
         Using a polar image, this function creates a cartesian image. This function is versatile because it can
@@ -132,12 +132,16 @@ class ImageTransform:
 
         Parameters
         ----------
-        image : (N, M, 3) or (N, M, 4) :class:`numpy.ndarray`
+        image : (N, M) or (N, M, P) :class:`numpy.ndarray`
             Polar image to convert to cartesian domain
 
             .. note::
-                If an alpha band (4th channel of image is present, then it will be ignored during cartesian conversion.
-                The resulting polar image will contain four channels but the alpha channel will be all fully on.
+                For a 3D array, polar transformation is applied separately across each 2D slice
+
+            .. note::
+                If an alpha band (4th channel of image is present), then it will be converted. Typically, this is
+                unwanted, so the recommended solution is to transform the first 3 channels and set the 4th channel to
+                fully on.
         order : :class:`int` (0-5), optional
             The order of the spline interpolation, default is 3. The order has to be in the range 0-5.
 
@@ -173,18 +177,23 @@ class ImageTransform:
             Value used for polar points outside the cartesian image boundaries if :obj:`border` = 'constant'.
 
             Default is 0.0
+        useMultiThreading : :class:`bool`, optional
+            Whether to use multithreading when applying transformation for 3D images. This considerably speeds up the
+            execution time for large images but adds overhead for smaller 3D images.
+
+            Default is :obj:`False`
 
         Returns
         -------
-        cartesianImage : (N, M, 3) or (N, M, 4) :class:`numpy.ndarray`
-            Cartesian image
+        cartesianImage : (N, M) or (N, M, P) :class:`numpy.ndarray`
+            Cartesian image (3D cartesian image if 3D input image was given)
 
         See Also
         --------
         :meth:`convertToCartesianImage`
         """
         image, ptSettings = convertToCartesianImage(image, order=order, border=border, borderVal=borderVal,
-                                                    settings=self)
+                                                    useMultiThreading=useMultiThreading, settings = self)
         return image
 
     def getPolarPointsImage(self, points):
@@ -1195,7 +1204,7 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
         # Loop through the third dimension and map each 2D slice
         for k in range(image.shape[2]):
             imageSlice = scipy.ndimage.map_coordinates(image[:, :, k], desiredCoords, mode=border, cval=borderVal,
-                                                           order=order).reshape(x.shape)
+                                                       order=order).reshape(x.shape)
             cartesianImages.append(imageSlice)
 
     # Stack all of the slices together and reshape it to what it should be

@@ -1157,7 +1157,7 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
     r = r - settings.initialRadius
 
     # Offset the theta angle by the initial source angle
-    # The theta values may go past 2pi, so they are looped back around by taking modulo with 2pi.
+    # The theta values may gdo past 2pi, so they are looped back around by taking modulo with 2pi.
     # Note: This assumes initial source angle is positive
     theta = np.mod(theta - settings.initialAngle + 2 * np.pi, 2 * np.pi)
 

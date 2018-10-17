@@ -1182,7 +1182,7 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
         desiredCoords += 3
 
     if useMultiThreading:
-        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+        with concurrent.futures.ThreadPoolExecutor() as executor:
             futures = [executor.submit(scipy.ndimage.map_coordinates, image[:, :, k], desiredCoords, mode=border,
                                        cval=borderVal, order=order) for k in range(image.shape[2])]
 

@@ -1,7 +1,6 @@
 import numpy as np
 import scipy.interpolate
 import scipy.ndimage
-import skimage.util
 
 
 class ImageTransform:
@@ -59,7 +58,7 @@ class ImageTransform:
         self.cartesianImageSize = cartesianImageSize
         self.polarImageSize = polarImageSize
 
-    def convertToPolarImage(self, image, order=3, border='constant', borderVal=0.0):
+    def convertToPolarImage(self, image, order=3, border='constant', borderVal=0.0, useMultiThreading=False):
         """Convert cartesian image to polar image.
 
         Using a cartesian image, this function creates a polar domain image where the first dimension is radius and
@@ -193,7 +192,7 @@ class ImageTransform:
         :meth:`convertToCartesianImage`
         """
         image, ptSettings = convertToCartesianImage(image, order=order, border=border, borderVal=borderVal,
-                                                    useMultiThreading=useMultiThreading, settings = self)
+                                                    useMultiThreading=useMultiThreading, settings=self)
         return image
 
     def getPolarPointsImage(self, points):
@@ -565,7 +564,7 @@ def getCartesianPointsImage(points, settings):
 
 def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None, initialAngle=None, finalAngle=None,
                         radiusSize=None, angleSize=None, order=3, border='constant', borderVal=0.0,
-                        settings=None):
+                        useMultiThreading=False, settings=None):
     """Convert cartesian image to polar image.
 
     Using a cartesian image, this function creates a polar domain image where the first dimension is radius and
@@ -579,12 +578,16 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
 
     Parameters
     ----------
-    image : (N, M, 3) or (N, M, 4) :class:`numpy.ndarray`
+    image : (N, M) or (N, M, P) :class:`numpy.ndarray`
         Cartesian image to convert to polar domain
 
         .. note::
-            If an alpha band (4th channel of image is present, then it will be ignored during polar conversion. The
-            resulting polar image will contain four channels but the alpha channel will be all fully on.
+            For a 3D array, polar transformation is applied separately across each 2D slice
+
+        .. note::
+            If an alpha band (4th channel of image is present), then it will be converted. Typically, this is
+            unwanted, so the recommended solution is to transform the first 3 channels and set the 4th channel to
+            fully on.
     center : (2,) :class:`list`, :class:`tuple` or :class:`numpy.ndarray` of :class:`int`, optional
         Specifies the center in the cartesian image to use as the origin in polar domain. The center in the
         cartesian domain will be (0, 0) in the polar domain.
@@ -717,6 +720,11 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
         Value used for polar points outside the cartesian image boundaries if :obj:`border` = 'constant'.
 
         Default is 0.0
+    useMultiThreading : :class:`bool`, optional
+        Whether to use multithreading when applying transformation for 3D images. This considerably speeds up the
+        execution time for large images but adds overhead for smaller 3D images.
+
+        Default is :obj:`False`
     settings : :class:`ImageTransform`, optional
         Contains metadata for conversion between polar and cartesian image.
 
@@ -731,17 +739,15 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
 
     Returns
     -------
-    polarImage : (N, M, 3) or (N, M, 4) :class:`numpy.ndarray`
-        Polar image where first dimension is radii and second dimension is angle
+    polarImage : (N, M) or (N, M, P) :class:`numpy.ndarray`
+        Polar image where first dimension is radii and second dimension is angle (3D polar image if 3D input image
+        was given)
     settings : :class:`ImageTransform`
         Contains metadata for conversion between polar and cartesian image.
 
         Settings contains many of the arguments in :func:`convertToPolarImage` and :func:`convertToCartesianImage` and
         provides an easy way of passing these parameters along without having to specify them all again.
     """
-
-    # Determines whether there are multiple bands or channels in image by checking for 3rd dimension
-    isMultiChannel = image.ndim == 3
 
     # Create settings if none are given
     if settings is None:
@@ -824,39 +830,39 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
     # Flatten the desired x/y cartesian points into one 2xN array
     desiredCoords = np.vstack((yCartesian.flatten(), xCartesian.flatten()))
 
+    # Get the new shape which is the cartesian image shape plus any other dimensions
+    newShape = settings.polarImageSize + image.shape[2:]
+
+    # Reshape the image to be 3D, flattens the array if > 3D otherwise it makes it 3D with the 3rd dimension a size of 1
+    image = image.reshape(image.shape[0:2] + (-1,))
+
     # If border is set to constant, then pad the image by the edges by 3 pixels.
     # If one tries to convert back to cartesian without the borders padded then the border of the cartesian image will
     # be corrupted because it will average the pixels with the border value
     if border == 'constant':
         # Pad image by 3 pixels and then offset all of the desired coordinates by 3
-        image = np.pad(image, ((3, 3), (3, 3), (0, 0)) if isMultiChannel else 3, 'edge')
+        image = np.pad(image, ((3, 3), (3, 3), (0, 0)), 'edge')
         desiredCoords += 3
 
-    # Retrieve polar image using map_coordinates. Returns a linear array of the values that
-    # must be reshaped into the desired size
-    # For multiple channels, repeat this process for each band and concatenate them at end
-    # Take the transpose of the polar image such that first dimension is radius and second
-    # dimension is theta.
-    if isMultiChannel:
+    if useMultiThreading:
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            futures = [executor.submit(scipy.ndimage.map_coordinates, image[:, :, k], desiredCoords, mode=border,
+                                       cval=borderVal, order=order) for k in range(image.shape[2])]
+
+            concurrent.futures.wait(futures, return_when=concurrent.futures.ALL_COMPLETED)
+
+            polarImages = [future.result().reshape(r.shape).T for future in futures]
+    else:
         polarImages = []
 
-        # Assume that there are at least 3 bands in 3D matrix
-        for k in range(3):
-            polarImage = scipy.ndimage.map_coordinates(image[:, :, k], desiredCoords, mode=border, cval=borderVal,
+        # Loop through the third dimension and map each 2D slice
+        for k in range(image.shape[2]):
+            imageSlice = scipy.ndimage.map_coordinates(image[:, :, k], desiredCoords, mode=border, cval=borderVal,
                                                        order=order).reshape(r.shape).T
-            polarImages.append(polarImage)
+            polarImages.append(imageSlice)
 
-        # If there are 4 bands, then assume the 4th band is alpha
-        # We do not want to interpolate the transparency so we just make it all fully opaque
-        if image.shape[2] == 4:
-            imin, imax = skimage.util.dtype_limits(polarImages[0], False)
-            polarImage = np.full_like(polarImages[0], imax)
-            polarImages.append(polarImage)
-
-        polarImage = np.dstack(polarImages)
-    else:
-        polarImage = scipy.ndimage.map_coordinates(image, desiredCoords, mode=border, cval=borderVal,
-                                                   order=order).reshape(r.shape).T
+    # Stack all of the slices together and reshape it to what it should be
+    polarImage = np.dstack(polarImages).reshape(newShape)
 
     return polarImage, settings
 
@@ -1028,6 +1034,8 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
         Settings contains many of the arguments in :func:`convertToPolarImage` and :func:`convertToCartesianImage` and
         provides an easy way of passing these parameters along without having to specify them all again.
     """
+
+    # Create settings if none are given
     if settings is None:
         # Center is set to middle-middle, which means all four quadrants will be shown
         if center is None:

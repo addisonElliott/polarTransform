@@ -10,6 +10,8 @@ def loadImage(filename, flipud=True, convertToGrayscale=False):
 
     if convertToGrayscale:
         image = image[:, :, 0]
+    elif image.ndim == 3 and image.shape[-1] == 4:
+        image = image[:, :, 0:3]
 
     return np.flipud(image) if flipud else image
 

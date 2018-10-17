@@ -72,12 +72,16 @@ class ImageTransform:
 
         Parameters
         ----------
-        image : (N, M, 3) or (N, M, 4) :class:`numpy.ndarray`
+        image : (N, M) or (N, M, P) :class:`numpy.ndarray`
             Cartesian image to convert to polar domain
 
             .. note::
-                If an alpha band (4th channel of image is present, then it will be ignored during polar conversion. The
-                resulting polar image will contain four channels but the alpha channel will be all fully on.
+                For a 3D array, polar transformation is applied separately across each 2D slice
+
+            .. note::
+                If an alpha band (4th channel of image is present), then it will be converted. Typically, this is
+                unwanted, so the recommended solution is to transform the first 3 channels and set the 4th channel to
+                fully on.
         order : :class:`int` (0-5), optional
             The order of the spline interpolation, default is 3. The order has to be in the range 0-5.
 
@@ -116,10 +120,12 @@ class ImageTransform:
 
         Returns
         -------
-        polarImage : (N, M, 3) or (N, M, 4) :class:`numpy.ndarray`
-            Polar image where first dimension is radii and second dimension is angle
+        polarImage : (N, M) or (N, M, P) :class:`numpy.ndarray`
+            Polar image where first dimension is radii and second dimension is angle (3D polar image if 3D input image
+            is given)
         """
-        image, ptSettings = convertToPolarImage(image, order=order, border=border, borderVal=borderVal, settings=self)
+        image, ptSettings = convertToPolarImage(image, order=order, border=border, borderVal=borderVal,
+                                                useMultiThreading=useMultiThreading, settings=self)
         return image
 
     def convertToCartesianImage(self, image, order=3, border='constant', borderVal=0.0, useMultiThreading=False):
@@ -185,7 +191,7 @@ class ImageTransform:
         Returns
         -------
         cartesianImage : (N, M) or (N, M, P) :class:`numpy.ndarray`
-            Cartesian image (3D cartesian image if 3D input image was given)
+            Cartesian image (3D cartesian image if 3D input image is given)
 
         See Also
         --------
@@ -741,7 +747,7 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
     -------
     polarImage : (N, M) or (N, M, P) :class:`numpy.ndarray`
         Polar image where first dimension is radii and second dimension is angle (3D polar image if 3D input image
-        was given)
+        is given)
     settings : :class:`ImageTransform`
         Contains metadata for conversion between polar and cartesian image.
 
@@ -1027,7 +1033,7 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
     Returns
     -------
     cartesianImage : (N, M) or (N, M, P) :class:`numpy.ndarray`
-        Cartesian image (3D cartesian image if 3D input image was given)
+        Cartesian image (3D cartesian image if 3D input image is given)
     settings : :class:`ImageTransform`
         Contains metadata for conversion between polar and cartesian image.
 

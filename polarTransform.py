@@ -855,21 +855,25 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
 def convertToCartesianImage(image, center=None, initialRadius=None,
                             finalRadius=None, initialAngle=None,
                             finalAngle=None, imageSize=None, order=3, border='constant',
-                            borderVal=0.0, settings=None):
+                            borderVal=0.0, useMultiThreading=False, settings=None):
     """Convert polar image to cartesian image.
 
     Using a polar image, this function creates a cartesian image. This function is versatile because it can
-    automatically calculate an appropiate cartesian image size and center given the polar image. In addition,
+    automatically calculate an appropriate cartesian image size and center given the polar image. In addition,
     parameters for converting to the polar domain are necessary for the conversion back to the cartesian domain.
 
     Parameters
     ----------
-    image : (N, M, 3) or (N, M, 4) :class:`numpy.ndarray`
+    image : (N, M) or (N, M, P) :class:`numpy.ndarray`
         Polar image to convert to cartesian domain
 
         .. note::
-            If an alpha band (4th channel of image is present, then it will be ignored during cartesian conversion. The
-            resulting polar image will contain four channels but the alpha channel will be all fully on.
+            For a 3D array, polar transformation is applied separately across each 2D slice
+
+        .. note::
+            If an alpha band (4th channel of image is present), then it will be converted. Typically, this is
+            unwanted, so the recommended solution is to transform the first 3 channels and set the 4th channel to
+            fully on.
     center : :class:`str` or (2,) :class:`list`, :class:`tuple` or :class:`numpy.ndarray` of :class:`int`, optional
         Specifies the center in the cartesian image to use as the origin in polar domain. The center in the
         cartesian domain will be (0, 0) in the polar domain.
@@ -988,6 +992,11 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
         Value used for polar points outside the cartesian image boundaries if :obj:`border` = 'constant'.
 
         Default is 0.0
+    useMultiThreading : :class:`bool`, optional
+        Whether to use multithreading when applying transformation for 3D images. This considerably speeds up the
+        execution time for large images but adds overhead for smaller 3D images.
+
+        Default is :obj:`False`
     settings : :class:`ImageTransform`, optional
         Contains metadata for conversion between polar and cartesian image.
 
@@ -1002,17 +1011,14 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
 
     Returns
     -------
-    cartesianImage : (N, M, 3) or (N, M, 4) :class:`numpy.ndarray`
-        Cartesian image
+    cartesianImage : (N, M) or (N, M, P) :class:`numpy.ndarray`
+        Cartesian image (3D cartesian image if 3D input image was given)
     settings : :class:`ImageTransform`
         Contains metadata for conversion between polar and cartesian image.
 
         Settings contains many of the arguments in :func:`convertToPolarImage` and :func:`convertToCartesianImage` and
         provides an easy way of passing these parameters along without having to specify them all again.
     """
-    # Determines whether there are multiple bands or channels in image by checking for 3rd dimension
-    isMultiChannel = image.ndim == 3
-
     if settings is None:
         # Center is set to middle-middle, which means all four quadrants will be shown
         if center is None:
@@ -1164,36 +1170,35 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
     # Flatten the desired x/y cartesian points into one 2xN array
     desiredCoords = np.vstack((r.flatten(), theta.flatten()))
 
-    # If border is set to constant, then pad the image by the edges by 3 pixels.
-    # If one tries to convert back to cartesian without the borders padded then the border of the cartesian image will
-    # be corrupted because it will average the pixels with the border value
+    # Get the new shape which is the cartesian image shape plus any other dimensions
+    newShape = settings.cartesianImageSize + image.shape[2:]
+
+    # Reshape the image to be 3D, flattens the array if > 3D otherwise it makes it 3D with the 3rd dimension a size of 1
+    image = image.reshape(image.shape[0:2] + (-1,))
+
     if border == 'constant':
         # Pad image by 3 pixels and then offset all of the desired coordinates by 3
-        image = np.pad(image, ((3, 3), (3, 3), (0, 0)) if isMultiChannel else 3, 'edge')
+        image = np.pad(image, ((3, 3), (3, 3), (0, 0)), 'edge')
         desiredCoords += 3
 
-    # Retrieve cartesian image using map_coordinates. Returns a linear array of the values that
-    # must be reshaped into the desired size.
-    # For multiple channels, repeat this process for each band and concatenate them at end
-    if isMultiChannel:
+    if useMultiThreading:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+            futures = [executor.submit(scipy.ndimage.map_coordinates, image[:, :, k], desiredCoords, mode=border,
+                                       cval=borderVal, order=order) for k in range(image.shape[2])]
+
+            concurrent.futures.wait(futures, return_when=concurrent.futures.ALL_COMPLETED)
+
+            cartesianImages = [future.result().reshape(x.shape) for future in futures]
+    else:
         cartesianImages = []
 
-        # Assume that there are at least 3 bands in 3D matrix
-        for k in range(3):
-            cartesianImage = scipy.ndimage.map_coordinates(image[:, :, k], desiredCoords, mode=border, cval=borderVal,
+        # Loop through the third dimension and map each 2D slice
+        for k in range(image.shape[2]):
+            imageSlice = scipy.ndimage.map_coordinates(image[:, :, k], desiredCoords, mode=border, cval=borderVal,
                                                            order=order).reshape(x.shape)
-            cartesianImages.append(cartesianImage)
+            cartesianImages.append(imageSlice)
 
-        # If there are 4 bands, then assume the 4th band is alpha
-        # We do not want to interpolate the transparency so we just make it all fully opaque
-        if image.shape[2] == 4:
-            imin, imax = skimage.util.dtype_limits(cartesianImages[0], False)
-            cartesianImage = np.full_like(cartesianImages[0], imax)
-            cartesianImages.append(cartesianImage)
-
-        cartesianImage = np.dstack(cartesianImages)
-    else:
-        cartesianImage = scipy.ndimage.map_coordinates(image, desiredCoords, mode=border, cval=borderVal,
-                                                       order=order).reshape(x.shape)
+    # Stack all of the slices together and reshape it to what it should be
+    cartesianImage = np.dstack(cartesianImages).reshape(newShape)
 
     return cartesianImage, settings

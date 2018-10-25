@@ -107,3 +107,6 @@ ENV/
 
 # Ignore dist folder which contains the Python compiled code for creating a standalone executable
 dist
+
+# Ignore vscode settings
+.vscode

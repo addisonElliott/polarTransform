@@ -1,6 +1,7 @@
 import numpy as np
 import scipy.interpolate
 import scipy.ndimage
+import concurrent.futures
 
 
 class ImageTransform:
@@ -36,7 +37,7 @@ class ImageTransform:
             starting angle.
 
             Radian angle is with respect to the x-axis and rotates counter-clockwise. The angle should be in the range
-            of 0 to :math:`2\pi`.
+            of 0 to :math:`2\\pi`.
         finalAngle : :class:`float`, optional
             Final angle in radians in the polar image
 
@@ -44,7 +45,7 @@ class ImageTransform:
             ending angle.
 
             Radian angle is with respect to the x-axis and rotates counter-clockwise. The angle should be in the range
-            of 0 to :math:`2\pi`.
+            of 0 to :math:`2\\pi`.
         cartesianImageSize : (2,) :class:`tuple` of :class:`int`
             Size of cartesian image
         polarImageSize : (2,) :class:`tuple` of :class:`int`
@@ -624,7 +625,7 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
         furthest corner from the center, the finalRadius can be calculated as:
 
         .. math::
-            finalRadius = \sqrt{((X_{max} - X_{center})^2 + (Y_{max} - Y_{center})^2)}
+            finalRadius = \\sqrt{((X_{max} - X_{center})^2 + (Y_{max} - Y_{center})^2)}
     initialAngle : :class:`float`, optional
         Starting angle in radians that will appear in the polar image
 
@@ -632,7 +633,7 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
         starting angle.
 
         Radian angle is with respect to the x-axis and rotates counter-clockwise. The angle should be in the range of
-        0 to :math:`2\pi`.
+        0 to :math:`2\\pi`.
 
         If initialAngle is not set, then it will default to ``0.0``.
     finalAngle : :class:`float`, optional
@@ -648,9 +649,9 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
             matter.
 
         Radian angle is with respect to the x-axis and rotates counter-clockwise. The angle should be in the range of
-        0 to :math:`2\pi`.
+        0 to :math:`2\\pi`.
 
-        If finalAngle is not set, then it will default to :math:`2\pi`.
+        If finalAngle is not set, then it will default to :math:`2\\pi`.
     radiusSize : :class:`int`, optional
         Size of polar image for radial (1st) dimension
 
@@ -872,7 +873,6 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
 
     return polarImage, settings
 
-
 def convertToCartesianImage(image, center=None, initialRadius=None,
                             finalRadius=None, initialAngle=None,
                             finalAngle=None, imageSize=None, order=3, border='constant',
@@ -954,7 +954,7 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
         starting angle.
 
         Radian angle is with respect to the x-axis and rotates counter-clockwise. The angle should be in the range of
-        0 to :math:`2\pi`.
+        0 to :math:`2\\pi`.
 
         If initialAngle is not set, then it will default to ``0.0``.
     finalAngle : :class:`float`, optional
@@ -970,9 +970,9 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
             matter.
 
         Radian angle is with respect to the x-axis and rotates counter-clockwise. The angle should be in the range of
-        0 to :math:`2\pi`.
+        0 to :math:`2\\pi`.
 
-        If finalAngle is not set, then it will default to :math:`2\pi`.
+        If finalAngle is not set, then it will default to :math:`2\\pi`.
     imageSize : (2,) :class:`list`, :class:`tuple` or :class:`numpy.ndarray` of :class:`int`, optional
         Desired size of cartesian image where 1st dimension is number of rows and 2nd dimension is number of columns
 

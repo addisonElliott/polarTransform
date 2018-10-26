@@ -1,6 +1,6 @@
-from polarTransform.convertToCartesianImage import convertToCartesianImage
-from polarTransform.convertToPolarImage import convertToPolarImage
-from polarTransform.pointsConversion import getPolarPointsImage, getCartesianPointsImage
+from polarTransform.convertToCartesianImage import *
+from polarTransform.convertToPolarImage import *
+from polarTransform.pointsConversion import *
 
 
 class ImageTransform:

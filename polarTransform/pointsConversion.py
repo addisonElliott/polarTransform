@@ -1,6 +1,6 @@
 import numpy as np
 
-from polarTransform.imageTransform import ImageTransform
+from polarTransform.imageTransform import *
 
 
 def getCartesianPoints(rTheta, center):

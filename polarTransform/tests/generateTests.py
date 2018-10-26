@@ -9,6 +9,8 @@ import cv2
 import polarTransform
 from polarTransform.tests.util import *
 
+# TODO Describe what goes on here
+
 shortAxisApexImage = loadImage('shortAxisApex.png')
 verticalLinesImage = loadImage('verticalLines.png')
 

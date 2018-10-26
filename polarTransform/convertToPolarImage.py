@@ -1,10 +1,9 @@
 import concurrent.futures
 
-import numpy as np
 import scipy.ndimage
 
-from polarTransform.imageTransform import ImageTransform
-from polarTransform.pointsConversion import getPolarPoints2, getCartesianPoints2
+from polarTransform.imageTransform import *
+from polarTransform.pointsConversion import *
 
 
 def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None, initialAngle=None, finalAngle=None,

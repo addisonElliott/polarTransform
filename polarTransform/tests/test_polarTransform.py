@@ -2,12 +2,11 @@ import os
 import sys
 import unittest
 
-import numpy as np
+# Required specifically in each module so that searches happen at the parent directory for importing modules
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from util import loadImage, assert_image_equal
-
-from polarTransform import polarTransform
+from polarTransform.tests.util import *
+import polarTransform
 
 
 class TestPolarConversion(unittest.TestCase):

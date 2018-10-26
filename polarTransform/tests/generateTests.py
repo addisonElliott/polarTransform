@@ -1,12 +1,13 @@
-import sys
 import os
-import numpy as np
+import sys
+
+# Required specifically in each module so that searches happen at the parent directory for importing modules
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+
 import cv2
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-from polarTransform import polarTransform
-from polarTransform.polarTransform import loadImage, saveImage, dataDirectory
+import polarTransform
+from polarTransform.tests.util import *
 
 shortAxisApexImage = loadImage('shortAxisApex.png')
 verticalLinesImage = loadImage('verticalLines.png')
@@ -135,7 +136,6 @@ def generateVerticalLinesAnimated():
         out.write(image)
 
     out.release()
-
 
 # Enable these functions as you see fit to generate the images
 # Note: It is up to the developer to ensure these images are created and look like they are supposed to

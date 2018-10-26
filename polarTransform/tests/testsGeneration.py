@@ -5,8 +5,8 @@ import cv2
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-import polarTransform
-from tests.util import loadImage, saveImage, dataDirectory
+from polarTransform import polarTransform
+from polarTransform.polarTransform import loadImage, saveImage, dataDirectory
 
 shortAxisApexImage = loadImage('shortAxisApex.png')
 verticalLinesImage = loadImage('verticalLines.png')
@@ -157,7 +157,8 @@ def generateVerticalLinesAnimated():
 # generateVerticalLinesBorders()
 # generateVerticalLinesBorders2()
 
-generateVerticalLinesAnimated()
+# TODO Finish this
+# generateVerticalLinesAnimated()
 
 # TODO Rerun tests and correct for adjusted radiusSize
 # TODO Add method support

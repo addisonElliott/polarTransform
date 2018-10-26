@@ -1,7 +1,8 @@
+import concurrent.futures
+
 import numpy as np
 import scipy.interpolate
 import scipy.ndimage
-import concurrent.futures
 
 
 class ImageTransform:
@@ -872,6 +873,7 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
     polarImage = np.dstack(polarImages).reshape(newShape)
 
     return polarImage, settings
+
 
 def convertToCartesianImage(image, center=None, initialRadius=None,
                             finalRadius=None, initialAngle=None,

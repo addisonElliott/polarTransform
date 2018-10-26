@@ -1,6 +1,7 @@
-from polarTransform.convertToCartesianImage import *
-from polarTransform.convertToPolarImage import *
-from polarTransform.pointsConversion import *
+# Bypasses issue with ImageTransform not being defined for cyclic imports
+import polarTransform.convertToCartesianImage as CI
+import polarTransform.convertToPolarImage as PI
+import polarTransform.pointsConversion as PC
 
 
 class ImageTransform:
@@ -124,8 +125,8 @@ class ImageTransform:
             Polar image where first dimension is radii and second dimension is angle (3D polar image if 3D input image
             is given)
         """
-        image, ptSettings = convertToPolarImage(image, order=order, border=border, borderVal=borderVal,
-                                                useMultiThreading=useMultiThreading, settings=self)
+        image, ptSettings = PI.convertToPolarImage(image, order=order, border=border, borderVal=borderVal,
+                                                   useMultiThreading=useMultiThreading, settings=self)
         return image
 
     def convertToCartesianImage(self, image, order=3, border='constant', borderVal=0.0, useMultiThreading=False):
@@ -197,8 +198,8 @@ class ImageTransform:
         --------
         :meth:`convertToCartesianImage`
         """
-        image, ptSettings = convertToCartesianImage(image, order=order, border=border, borderVal=borderVal,
-                                                    useMultiThreading=useMultiThreading, settings=self)
+        image, ptSettings = CI.convertToCartesianImage(image, order=order, border=border, borderVal=borderVal,
+                                                       useMultiThreading=useMultiThreading, settings=self)
         return image
 
     def getPolarPointsImage(self, points):
@@ -227,7 +228,7 @@ class ImageTransform:
         :meth:`getPolarPointsImage`, :meth:`getPolarPoints`, :meth:`getPolarPoints2`
         """
 
-        return getPolarPointsImage(points, self)
+        return PC.getPolarPointsImage(points, self)
 
     def getCartesianPointsImage(self, points):
         """Convert list of polar points from image to cartesian image points based on transform metadata
@@ -254,7 +255,7 @@ class ImageTransform:
         --------
         :meth:`getCartesianPointsImage`, :meth:`getCartesianPoints`, :meth:`getCartesianPoints2`
         """
-        return getCartesianPointsImage(points, self)
+        return PC.getCartesianPointsImage(points, self)
 
     def __repr__(self):
         return 'ImageTransform(center=%s, initialRadius=%i, finalRadius=%i, initialAngle=%f, finalAngle=%f, ' \

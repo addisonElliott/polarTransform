@@ -176,3 +176,14 @@ def generateVerticalLinesAnimated():
 # TODO Add note about angle size and radius size
 # TODO Explain order (0-5)
 # TODO Add note in docs that cartesianImageSize and polarImageSize only contain first 2 dimensions
+
+# TODO Fix Travis CI so that it doesnt run on all branches...? NEED TO TEST IT NOW
+# TODO Move polarTransform and tests into its own directory like I did with pynrrd
+# TODO Further test and refine the ImageTransform class, know I messed it up somehow
+# TODO Setup automatic release like pynrrd
+# TODO Address all TODOs in the testsGeneration.py
+# TODO Document how to run tests and use testsGeneration.py
+# TODO Change how tests are run in travis and stuff
+# TODO Go through and check formatting for all files. Not sure it is how I want it to be...
+
+# TODO Tests are failing, fix this, unable to find ImageTransform

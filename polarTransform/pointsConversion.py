@@ -1,7 +1,5 @@
 import numpy as np
 
-from polarTransform.imageTransform import *
-
 
 def getCartesianPoints(rTheta, center):
     """Convert list of polar points to cartesian points

@@ -9,8 +9,14 @@ import cv2
 import polarTransform
 from polarTransform.tests.util import *
 
-# TODO Describe what goes on here
+# This file should only be ran to generate images contained in the data folder. Since much of this library is performing
+# actions on images, the best way to validate through tests that it is working correctly, is to generate images using
+# the library and then visually inspecting that the image looks correct.
+#
+# These images are uploaded and are apart of the repository itself so most of these images will not need to be
+# regenerated unless a breaking change is made to the code that changes the output.
 
+# Load input images that are used to generate output images
 shortAxisApexImage = loadImage('shortAxisApex.png')
 verticalLinesImage = loadImage('verticalLines.png')
 
@@ -24,6 +30,7 @@ verticalLinesPolarImage_scaled3 = loadImage('verticalLinesPolarImage_scaled3.png
 verticalLinesCartesianImage_scaled2 = loadImage('verticalLinesCartesianImage_scaled2.png')
 
 
+# Generate functions
 def generateShortAxisPolar():
     polarImage, ptSettings = polarTransform.convertToPolarImage(shortAxisApexImage, center=[401, 365])
     saveImage('shortAxisApexPolarImage.png', polarImage)
@@ -140,7 +147,7 @@ def generateVerticalLinesAnimated():
     out.release()
 
 # Enable these functions as you see fit to generate the images
-# Note: It is up to the developer to ensure these images are created and look like they are supposed to
+# Note: It is up to the developer to visually inspect the output images that are created.
 # generateShortAxisPolar()
 # generateShortAxisPolar2()
 # generateVerticalLinesPolar()

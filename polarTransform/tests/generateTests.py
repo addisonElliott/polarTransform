@@ -4,8 +4,6 @@ import sys
 # Required specifically in each module so that searches happen at the parent directory for importing modules
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 
-import cv2
-
 import polarTransform
 from polarTransform.tests.util import *
 
@@ -130,17 +128,13 @@ def generateVerticalLinesBorders2():
 
 
 def generateVerticalLinesAnimated():
-    frameSize = 60
-    fps = 20
+    filename = 'verticalLinesAnimatedCartesian.mp4'
+    frameSize = 40
 
-    fourcc = cv2.VideoWriter_fourcc(*'avc1')
-    out = cv2.VideoWriter(os.path.join(dataDirectory, 'anisotropic.mp4'), fourcc, fps, verticalLinesImage.shape[1::-1])
+    frames = [np.roll(verticalLinesImage, 12 * x, axis=1) for x in range(frameSize)]
+    image3D = np.stack(frames, axis=-1)
 
-    for x in range(0, frameSize):
-        image = np.roll(verticalLinesImage, 12 * x, axis=1)
-        out.write(image)
-
-    out.release()
+    saveVideo(filename, image3D)
 
 
 # Enable these functions as you see fit to generate the images
@@ -170,3 +164,7 @@ generateVerticalLinesAnimated()
 # TODO Further test and refine the ImageTransform class, know I messed it up somehow
 # TODO Setup automatic release like pynrrd NEED TO TEST IT NOW
 # TODO Change how tests are run in travis and stuff NEED TO TEST IT NOW
+
+# TODO Look at tests and see if I cant get rid of the numbered ones that look the same
+
+# TODO Will need to install dev-requirements.txt for TravisCI

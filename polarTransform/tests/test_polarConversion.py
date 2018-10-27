@@ -150,7 +150,60 @@ class TestPolarConversion(unittest.TestCase):
         polarImage2 = ptSettings1.convertToPolarImage(self.verticalLinesImage)
         np.testing.assert_almost_equal(polarImage2, self.verticalLinesPolarImage_scaled)
 
-    def test_3d_support(self):
+    def test_3d_support_rgb(self):
+        frameSize = 10
+        rollAmount = int(self.verticalLinesImage.shape[1] / 10)
+
+        ptSettings = None
+        cartesianImages = []
+        polarImages = []
+
+        # Loop through frame size and roll the image by the designated amount
+        # Get the polar image for that segment and save it, also save the original cartesian image
+        for x in range(frameSize):
+            newImage = np.roll(self.verticalLinesImage, rollAmount * x, axis=1)
+            cartesianImages.append(newImage)
+
+            if ptSettings:
+                polarImage = ptSettings.convertToPolarImage(self.verticalLinesImage)
+            else:
+                polarImage, ptSettings = polarTransform.convertToPolarImage(self.verticalLinesImage)
+
+            polarImages.append(polarImage)
+
+        # 3D Cartesian images stack along two different axes
+        # First one, shape = (256, 256, 10, 3)
+        # Second one, shape = (256, 256, 3, 10)
+        # Want to try both methods and make sure they work
+        threeDCartesianImage1 = np.stack(cartesianImages, axis=2)
+        threeDCartesianImage2 = np.stack(cartesianImages, axis=3)
+
+        polarImage1, ptSettings = polarTransform.convertToPolarImage(threeDCartesianImage1)
+        polarImage2, ptSettings = polarTransform.convertToPolarImage(threeDCartesianImage2)
+
+        for x in range(frameSize):
+            np.testing.assert_almost_equal(polarImage2[:, :, :, x], polarImages[x])
+
+        # np.testing.assert_array_equal(ptSettings.center, np.array([128, 128]))
+        # self.assertEqual(ptSettings.initialRadius, 0)
+        # self.assertEqual(ptSettings.finalRadius, 182)
+        # self.assertEqual(ptSettings.initialAngle, 0.0)
+        # self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
+        # self.assertEqual(ptSettings.cartesianImageSize, self.verticalLinesImage.shape[0:2])
+        # self.assertEqual(ptSettings.polarImageSize, (256, 1024))
+        #
+        # np.testing.assert_almost_equal(polarImage, self.verticalLinesPolarImage)
+
+    def test_3d_supportxxx(self):
+        # TODO Do a test where I simply take one image, roll it around, take polar transform and repeat for like some amount of frames.
+        # Then compare that to just taking the individual slices and doing it. Probably don't want to do too many frames to not
+        # have it slow down.
+        #
+        # Then repeat the test with a premade MP4 that was generated
+        #
+        # Probably should do with Bmode (grayscale) and RGB
+        # I might want to play around with getting a better grayscale image
+
         # TODO Load rolled image and then roll it myself...
         # TODO Not sure what I want to do here
 

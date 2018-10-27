@@ -150,6 +150,23 @@ class TestPolarConversion(unittest.TestCase):
         polarImage2 = ptSettings1.convertToPolarImage(self.verticalLinesImage)
         np.testing.assert_almost_equal(polarImage2, self.verticalLinesPolarImage_scaled)
 
+    def test_3d_support(self):
+        # TODO Load rolled image and then roll it myself...
+        # TODO Not sure what I want to do here
+
+        polarImage, ptSettings = polarTransform.convertToPolarImage(self.verticalLinesImage)
+
+        np.testing.assert_array_equal(ptSettings.center, np.array([128, 128]))
+        self.assertEqual(ptSettings.initialRadius, 0)
+        self.assertEqual(ptSettings.finalRadius, 182)
+        self.assertEqual(ptSettings.initialAngle, 0.0)
+        self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
+        self.assertEqual(ptSettings.cartesianImageSize, self.verticalLinesImage.shape[0:2])
+        self.assertEqual(ptSettings.polarImageSize, (256, 1024))
+
+        np.testing.assert_almost_equal(polarImage, self.verticalLinesPolarImage)
+        pass
+
 
 if __name__ == '__main__':
     unittest.main()

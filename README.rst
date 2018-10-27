@@ -43,9 +43,11 @@ the updated polarTransform code.
 
 Test and coverage
 =================
-To test the code on any platform, make sure to clone the GitHub repository to get the tests and::
+Run the following command in the base directory to run the tests:
 
-  python tests/test_polarTransform.py
+.. code-block:: bash
+
+    python -m unittest discover -v polarTransform/tests
 
 Example
 =================
@@ -74,12 +76,12 @@ Input image:
     plt.figure()
     plt.imshow(cartesianImage, origin='lower')
 
-Resulting polar domain image:
+The result is a polar domain image with a specified initial and final radius and angle:
 
 .. image:: http://polartransform.readthedocs.io/en/latest/_images/verticalLinesPolarImage_scaled3.png
     :alt: Polar image
 
-Converting back to the cartesian image results in:
+Converting back to the cartesian image results in only a slice of the original image to be shown because the initial and final radius and angle were specified:
 
 .. image:: http://polartransform.readthedocs.io/en/latest/_images/verticalLinesCartesianImage_scaled.png
     :alt: Cartesian image

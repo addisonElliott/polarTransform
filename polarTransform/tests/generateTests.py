@@ -84,15 +84,14 @@ def generateVerticalLinesCartesian2():
 def generateVerticalLinesCartesian3():
     cartesianImage, ptSettings = polarTransform.convertToCartesianImage(verticalLinesPolarImage_scaled2,
                                                                         center=[128, 128], imageSize=[256, 256],
-                                                                        initialRadius=30,
-                                                                        finalRadius=100)
+                                                                        initialRadius=30, finalRadius=100)
     saveImage('verticalLinesCartesianImage_scaled2.png', cartesianImage)
 
 
 def generateVerticalLinesCartesian4():
     cartesianImage, ptSettings = polarTransform.convertToCartesianImage(verticalLinesPolarImage_scaled3,
-                                                                        initialRadius=30,
-                                                                        finalRadius=100, initialAngle=2 / 4 * np.pi,
+                                                                        initialRadius=30, finalRadius=100,
+                                                                        initialAngle=2 / 4 * np.pi,
                                                                         finalAngle=5 / 4 * np.pi, center=[128, 128],
                                                                         imageSize=[256, 256])
     saveImage('verticalLinesCartesianImage_scaled3.png', cartesianImage)
@@ -182,4 +181,3 @@ def generateVerticalLinesAnimated():
 # TODO Setup automatic release like pynrrd NEED TO TEST IT NOW
 # TODO Document how to run tests and use testsGeneration.py
 # TODO Change how tests are run in travis and stuff NEED TO TEST IT NOW
-# TODO Go through and check formatting for all files. Not sure it is how I want it to be...

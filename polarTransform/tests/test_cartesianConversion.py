@@ -111,8 +111,7 @@ class TestCartesianConversion(unittest.TestCase):
                                                                             initialRadius=30, finalRadius=100,
                                                                             initialAngle=2 / 4 * np.pi,
                                                                             finalAngle=5 / 4 * np.pi,
-                                                                            imageSize=(256, 256),
-                                                                            center=(128, 128))
+                                                                            imageSize=(256, 256), center=(128, 128))
 
         np.testing.assert_array_equal(ptSettings.center, np.array([128, 128]))
         self.assertEqual(ptSettings.initialRadius, 30)
@@ -129,8 +128,7 @@ class TestCartesianConversion(unittest.TestCase):
                                                                               initialRadius=30, finalRadius=100,
                                                                               initialAngle=2 / 4 * np.pi,
                                                                               finalAngle=5 / 4 * np.pi,
-                                                                              imageSize=(256, 256),
-                                                                              center=(128, 128))
+                                                                              imageSize=(256, 256), center=(128, 128))
 
         cartesianImage, ptSettings = polarTransform.convertToCartesianImage(self.verticalLinesPolarImage_scaled,
                                                                             settings=ptSettings1)
@@ -162,10 +160,8 @@ class TestCartesianConversion(unittest.TestCase):
 
         for row in orientations:
             cartesianImage, ptSettings = polarTransform.convertToCartesianImage(self.verticalLinesPolarImage_scaled2,
-                                                                                center=row[0],
-                                                                                imageSize=(256, 256),
-                                                                                initialRadius=30,
-                                                                                finalRadius=100)
+                                                                                center=row[0], imageSize=(256, 256),
+                                                                                initialRadius=30, finalRadius=100)
 
             np.testing.assert_array_equal(ptSettings.center, row[1])
             self.assertEqual(ptSettings.cartesianImageSize, (256, 256))
@@ -191,8 +187,7 @@ class TestCartesianConversion(unittest.TestCase):
 
         for row in orientations:
             cartesianImage, ptSettings = polarTransform.convertToCartesianImage(self.verticalLinesPolarImage_scaled2,
-                                                                                center=row[0],
-                                                                                initialRadius=30,
+                                                                                center=row[0], initialRadius=30,
                                                                                 finalRadius=100)
 
             self.assertEqual(ptSettings.cartesianImageSize, row[1])

@@ -259,9 +259,9 @@ class ImageTransform:
 
     def __repr__(self):
         return 'ImageTransform(center=%s, initialRadius=%i, finalRadius=%i, initialAngle=%f, finalAngle=%f, ' \
-               'cartesianImageSize=%s, polarImageSize=%s)' % (
-                   self.center, self.initialRadius, self.finalRadius, self.initialAngle, self.finalAngle,
-                   self.cartesianImageSize, self.polarImageSize)
+               'cartesianImageSize=%s, polarImageSize=%s)' % (self.center, self.initialRadius, self.finalRadius,
+                                                              self.initialAngle, self.finalAngle,
+                                                              self.cartesianImageSize, self.polarImageSize)
 
     def __str__(self):
         return self.__repr__()

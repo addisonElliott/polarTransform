@@ -213,8 +213,7 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
         if imageSize is None:
             # Obtain the image size by looping from initial to final source angle (every possible theta in the image
             # basically)
-            thetas = np.mod(np.linspace(0, (finalAngle - initialAngle), image.shape[1]) + initialAngle,
-                            2 * np.pi)
+            thetas = np.mod(np.linspace(0, (finalAngle - initialAngle), image.shape[1]) + initialAngle, 2 * np.pi)
             maxRadius = finalRadius * np.ones_like(thetas)
 
             # Then get the maximum radius of the image and compute the x/y coordinates for each option

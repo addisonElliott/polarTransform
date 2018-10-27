@@ -62,13 +62,11 @@ class TestPolarConversion(unittest.TestCase):
         np.testing.assert_almost_equal(polarImage, self.shortAxisApexPolarImage_centerMiddle)
 
     def test_notNumpyArrayCenter(self):
-        polarImage, ptSettings = polarTransform.convertToPolarImage(self.shortAxisApexImage,
-                                                                    center=(401, 365))
+        polarImage, ptSettings = polarTransform.convertToPolarImage(self.shortAxisApexImage, center=(401, 365))
         np.testing.assert_array_equal(ptSettings.center, np.array([401, 365]))
         np.testing.assert_almost_equal(polarImage, self.shortAxisApexPolarImage)
 
-        polarImage, ptSettings = polarTransform.convertToPolarImage(self.shortAxisApexImage,
-                                                                    center=(401, 365))
+        polarImage, ptSettings = polarTransform.convertToPolarImage(self.shortAxisApexImage, center=(401, 365))
         np.testing.assert_array_equal(ptSettings.center, np.array([401, 365]))
         np.testing.assert_almost_equal(polarImage, self.shortAxisApexPolarImage)
 
@@ -132,8 +130,8 @@ class TestPolarConversion(unittest.TestCase):
 
     def test_settings(self):
         polarImage1, ptSettings1 = polarTransform.convertToPolarImage(self.verticalLinesImage,
-                                                                      initialRadius=30,
-                                                                      finalRadius=100, initialAngle=2 / 4 * np.pi,
+                                                                      initialRadius=30, finalRadius=100,
+                                                                      initialAngle=2 / 4 * np.pi,
                                                                       finalAngle=5 / 4 * np.pi, radiusSize=140,
                                                                       angleSize=700)
 

@@ -27,6 +27,8 @@ verticalLinesPolarImage_scaled3 = loadImage('verticalLinesPolarImage_scaled3.png
 
 verticalLinesCartesianImage_scaled2 = loadImage('verticalLinesCartesianImage_scaled2.png')
 
+verticalLinesAnimated = loadVideo('verticalLinesAnimated.mp4')
+
 
 # Generate functions
 def generateShortAxisPolar():
@@ -128,13 +130,33 @@ def generateVerticalLinesBorders2():
 
 
 def generateVerticalLinesAnimated():
-    filename = 'verticalLinesAnimatedCartesian.mp4'
     frameSize = 40
 
     frames = [np.roll(verticalLinesImage, 12 * x, axis=1) for x in range(frameSize)]
     image3D = np.stack(frames, axis=-1)
 
-    saveVideo(filename, image3D)
+    saveVideo('verticalLinesAnimated.mp4', image3D)
+
+
+def generateVerticalLinesAnimatedPolar():
+    frameSize = 40
+    ptSettings = None
+    polarFrames = []
+
+    for x in range(frameSize):
+        frame = verticalLinesAnimated[..., x]
+
+        # Call convert to polar image on each frame, uses the assumption that individual 2D image works fine based on
+        # other tests
+        if ptSettings:
+            polarFrame = ptSettings.convertToPolarImage(frame)
+        else:
+            polarFrame, ptSettings = polarTransform.convertToPolarImage(frame)
+
+        polarFrames.append(polarFrame)
+
+    polarImage3D = np.stack(polarFrames, axis=-1)
+    saveVideo('verticalLinesAnimatedPolar.mp4', polarImage3D)
 
 
 # Enable these functions as you see fit to generate the images
@@ -157,8 +179,8 @@ def generateVerticalLinesAnimated():
 # generateVerticalLinesBorders()
 # generateVerticalLinesBorders2()
 
-# TODO Finish this
-generateVerticalLinesAnimated()
+# generateVerticalLinesAnimated()
+generateVerticalLinesAnimatedPolar()
 
 # TODO Fix Travis CI so that it doesnt run on all branches...? NEED TO TEST IT NOW
 # TODO Further test and refine the ImageTransform class, know I messed it up somehow
@@ -168,3 +190,5 @@ generateVerticalLinesAnimated()
 # TODO Look at tests and see if I cant get rid of the numbered ones that look the same
 
 # TODO Will need to install dev-requirements.txt for TravisCI
+# TODO Test flipud for OpenCV by using a different grayscale image
+# TODO Enable codecov for Travis CI, add banner for it

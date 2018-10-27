@@ -21,6 +21,9 @@ class TestPolarConversion(unittest.TestCase):
         self.verticalLinesPolarImage_scaled2 = loadImage('verticalLinesPolarImage_scaled2.png')
         self.verticalLinesPolarImage_scaled3 = loadImage('verticalLinesPolarImage_scaled3.png')
 
+        self.verticalLinesAnimated = loadVideo('verticalLinesAnimated.mp4')
+        self.verticalLinesAnimatedPolar = loadVideo('verticalLinesAnimatedPolar.mp4')
+
     def test_default(self):
         polarImage, ptSettings = polarTransform.convertToPolarImage(self.shortAxisApexImage,
                                                                     center=np.array([401, 365]))
@@ -138,52 +141,17 @@ class TestPolarConversion(unittest.TestCase):
         np.testing.assert_almost_equal(polarImage2, self.verticalLinesPolarImage_scaled)
 
     def test_3d_support_rgb(self):
-        # TODO Load cartesianVideo
-        # Convert to polarImage
-        # Compare to result?
+        polarImage, ptSettings = polarTransform.convertToPolarImage(self.verticalLinesAnimated)
 
-        frameSize = 10
-        rollAmount = int(self.verticalLinesImage.shape[1] / 10)
+        np.testing.assert_array_equal(ptSettings.center, np.array([128, 128]))
+        self.assertEqual(ptSettings.initialRadius, 0)
+        self.assertEqual(ptSettings.finalRadius, 182)
+        self.assertEqual(ptSettings.initialAngle, 0.0)
+        self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
+        self.assertEqual(ptSettings.cartesianImageSize, self.verticalLinesAnimated.shape[0:2])
+        self.assertEqual(ptSettings.polarImageSize, (256, 1024))
 
-        ptSettings = None
-        cartesianImages = []
-        polarImages = []
-
-        # Loop through frame size and roll the image by the designated amount
-        # Get the polar image for that segment and save it, also save the original cartesian image
-        for x in range(frameSize):
-            newImage = np.roll(self.verticalLinesImage, rollAmount * x, axis=1)
-            cartesianImages.append(newImage)
-
-            if ptSettings:
-                polarImage = ptSettings.convertToPolarImage(self.verticalLinesImage)
-            else:
-                polarImage, ptSettings = polarTransform.convertToPolarImage(self.verticalLinesImage)
-
-            polarImages.append(polarImage)
-
-        # 3D Cartesian images stack along two different axes
-        # First one, shape = (256, 256, 10, 3)
-        # Second one, shape = (256, 256, 3, 10)
-        # Want to try both methods and make sure they work
-        threeDCartesianImage1 = np.stack(cartesianImages, axis=2)
-        threeDCartesianImage2 = np.stack(cartesianImages, axis=3)
-
-        polarImage1, ptSettings = polarTransform.convertToPolarImage(threeDCartesianImage1)
-        polarImage2, ptSettings = polarTransform.convertToPolarImage(threeDCartesianImage2)
-
-        for x in range(frameSize):
-            np.testing.assert_almost_equal(polarImage2[:, :, :, x], polarImages[x])
-
-        # np.testing.assert_array_equal(ptSettings.center, np.array([128, 128]))
-        # self.assertEqual(ptSettings.initialRadius, 0)
-        # self.assertEqual(ptSettings.finalRadius, 182)
-        # self.assertEqual(ptSettings.initialAngle, 0.0)
-        # self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
-        # self.assertEqual(ptSettings.cartesianImageSize, self.verticalLinesImage.shape[0:2])
-        # self.assertEqual(ptSettings.polarImageSize, (256, 1024))
-        #
-        # np.testing.assert_almost_equal(polarImage, self.verticalLinesPolarImage)
+        np.testing.assert_almost_equal(polarImage, self.verticalLinesAnimatedPolar)
 
     def test_3d_supportxxx(self):
         # TODO Do a test where I simply take one image, roll it around, take polar transform and repeat for like some amount of frames.

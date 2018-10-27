@@ -19,19 +19,7 @@ def loadImage(filename, flipud=True, convertToGrayscale=False):
 
 
 def loadVideo(filename, flipud=True, convertToGrayscale=False):
-    #     frameSize = 60
-    #     fps = 20
-    #
-    #     fourcc = cv2.VideoWriter_fourcc(*'avc1')
-    #     out = cv2.VideoWriter(os.path.join(dataDirectory, 'anisotropic.mp4'), fourcc, fps, verticalLinesImage.shape[1::-1])
-    #
-    #     for x in range(0, frameSize):
-    #         image = np.roll(verticalLinesImage, 12 * x, axis=1)
-    #         out.write(image)
-    #
-    #     out.release()
-
-    capture = cv2.VideoCapture(filename)
+    capture = cv2.VideoCapture(os.path.join(dataDirectory, filename))
     frames = []
 
     while capture.isOpened():

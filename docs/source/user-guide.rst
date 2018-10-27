@@ -8,7 +8,7 @@ User Guide
 
 As the names suggest, the two functions convert an image from the cartesian or polar domain to the other domain with a given set of parameters.  The power of these functions is that the user can specify the resulting image resolution, interpolation order, initial and final radii or angles and much much more. See the :doc:`polarTransform` for more information on the specific parameters that are supported.
 
-Since there are quite a few parameters that can be specified for the conversion functions, a class :class:`ImageTransform` is defined and returned that contains all of the parameters. From within the class, the user can
+Since there are quite a few parameters that can be specified for the conversion functions, the class :class:`ImageTransform` is created and returned from the :class:`convertToPolarImage` or :class:`convertToCartesianImage` functions (along with the converted image) that contains the arguments specified. The benefit of this class is that if one wants to convert the image back to another domain or convert points on either image to/from the other domain, they can simply call the functions within the :class:`ImageTransform` class without specifying all of the arguments again.
 
 Example 1
 --------------

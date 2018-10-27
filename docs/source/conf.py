@@ -57,6 +57,9 @@ source_suffix = '.rst'
 # The master toctree document.
 master_doc = 'index'
 
+# Fixes issue with toctree reference to nonexisting document...
+numpydoc_show_class_members = False
+
 # General information about the project.
 project = 'polarTransform'
 copyright = '2018, Addison Elliott'

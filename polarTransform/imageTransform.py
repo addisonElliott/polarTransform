@@ -5,6 +5,8 @@ import polarTransform.pointsConversion as PC
 
 
 class ImageTransform:
+    """Class to store settings when converting between cartesian and polar domain"""
+
     def __init__(self, center, initialRadius, finalRadius, initialAngle, finalAngle, cartesianImageSize,
                  polarImageSize):
         """Polar and Cartesian Transform Metadata

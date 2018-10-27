@@ -133,17 +133,15 @@ def generateVerticalLinesAnimated():
     frameSize = 60
     fps = 20
 
-    # fourcc = cv2.VideoWriter_fourcc(*'MJPG')
-    # fourcc = cv2.VideoWriter_fourcc(*'PIM1') # Use avi
-    # fourcc = cv2.VideoWriter_fourcc(*'MPG4') # Use mp4
-    fourcc = cv2.VideoWriter_fourcc(*'X264')  # Use mp4
-    out = cv2.VideoWriter(os.path.join(dataDirectory, 'anisotropic.mp4'), fourcc, fps, verticalLinesImage.shape[::-1])
+    fourcc = cv2.VideoWriter_fourcc(*'avc1')
+    out = cv2.VideoWriter(os.path.join(dataDirectory, 'anisotropic.mp4'), fourcc, fps, verticalLinesImage.shape[1::-1])
 
     for x in range(0, frameSize):
-        image = np.roll(verticalLinesImage, 12, axis=1)
+        image = np.roll(verticalLinesImage, 12 * x, axis=1)
         out.write(image)
 
     out.release()
+
 
 # Enable these functions as you see fit to generate the images
 # Note: It is up to the developer to visually inspect the output images that are created.
@@ -166,7 +164,7 @@ def generateVerticalLinesAnimated():
 # generateVerticalLinesBorders2()
 
 # TODO Finish this
-# generateVerticalLinesAnimated()
+generateVerticalLinesAnimated()
 
 # TODO Fix Travis CI so that it doesnt run on all branches...? NEED TO TEST IT NOW
 # TODO Further test and refine the ImageTransform class, know I messed it up somehow

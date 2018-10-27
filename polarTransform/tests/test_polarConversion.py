@@ -70,19 +70,6 @@ class TestPolarConversion(unittest.TestCase):
         np.testing.assert_array_equal(ptSettings.center, np.array([401, 365]))
         np.testing.assert_almost_equal(polarImage, self.shortAxisApexPolarImage)
 
-    def test_RGBA(self):
-        polarImage, ptSettings = polarTransform.convertToPolarImage(self.verticalLinesImage)
-
-        np.testing.assert_array_equal(ptSettings.center, np.array([128, 128]))
-        self.assertEqual(ptSettings.initialRadius, 0)
-        self.assertEqual(ptSettings.finalRadius, 182)
-        self.assertEqual(ptSettings.initialAngle, 0.0)
-        self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
-        self.assertEqual(ptSettings.cartesianImageSize, self.verticalLinesImage.shape[0:2])
-        self.assertEqual(ptSettings.polarImageSize, (256, 1024))
-
-        np.testing.assert_almost_equal(polarImage, self.verticalLinesPolarImage)
-
     def test_IFRadius(self):
         polarImage, ptSettings = polarTransform.convertToPolarImage(self.verticalLinesImage, initialRadius=30,
                                                                     finalRadius=100)
@@ -151,6 +138,10 @@ class TestPolarConversion(unittest.TestCase):
         np.testing.assert_almost_equal(polarImage2, self.verticalLinesPolarImage_scaled)
 
     def test_3d_support_rgb(self):
+        # TODO Load cartesianVideo
+        # Convert to polarImage
+        # Compare to result?
+
         frameSize = 10
         rollAmount = int(self.verticalLinesImage.shape[1] / 10)
 

@@ -137,6 +137,22 @@ def generateVerticalLinesAnimated():
 
     saveVideo('verticalLinesAnimated.avi', image3D)
 
+    # import matplotlib.pyplot as plt
+    #
+    # image3D2 = loadVideo('verticalLinesAnimated.avi')
+
+    # plt.figure(1)
+    # plt.imshow(image3D[..., 0], origin='lower')
+    #
+    # plt.figure(2)
+    # plt.imshow(image3D2[..., 0], origin='lower')
+
+    # plt.figure(1)
+    # x = np.abs(image3D[..., 0].astype(np.int16) - image3D2[..., 0].astype(np.int16)).astype(np.uint8)
+    # plt.imshow(x, origin='lower')
+    #
+    # plt.show()
+
 
 def generateVerticalLinesAnimatedPolar():
     frameSize = 40

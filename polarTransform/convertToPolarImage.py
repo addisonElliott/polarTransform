@@ -307,5 +307,6 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
 
     return polarImage, settings
 
+
 from polarTransform.imageTransform import ImageTransform
 from polarTransform.pointsConversion import *

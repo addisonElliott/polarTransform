@@ -2,8 +2,6 @@
 Getting Started
 ================
 
-.. rubric:: Brief overview of polarTransform and how to install.
-
 Introduction
 ============
 polarTransform is a Python package for converting images between the polar and Cartesian domain. It contains many
@@ -53,9 +51,11 @@ the updated polarTransform code.
 
 Test and coverage
 =================
-To test the code on any platform, make sure to clone the GitHub repository to get the tests and::
+Run the following command in the base directory to run the tests:
 
-  python tests/test_polarTransform.py
+.. code-block:: bash
+
+    python -m unittest discover -v polarTransform/tests
 
 Using polarTransform
 ====================

@@ -1,8 +1,18 @@
 language: python
+
 python:
 - 3.6
-install: pip install -r requirements.txt
-script: python tests/test_polarTransform.py
+
+# Command to install dependencies
+install:
+  - pip install --upgrade pip
+  - pip install -r requirements.txt
+  - pip install -r requirements-dev.txt
+
+# Command to run tests
+script: coverage run -m unittest discover -v polarTransform/tests
+
+# Command to deploy releases to PyPi
 deploy:
   provider: pypi
   distributions: sdist bdist_wheel
@@ -11,3 +21,15 @@ deploy:
     tags: true
   password:
     secure: F0Xx96xWhRdtfD3kSywX4VqF2VbZst85Wy0AsI8774OeN3e2712lgQyRp1sBp4AZzsYWowKg4/kFNljvJtko56Ag+ulwLieP9K+idWj4kc62BKCBMfsTEhHWicAla3mnlfIQGMIvD9En7CUPAiu5Bs+wj8kto2LRwv2lztSKBN8fk56r9zTd7f6Ft8MOoZqXZ8cpQNv610BvsY61s/u2RnaDkcI75LyztPCGIQ3O1wYnZWNebslif9QMsygHvsSFxoomOhM/MjRvsvEwpzDapKdaQ7xYf9uBfw40/XG/9xL0JqAjXpbKNltxFaPkshVgDBt+xMStyYV2nd5LClPrYYpSBHeFtL+HsO/lnUksBs09GwLQFw0TYfed0E28seMeb6zTSlnFQF2VnxVWu1Vqe1uriMmSH/0iKaes6ucQZ6Oag22ub3mtABz855kQ5FtkVW2eK8MG8FoFoxi6x+9e+YN0BG9A2NsNlNvur+nzx5XTduGVs+REAHURZ/56WG8IsKqOpRrNHPL5cK3+FBwCnAZVwkR5cT9K4pKtJBiL4h0aJzPTi3F4MCSns2vMbLSMQMBHVBey+lmReOZ9GH7uzS3KOZa+5LJLEFkvQjb3N3X7znn0oJO7s/aSsW2bzjrRhsYPYoLvSkcPqmyswowesB/SrKzX3vzvgBT9DFsCAHI=
+
+after_success:
+  - codecov
+
+# Only build for master branch and tagged released (must follow semantic versioning syntax)
+branches:
+  only:
+    - master
+    - /^v\d+\.\d+(\.\d+)?(-\S*)?$/
+
+
+

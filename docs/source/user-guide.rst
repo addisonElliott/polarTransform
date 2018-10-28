@@ -4,7 +4,11 @@ User Guide
 
 .. currentmodule:: polarTransform
 
-:class:`convertToPolarImage` and :class:`convertToCartesianImage` are the two primary classes on which this entire project is based on. The two functions are opposites of one another, reversing the action that the other function does.
+:class:`convertToPolarImage` and :class:`convertToCartesianImage` are the two primary functions that make up this package. The two functions are opposites of one another, reversing the action that the other function does.
+
+As the names suggest, the two functions convert an image from the cartesian or polar domain to the other domain with a given set of parameters.  The power of these functions is that the user can specify the resulting image resolution, interpolation order, initial and final radii or angles and much much more. See the :doc:`polarTransform` for more information on the specific parameters that are supported.
+
+Since there are quite a few parameters that can be specified for the conversion functions, the class :class:`ImageTransform` is created and returned from the :class:`convertToPolarImage` or :class:`convertToCartesianImage` functions (along with the converted image) that contains the arguments specified. The benefit of this class is that if one wants to convert the image back to another domain or convert points on either image to/from the other domain, they can simply call the functions within the :class:`ImageTransform` class without specifying all of the arguments again.
 
 Example 1
 --------------

@@ -1,0 +1,3 @@
+opencv-python
+sphinx-rtd-theme
+codecov

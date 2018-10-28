@@ -216,49 +216,39 @@ class TestCartesianConversion(unittest.TestCase):
         self.assertEqual(ptSettings.initialAngle, 0.0)
         self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
         self.assertEqual(ptSettings.cartesianImageSize, (768, 1024))
-        self.assertEqual(ptSettings.polarImageSize, (1024, 2048))
+        self.assertEqual(ptSettings.polarImageSize, self.horizontalLinesPolarImage.shape)
 
         assert_image_approx_equal_average(cartesianImage, self.horizontalLinesImage, 5)
 
     def test_3d_support_rgb(self):
-
-
-
-
-
-
-
-
-        polarImage, ptSettings = polarTransform.convertToPolarImage(self.verticalLinesAnimated)
+        cartesianImage, ptSettings = polarTransform.convertToCartesianImage(self.verticalLinesAnimatedPolar,
+                                                                            center=(128, 128), imageSize=(256, 256),
+                                                                            finalRadius=182)
 
         np.testing.assert_array_equal(ptSettings.center, np.array([128, 128]))
         self.assertEqual(ptSettings.initialRadius, 0)
         self.assertEqual(ptSettings.finalRadius, 182)
         self.assertEqual(ptSettings.initialAngle, 0.0)
         self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
-        self.assertEqual(ptSettings.cartesianImageSize, self.verticalLinesAnimated.shape[0:2])
-        self.assertEqual(ptSettings.polarImageSize, (256, 1024))
+        self.assertEqual(ptSettings.cartesianImageSize, (256, 256))
+        self.assertEqual(ptSettings.polarImageSize, self.verticalLinesAnimatedPolar.shape[0:2])
 
-        np.testing.assert_almost_equal(polarImage, self.verticalLinesAnimatedPolar)
+        assert_image_approx_equal_average(cartesianImage, self.verticalLinesAnimated, 5)
 
     def test_3d_support_rgb_multithreaded(self):
-        polarImage, ptSettings = polarTransform.convertToPolarImage(self.verticalLinesAnimated, useMultiThreading=True)
+        cartesianImage, ptSettings = polarTransform.convertToCartesianImage(self.verticalLinesAnimatedPolar,
+                                                                            center=(128, 128), imageSize=(256, 256),
+                                                                            finalRadius=182, useMultiThreading=True)
 
         np.testing.assert_array_equal(ptSettings.center, np.array([128, 128]))
         self.assertEqual(ptSettings.initialRadius, 0)
         self.assertEqual(ptSettings.finalRadius, 182)
         self.assertEqual(ptSettings.initialAngle, 0.0)
         self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
-        self.assertEqual(ptSettings.cartesianImageSize, self.verticalLinesAnimated.shape[0:2])
-        self.assertEqual(ptSettings.polarImageSize, (256, 1024))
+        self.assertEqual(ptSettings.cartesianImageSize, (256, 256))
+        self.assertEqual(ptSettings.polarImageSize, self.verticalLinesAnimatedPolar.shape[0:2])
 
-        np.testing.assert_almost_equal(polarImage, self.verticalLinesAnimatedPolar)
-
-
-
-
-
-
+        assert_image_approx_equal_average(cartesianImage, self.verticalLinesAnimated, 5)
 
     def test_3d_support_grayscale(self):
         cartesianImage, ptSettings = polarTransform.convertToCartesianImage(self.horizontalLinesAnimatedPolar,
@@ -271,7 +261,7 @@ class TestCartesianConversion(unittest.TestCase):
         self.assertEqual(ptSettings.initialAngle, 0.0)
         self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
         self.assertEqual(ptSettings.cartesianImageSize, (768, 1024))
-        self.assertEqual(ptSettings.polarImageSize, (1024, 2048))
+        self.assertEqual(ptSettings.polarImageSize, self.horizontalLinesAnimatedPolar.shape[0:2])
 
         assert_image_approx_equal_average(cartesianImage, self.horizontalLinesAnimated, 5)
 
@@ -286,7 +276,7 @@ class TestCartesianConversion(unittest.TestCase):
         self.assertEqual(ptSettings.initialAngle, 0.0)
         self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
         self.assertEqual(ptSettings.cartesianImageSize, (768, 1024))
-        self.assertEqual(ptSettings.polarImageSize, (1024, 2048))
+        self.assertEqual(ptSettings.polarImageSize, self.horizontalLinesAnimatedPolar.shape[0:2])
 
         assert_image_approx_equal_average(cartesianImage, self.horizontalLinesAnimated, 5)
 

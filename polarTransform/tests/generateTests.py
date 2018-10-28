@@ -17,6 +17,7 @@ from polarTransform.tests.util import *
 # Load input images that are used to generate output images
 shortAxisApexImage = loadImage('shortAxisApex.png')
 verticalLinesImage = loadImage('verticalLines.png')
+horizontalLines = loadImage('horizontalLines.png', convertToGrayscale=True)
 
 shortAxisApexPolarImage = loadImage('shortAxisApexPolarImage.png')
 shortAxisApexPolarImage_centerMiddle = loadImage('shortAxisApexPolarImage_centerMiddle.png')
@@ -129,6 +130,11 @@ def generateVerticalLinesBorders2():
     saveImage('verticalLinesCartesianImageBorders4.png', cartesianImage)
 
 
+def generateHorizontalLinesPolar():
+    polarImage, ptSettings = polarTransform.convertToPolarImage(horizontalLines)
+    saveImage('horizontalLinesPolarImage.png', polarImage)
+
+
 def generateVerticalLinesAnimated():
     frameSize = 40
 
@@ -195,8 +201,10 @@ def generateVerticalLinesAnimatedPolar():
 # generateVerticalLinesBorders()
 # generateVerticalLinesBorders2()
 
+generateHorizontalLinesPolar()
+
 # generateVerticalLinesAnimated()
-generateVerticalLinesAnimatedPolar()
+# generateVerticalLinesAnimatedPolar()
 
 # TODO Fix Travis CI so that it doesnt run on all branches...? NEED TO TEST IT NOW
 # TODO Further test and refine the ImageTransform class, know I messed it up somehow
@@ -208,3 +216,4 @@ generateVerticalLinesAnimatedPolar()
 # TODO Will need to install dev-requirements.txt for TravisCI
 # TODO Test flipud for OpenCV by using a different grayscale image
 # TODO Enable codecov for Travis CI, add banner for it
+# Standardize using tuple versus numpy array for things...

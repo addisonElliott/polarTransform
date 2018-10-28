@@ -13,6 +13,7 @@ class TestPolarConversion(unittest.TestCase):
     def setUp(self):
         self.shortAxisApexImage = loadImage('shortAxisApex.png')
         self.verticalLinesImage = loadImage('verticalLines.png')
+        self.horizontalLinesImage = loadImage('horizontalLines.png', convertToGrayscale=True)
 
         self.shortAxisApexPolarImage = loadImage('shortAxisApexPolarImage.png')
         self.shortAxisApexPolarImage_centerMiddle = loadImage('shortAxisApexPolarImage_centerMiddle.png')
@@ -20,6 +21,8 @@ class TestPolarConversion(unittest.TestCase):
         self.verticalLinesPolarImage_scaled = loadImage('verticalLinesPolarImage_scaled.png')
         self.verticalLinesPolarImage_scaled2 = loadImage('verticalLinesPolarImage_scaled2.png')
         self.verticalLinesPolarImage_scaled3 = loadImage('verticalLinesPolarImage_scaled3.png')
+
+        self.horizontalLinesPolarImage = loadImage('horizontalLinesPolarImage.png', convertToGrayscale=True)
 
         self.verticalLinesAnimated = loadVideo('verticalLinesAnimated.avi')
         self.verticalLinesAnimatedPolar = loadVideo('verticalLinesAnimatedPolar.avi')
@@ -138,6 +141,20 @@ class TestPolarConversion(unittest.TestCase):
 
         polarImage2 = ptSettings1.convertToPolarImage(self.verticalLinesImage)
         np.testing.assert_almost_equal(polarImage2, self.verticalLinesPolarImage_scaled)
+
+    def test_default_horizontalLines(self):
+        polarImage, ptSettings = polarTransform.convertToPolarImage(self.horizontalLinesImage)
+
+        np.testing.assert_array_equal(ptSettings.center, np.array([512, 384]))
+        self.assertEqual(ptSettings.initialRadius, 0)
+        # sqrt(512^2 + 384^2) maximum distance = 640
+        self.assertEqual(ptSettings.finalRadius, 640)
+        self.assertEqual(ptSettings.initialAngle, 0.0)
+        self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
+        self.assertEqual(ptSettings.cartesianImageSize, self.horizontalLinesImage.shape)
+        self.assertEqual(ptSettings.polarImageSize, (1024, 2048))
+
+        np.testing.assert_almost_equal(polarImage, self.horizontalLinesPolarImage)
 
     def test_3d_support_rgb(self):
         polarImage, ptSettings = polarTransform.convertToPolarImage(self.verticalLinesAnimated)

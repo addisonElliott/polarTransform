@@ -10,7 +10,7 @@ dataDirectory = os.path.join(os.path.dirname(__file__), 'data')
 def loadImage(filename, flipud=True, convertToGrayscale=False):
     image = imageio.imread(os.path.join(dataDirectory, filename), ignoregamma=True)
 
-    if convertToGrayscale:
+    if convertToGrayscale and image.ndim == 3:
         image = image[:, :, 0]
     elif image.ndim == 3 and image.shape[-1] == 4:
         image = image[:, :, 0:3]

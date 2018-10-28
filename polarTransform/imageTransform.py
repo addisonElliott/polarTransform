@@ -1,9 +1,3 @@
-# Bypasses issue with ImageTransform not being defined for cyclic imports
-import polarTransform.convertToCartesianImage as CI
-import polarTransform.convertToPolarImage as PI
-import polarTransform.pointsConversion as PC
-
-
 class ImageTransform:
     """Class to store settings when converting between cartesian and polar domain"""
 
@@ -127,7 +121,7 @@ class ImageTransform:
             Polar image where first dimension is radii and second dimension is angle (3D polar image if 3D input image
             is given)
         """
-        image, ptSettings = PI.convertToPolarImage(image, order=order, border=border, borderVal=borderVal,
+        image, ptSettings = convertToPolarImage(image, order=order, border=border, borderVal=borderVal,
                                                    useMultiThreading=useMultiThreading, settings=self)
         return image
 
@@ -200,7 +194,7 @@ class ImageTransform:
         --------
         :meth:`convertToCartesianImage`
         """
-        image, ptSettings = CI.convertToCartesianImage(image, order=order, border=border, borderVal=borderVal,
+        image, ptSettings = convertToCartesianImage(image, order=order, border=border, borderVal=borderVal,
                                                        useMultiThreading=useMultiThreading, settings=self)
         return image
 
@@ -230,7 +224,7 @@ class ImageTransform:
         :meth:`getPolarPointsImage`, :meth:`getPolarPoints`, :meth:`getPolarPoints2`
         """
 
-        return PC.getPolarPointsImage(points, self)
+        return getPolarPointsImage(points, self)
 
     def getCartesianPointsImage(self, points):
         """Convert list of polar points from image to cartesian image points based on transform metadata
@@ -257,7 +251,7 @@ class ImageTransform:
         --------
         :meth:`getCartesianPointsImage`, :meth:`getCartesianPoints`, :meth:`getCartesianPoints2`
         """
-        return PC.getCartesianPointsImage(points, self)
+        return getCartesianPointsImage(points, self)
 
     def __repr__(self):
         return 'ImageTransform(center=%s, initialRadius=%i, finalRadius=%i, initialAngle=%f, finalAngle=%f, ' \
@@ -267,3 +261,9 @@ class ImageTransform:
 
     def __str__(self):
         return self.__repr__()
+
+# Bypasses issue with ImageTransform not being defined for cyclic imports
+# The answer is to include imports at the end so that everything is already defined before you import anything else
+from polarTransform.convertToCartesianImage import convertToCartesianImage
+from polarTransform.convertToPolarImage import convertToPolarImage
+from polarTransform.pointsConversion import getCartesianPointsImage, getPolarPointsImage

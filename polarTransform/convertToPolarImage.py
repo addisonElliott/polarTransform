@@ -2,9 +2,6 @@ import concurrent.futures
 
 import scipy.ndimage
 
-import polarTransform.imageTransform as IT
-from polarTransform.pointsConversion import *
-
 
 def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None, initialAngle=None, finalAngle=None,
                         radiusSize=None, angleSize=None, order=3, border='constant', borderVal=0.0,
@@ -257,8 +254,8 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
                 angleSize = int(4 * np.max(image.shape) * (finalAngle - initialAngle) / (2 * np.pi))
 
         # Create the settings
-        settings = IT.ImageTransform(center, initialRadius, finalRadius, initialAngle, finalAngle, image.shape[0:2],
-                                     (radiusSize, angleSize))
+        settings = ImageTransform(center, initialRadius, finalRadius, initialAngle, finalAngle, image.shape[0:2],
+                                  (radiusSize, angleSize))
 
     # Create radii from start to finish with radiusSize, do same for theta
     # Then create a 2D grid of radius and theta using meshgrid
@@ -309,3 +306,6 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
     polarImage = np.dstack(polarImages).reshape(newShape)
 
     return polarImage, settings
+
+from polarTransform.imageTransform import ImageTransform
+from polarTransform.pointsConversion import *

@@ -2,9 +2,6 @@ import concurrent.futures
 
 import scipy.ndimage
 
-import polarTransform.imageTransform as IT
-from polarTransform.pointsConversion import *
-
 
 def convertToCartesianImage(image, center=None, initialRadius=None,
                             finalRadius=None, initialAngle=None,
@@ -291,8 +288,8 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
         # Some people may use list but we want to convert this
         imageSize = tuple(imageSize)
 
-        settings = IT.ImageTransform(center, initialRadius, finalRadius, initialAngle, finalAngle, imageSize,
-                                     image.shape[0:2])
+        settings = ImageTransform(center, initialRadius, finalRadius, initialAngle, finalAngle, imageSize,
+                                  image.shape[0:2])
     else:
         # This is used to scale the result of the radius to get the appropriate Cartesian value
         scaleRadius = settings.polarImageSize[0] / (settings.finalRadius - settings.initialRadius)
@@ -357,3 +354,7 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
     cartesianImage = np.dstack(cartesianImages).reshape(newShape)
 
     return cartesianImage, settings
+
+
+from polarTransform.pointsConversion import *
+from polarTransform.imageTransform import ImageTransform

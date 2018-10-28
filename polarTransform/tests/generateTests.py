@@ -233,6 +233,3 @@ def generateHorizontalLinesAnimatedPolar():
 
 # TODO Will need to install dev-requirements.txt for TravisCI
 # TODO Enable codecov for Travis CI, add banner for it
-# TODO Standardize using tuple versus numpy array for things...
-
-# TODO Need to write cartesian conversion functions for 3D

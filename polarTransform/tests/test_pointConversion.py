@@ -12,27 +12,7 @@ import polarTransform
 class TestPointConversion(unittest.TestCase):
     def setUp(self):
         self.shortAxisApexImage = loadImage('shortAxisApex.png')
-        self.verticalLinesImage = loadImage('verticalLines.png')
-
         self.shortAxisApexPolarImage = loadImage('shortAxisApexPolarImage.png')
-        self.shortAxisApexPolarImage_centerMiddle = loadImage('shortAxisApexPolarImage_centerMiddle.png')
-        self.verticalLinesPolarImage = loadImage('verticalLinesPolarImage.png')
-        self.verticalLinesPolarImage_scaled = loadImage('verticalLinesPolarImage_scaled.png')
-        self.verticalLinesPolarImage_scaled2 = loadImage('verticalLinesPolarImage_scaled2.png')
-        self.verticalLinesPolarImage_scaled3 = loadImage('verticalLinesPolarImage_scaled3.png')
-
-        self.verticalLinesCartesianImage = loadImage('verticalLinesCartesianImage.png')
-        self.verticalLinesCartesianImage_scaled = loadImage('verticalLinesCartesianImage_scaled.png')
-        self.verticalLinesCartesianImage_scaled2 = loadImage('verticalLinesCartesianImage_scaled2.png')
-        self.verticalLinesCartesianImage_scaled3 = loadImage('verticalLinesCartesianImage_scaled3.png')
-
-        self.shortAxisApexCartesianImage = loadImage('shortAxisApexCartesianImage.png')
-        self.shortAxisApexCartesianImage2 = loadImage('shortAxisApexCartesianImage2.png')
-
-        self.verticalLinesPolarImageBorders = loadImage('verticalLinesPolarImageBorders.png')
-        self.verticalLinesCartesianImageBorders2 = loadImage('verticalLinesCartesianImageBorders2.png')
-        self.verticalLinesPolarImageBorders3 = loadImage('verticalLinesPolarImageBorders3.png')
-        self.verticalLinesCartesianImageBorders4 = loadImage('verticalLinesCartesianImageBorders4.png')
 
     def test_polarConversion(self):
         polarImage, ptSettings = polarTransform.convertToPolarImage(self.shortAxisApexImage,

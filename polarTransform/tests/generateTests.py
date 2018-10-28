@@ -206,5 +206,4 @@ def generateHorizontalLinesAnimatedPolar():
 # TODO Setup automatic release like pynrrd NEED TO TEST IT NOW
 # TODO Change how tests are run in travis and stuff NEED TO TEST IT NOW
 
-# TODO Will need to install dev-requirements.txt for TravisCI
-# TODO Enable codecov for Travis CI, add banner for it
+# TODO Enable codecov for Travis CI, add banner for it, NEED TO TEST IT NOW

@@ -80,3 +80,20 @@ def assert_image_equal(desired, actual, diff):
     difference = np.abs(desired.astype(int) - actual.astype(int)).astype(np.uint8)
 
     assert (np.all(difference <= diff))
+
+
+def assert_image_approx_equal_average(desired, actual, averageDiff):
+    assert desired.ndim == actual.ndim, 'Images are not equal, difference in dimensions: %i != %i' % \
+                                        (desired.ndim, actual.ndim)
+    assert desired.shape == actual.shape, 'Images are not equal, difference in shape %s != %s' % \
+                                          (desired.shape, actual.shape)
+
+    # Calculate the difference between the two images
+    difference = np.abs(desired.astype(int) - actual.astype(int)).astype(np.uint8)
+
+    # Get average difference between each different pixel
+    averageDiffPerPixel = np.sum(difference, axis=(0, 1)) / np.sum(difference > 0, axis=(0, 1))
+
+    assert np.all(averageDiffPerPixel < averageDiff), 'Images are not equal, average difference between each channel ' \
+                                                      'is not less than the given threshold, %s < %s' % \
+                                                      (averageDiffPerPixel, averageDiff)

@@ -232,6 +232,7 @@ def generateHorizontalLinesAnimatedPolar():
 # TODO Look at tests and see if I cant get rid of the numbered ones that look the same
 
 # TODO Will need to install dev-requirements.txt for TravisCI
-# TODO Test flipud for OpenCV by using a different grayscale image
 # TODO Enable codecov for Travis CI, add banner for it
 # TODO Standardize using tuple versus numpy array for things...
+
+# TODO Need to write cartesian conversion functions for 3D

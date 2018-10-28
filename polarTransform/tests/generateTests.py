@@ -29,6 +29,7 @@ verticalLinesPolarImage_scaled3 = loadImage('verticalLinesPolarImage_scaled3.png
 verticalLinesCartesianImage_scaled2 = loadImage('verticalLinesCartesianImage_scaled2.png')
 
 verticalLinesAnimated = loadVideo('verticalLinesAnimated.avi')
+horizontalLinesAnimated = loadVideo('horizontalLinesAnimated.avi')
 
 
 # Generate functions
@@ -143,22 +144,6 @@ def generateVerticalLinesAnimated():
 
     saveVideo('verticalLinesAnimated.avi', image3D)
 
-    # import matplotlib.pyplot as plt
-    #
-    # image3D2 = loadVideo('verticalLinesAnimated.avi')
-
-    # plt.figure(1)
-    # plt.imshow(image3D[..., 0], origin='lower')
-    #
-    # plt.figure(2)
-    # plt.imshow(image3D2[..., 0], origin='lower')
-
-    # plt.figure(1)
-    # x = np.abs(image3D[..., 0].astype(np.int16) - image3D2[..., 0].astype(np.int16)).astype(np.uint8)
-    # plt.imshow(x, origin='lower')
-    #
-    # plt.show()
-
 
 def generateVerticalLinesAnimatedPolar():
     frameSize = 40
@@ -181,6 +166,36 @@ def generateVerticalLinesAnimatedPolar():
     saveVideo('verticalLinesAnimatedPolar.avi', polarImage3D)
 
 
+def generateHorizontalLinesAnimated():
+    frameSize = 40
+
+    frames = [np.roll(horizontalLines, 36 * x, axis=0) for x in range(frameSize)]
+    image3D = np.stack(frames, axis=-1)
+
+    saveVideo('horizontalLinesAnimated.avi', image3D)
+
+
+def generateHorizontalLinesAnimatedPolar():
+    frameSize = 40
+    ptSettings = None
+    polarFrames = []
+
+    for x in range(frameSize):
+        frame = horizontalLinesAnimated[..., x]
+
+        # Call convert to polar image on each frame, uses the assumption that individual 2D image works fine based on
+        # other tests
+        if ptSettings:
+            polarFrame = ptSettings.convertToPolarImage(frame)
+        else:
+            polarFrame, ptSettings = polarTransform.convertToPolarImage(frame)
+
+        polarFrames.append(polarFrame)
+
+    polarImage3D = np.stack(polarFrames, axis=-1)
+    saveVideo('horizontalLinesAnimatedPolar.avi', polarImage3D)
+
+
 # Enable these functions as you see fit to generate the images
 # Note: It is up to the developer to visually inspect the output images that are created.
 # generateShortAxisPolar()
@@ -201,10 +216,13 @@ def generateVerticalLinesAnimatedPolar():
 # generateVerticalLinesBorders()
 # generateVerticalLinesBorders2()
 
-generateHorizontalLinesPolar()
+# generateHorizontalLinesPolar()
 
 # generateVerticalLinesAnimated()
 # generateVerticalLinesAnimatedPolar()
+
+# generateHorizontalLinesAnimated()
+# generateHorizontalLinesAnimatedPolar()
 
 # TODO Fix Travis CI so that it doesnt run on all branches...? NEED TO TEST IT NOW
 # TODO Further test and refine the ImageTransform class, know I messed it up somehow
@@ -216,4 +234,4 @@ generateHorizontalLinesPolar()
 # TODO Will need to install dev-requirements.txt for TravisCI
 # TODO Test flipud for OpenCV by using a different grayscale image
 # TODO Enable codecov for Travis CI, add banner for it
-# Standardize using tuple versus numpy array for things...
+# TODO Standardize using tuple versus numpy array for things...

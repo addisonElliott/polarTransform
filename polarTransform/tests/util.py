@@ -31,7 +31,7 @@ def loadVideo(filename, flipud=True, convertToGrayscale=False):
             break
 
         # Convert to grayscale or remove alpha component if RGB image
-        if convertToGrayscale:
+        if convertToGrayscale and frame.ndim == 3:
             frame = frame[:, :, 0]
         elif frame.ndim == 3 and frame.shape[-1] == 4:
             frame = frame[:, :, 0:3]

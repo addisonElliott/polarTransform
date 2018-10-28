@@ -26,6 +26,8 @@ class TestPolarConversion(unittest.TestCase):
 
         self.verticalLinesAnimated = loadVideo('verticalLinesAnimated.avi')
         self.verticalLinesAnimatedPolar = loadVideo('verticalLinesAnimatedPolar.avi')
+        self.horizontalLinesAnimated = loadVideo('horizontalLinesAnimated.avi', convertToGrayscale=True)
+        self.horizontalLinesAnimatedPolar = loadVideo('horizontalLinesAnimatedPolar.avi', convertToGrayscale=True)
 
     def test_default(self):
         polarImage, ptSettings = polarTransform.convertToPolarImage(self.shortAxisApexImage,
@@ -182,31 +184,32 @@ class TestPolarConversion(unittest.TestCase):
 
         np.testing.assert_almost_equal(polarImage, self.verticalLinesAnimatedPolar)
 
-    def test_3d_supportxxx(self):
-        # TODO Do a test where I simply take one image, roll it around, take polar transform and repeat for like some amount of frames.
-        # Then compare that to just taking the individual slices and doing it. Probably don't want to do too many frames to not
-        # have it slow down.
-        #
-        # Then repeat the test with a premade MP4 that was generated
-        #
-        # Probably should do with Bmode (grayscale) and RGB
-        # I might want to play around with getting a better grayscale image
+    def test_3d_support_grayscale(self):
+        polarImage, ptSettings = polarTransform.convertToPolarImage(self.horizontalLinesAnimated)
 
-        # TODO Load rolled image and then roll it myself...
-        # TODO Not sure what I want to do here
-
-        polarImage, ptSettings = polarTransform.convertToPolarImage(self.verticalLinesImage)
-
-        np.testing.assert_array_equal(ptSettings.center, np.array([128, 128]))
+        np.testing.assert_array_equal(ptSettings.center, np.array([512, 384]))
         self.assertEqual(ptSettings.initialRadius, 0)
-        self.assertEqual(ptSettings.finalRadius, 182)
+        self.assertEqual(ptSettings.finalRadius, 640)
         self.assertEqual(ptSettings.initialAngle, 0.0)
         self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
-        self.assertEqual(ptSettings.cartesianImageSize, self.verticalLinesImage.shape[0:2])
-        self.assertEqual(ptSettings.polarImageSize, (256, 1024))
+        self.assertEqual(ptSettings.cartesianImageSize, self.horizontalLinesAnimated.shape[0:2])
+        self.assertEqual(ptSettings.polarImageSize, (1024, 2048))
 
-        np.testing.assert_almost_equal(polarImage, self.verticalLinesPolarImage)
-        pass
+        np.testing.assert_almost_equal(polarImage, self.horizontalLinesAnimatedPolar)
+
+    def test_3d_support_grayscale_multithreaded(self):
+        polarImage, ptSettings = polarTransform.convertToPolarImage(self.horizontalLinesAnimated,
+                                                                    useMultiThreading=True)
+
+        np.testing.assert_array_equal(ptSettings.center, np.array([512, 384]))
+        self.assertEqual(ptSettings.initialRadius, 0)
+        self.assertEqual(ptSettings.finalRadius, 640)
+        self.assertEqual(ptSettings.initialAngle, 0.0)
+        self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
+        self.assertEqual(ptSettings.cartesianImageSize, self.horizontalLinesAnimated.shape[0:2])
+        self.assertEqual(ptSettings.polarImageSize, (1024, 2048))
+
+        np.testing.assert_almost_equal(polarImage, self.horizontalLinesAnimatedPolar)
 
 
 if __name__ == '__main__':

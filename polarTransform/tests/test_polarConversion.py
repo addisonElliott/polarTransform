@@ -21,8 +21,8 @@ class TestPolarConversion(unittest.TestCase):
         self.verticalLinesPolarImage_scaled2 = loadImage('verticalLinesPolarImage_scaled2.png')
         self.verticalLinesPolarImage_scaled3 = loadImage('verticalLinesPolarImage_scaled3.png')
 
-        self.verticalLinesAnimated = loadVideo('verticalLinesAnimated.mp4')
-        self.verticalLinesAnimatedPolar = loadVideo('verticalLinesAnimatedPolar.mp4')
+        self.verticalLinesAnimated = loadVideo('verticalLinesAnimated.avi')
+        self.verticalLinesAnimatedPolar = loadVideo('verticalLinesAnimatedPolar.avi')
 
     def test_default(self):
         polarImage, ptSettings = polarTransform.convertToPolarImage(self.shortAxisApexImage,
@@ -47,8 +47,7 @@ class TestPolarConversion(unittest.TestCase):
         self.assertEqual(ptSettings.finalRadius, 580)
         self.assertEqual(ptSettings.initialAngle, 0.0)
         self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
-        self.assertEqual(ptSettings.cartesianImageSize,
-                         self.shortAxisApexImage.shape)
+        self.assertEqual(ptSettings.cartesianImageSize, self.shortAxisApexImage.shape)
         self.assertEqual(ptSettings.polarImageSize, (898, 1600))
 
     def test_defaultCenter(self):
@@ -142,6 +141,19 @@ class TestPolarConversion(unittest.TestCase):
 
     def test_3d_support_rgb(self):
         polarImage, ptSettings = polarTransform.convertToPolarImage(self.verticalLinesAnimated)
+
+        np.testing.assert_array_equal(ptSettings.center, np.array([128, 128]))
+        self.assertEqual(ptSettings.initialRadius, 0)
+        self.assertEqual(ptSettings.finalRadius, 182)
+        self.assertEqual(ptSettings.initialAngle, 0.0)
+        self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
+        self.assertEqual(ptSettings.cartesianImageSize, self.verticalLinesAnimated.shape[0:2])
+        self.assertEqual(ptSettings.polarImageSize, (256, 1024))
+
+        np.testing.assert_almost_equal(polarImage, self.verticalLinesAnimatedPolar)
+
+    def test_3d_support_rgb_multithreaded(self):
+        polarImage, ptSettings = polarTransform.convertToPolarImage(self.verticalLinesAnimated, useMultiThreading=True)
 
         np.testing.assert_array_equal(ptSettings.center, np.array([128, 128]))
         self.assertEqual(ptSettings.initialRadius, 0)

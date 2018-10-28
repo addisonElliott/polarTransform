@@ -27,7 +27,7 @@ verticalLinesPolarImage_scaled3 = loadImage('verticalLinesPolarImage_scaled3.png
 
 verticalLinesCartesianImage_scaled2 = loadImage('verticalLinesCartesianImage_scaled2.png')
 
-verticalLinesAnimated = loadVideo('verticalLinesAnimated.mp4')
+verticalLinesAnimated = loadVideo('verticalLinesAnimated.avi')
 
 
 # Generate functions
@@ -135,7 +135,7 @@ def generateVerticalLinesAnimated():
     frames = [np.roll(verticalLinesImage, 12 * x, axis=1) for x in range(frameSize)]
     image3D = np.stack(frames, axis=-1)
 
-    saveVideo('verticalLinesAnimated.mp4', image3D)
+    saveVideo('verticalLinesAnimated.avi', image3D)
 
 
 def generateVerticalLinesAnimatedPolar():
@@ -156,7 +156,7 @@ def generateVerticalLinesAnimatedPolar():
         polarFrames.append(polarFrame)
 
     polarImage3D = np.stack(polarFrames, axis=-1)
-    saveVideo('verticalLinesAnimatedPolar.mp4', polarImage3D)
+    saveVideo('verticalLinesAnimatedPolar.avi', polarImage3D)
 
 
 # Enable these functions as you see fit to generate the images

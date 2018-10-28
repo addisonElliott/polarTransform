@@ -202,6 +202,8 @@ def generateHorizontalLinesAnimatedPolar():
 # generateHorizontalLinesAnimatedPolar()
 
 # TODO Fix Travis CI so that it doesnt run on all branches...? NEED TO TEST IT NOW
+#   Correctly ran for PR
+
 # TODO Further test and refine the ImageTransform class, know I messed it up somehow
 # TODO Setup automatic release like pynrrd NEED TO TEST IT NOW
 # TODO Change how tests are run in travis and stuff NEED TO TEST IT NOW

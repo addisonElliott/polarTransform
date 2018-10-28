@@ -5,8 +5,8 @@ import unittest
 # Required specifically in each module so that searches happen at the parent directory for importing modules
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 
-from polarTransform.tests.util import *
 import polarTransform
+from polarTransform.tests.util import *
 
 
 class TestCartesianConversion(unittest.TestCase):

@@ -36,9 +36,7 @@ setup(name='polarTransform',
       },
       python_requires='>=3',
       packages=find_packages(),
-      package_data={
-          'polarTransform': ['tests/*']
-      },
+      include_package_data=True,
       license='MIT License',
       install_requires=[
           'numpy', 'scipy', 'scikit-image']

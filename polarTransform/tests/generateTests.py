@@ -68,12 +68,6 @@ def generateVerticalLinesPolar4():
     saveImage('verticalLinesPolarImage_scaled3.png', polarImage)
 
 
-def generateVerticalLinesCartesian():
-    cartesianImage, ptSettings = polarTransform.convertToCartesianImage(verticalLinesPolarImage, center=[128, 128],
-                                                                        imageSize=[256, 256], finalRadius=182)
-    saveImage('verticalLinesCartesianImage.png', cartesianImage)
-
-
 def generateVerticalLinesCartesian2():
     cartesianImage, ptSettings = polarTransform.convertToCartesianImage(verticalLinesPolarImage_scaled,
                                                                         initialRadius=30, finalRadius=100,
@@ -97,18 +91,6 @@ def generateVerticalLinesCartesian4():
                                                                         finalAngle=5 / 4 * np.pi, center=[128, 128],
                                                                         imageSize=[256, 256])
     saveImage('verticalLinesCartesianImage_scaled3.png', cartesianImage)
-
-
-def generateShortAxisApexCartesian():
-    cartesianImage, ptSettings = polarTransform.convertToCartesianImage(shortAxisApexPolarImage, center=[401, 365],
-                                                                        imageSize=[608, 800], finalRadius=543)
-    saveImage('shortAxisApexCartesianImage.png', cartesianImage)
-
-
-def generateShortAxisApexCartesian2():
-    cartesianImage, ptSettings = polarTransform.convertToCartesianImage(shortAxisApexPolarImage_centerMiddle,
-                                                                        imageSize=[608, 800], finalRadius=503)
-    saveImage('shortAxisApexCartesianImage2.png', cartesianImage)
 
 
 def generateVerticalLinesBorders():
@@ -195,7 +177,6 @@ def generateHorizontalLinesAnimatedPolar():
     polarImage3D = np.stack(polarFrames, axis=-1)
     saveVideo('horizontalLinesAnimatedPolar.avi', polarImage3D)
 
-
 # Enable these functions as you see fit to generate the images
 # Note: It is up to the developer to visually inspect the output images that are created.
 # generateShortAxisPolar()
@@ -205,13 +186,9 @@ def generateHorizontalLinesAnimatedPolar():
 # generateVerticalLinesPolar3()
 # generateVerticalLinesPolar4()
 
-# generateVerticalLinesCartesian()
 # generateVerticalLinesCartesian2()
 # generateVerticalLinesCartesian3()
 # generateVerticalLinesCartesian4()
-
-# generateShortAxisApexCartesian()
-# generateShortAxisApexCartesian2()
 
 # generateVerticalLinesBorders()
 # generateVerticalLinesBorders2()
@@ -228,8 +205,6 @@ def generateHorizontalLinesAnimatedPolar():
 # TODO Further test and refine the ImageTransform class, know I messed it up somehow
 # TODO Setup automatic release like pynrrd NEED TO TEST IT NOW
 # TODO Change how tests are run in travis and stuff NEED TO TEST IT NOW
-
-# TODO Look at tests and see if I cant get rid of the numbered ones that look the same
 
 # TODO Will need to install dev-requirements.txt for TravisCI
 # TODO Enable codecov for Travis CI, add banner for it

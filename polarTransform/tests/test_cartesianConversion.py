@@ -22,13 +22,9 @@ class TestCartesianConversion(unittest.TestCase):
         self.verticalLinesPolarImage_scaled2 = loadImage('verticalLinesPolarImage_scaled2.png')
         self.verticalLinesPolarImage_scaled3 = loadImage('verticalLinesPolarImage_scaled3.png')
 
-        self.verticalLinesCartesianImage = loadImage('verticalLinesCartesianImage.png')
         self.verticalLinesCartesianImage_scaled = loadImage('verticalLinesCartesianImage_scaled.png')
         self.verticalLinesCartesianImage_scaled2 = loadImage('verticalLinesCartesianImage_scaled2.png')
         self.verticalLinesCartesianImage_scaled3 = loadImage('verticalLinesCartesianImage_scaled3.png')
-
-        self.shortAxisApexCartesianImage = loadImage('shortAxisApexCartesianImage.png')
-        self.shortAxisApexCartesianImage2 = loadImage('shortAxisApexCartesianImage2.png')
 
         self.horizontalLinesPolarImage = loadImage('horizontalLinesPolarImage.png', convertToGrayscale=True)
 
@@ -50,7 +46,7 @@ class TestCartesianConversion(unittest.TestCase):
         self.assertEqual(ptSettings.cartesianImageSize, (608, 800))
         self.assertEqual(ptSettings.polarImageSize, self.shortAxisApexPolarImage.shape[0:2])
 
-        np.testing.assert_almost_equal(cartesianImage, self.shortAxisApexCartesianImage)
+        assert_image_approx_equal_average(cartesianImage, self.shortAxisApexImage, 5)
 
     def test_notNumpyArrayCenter(self):
         cartesianImage, ptSettings = polarTransform.convertToCartesianImage(self.shortAxisApexPolarImage_centerMiddle,
@@ -64,7 +60,7 @@ class TestCartesianConversion(unittest.TestCase):
         self.assertEqual(ptSettings.cartesianImageSize, (608, 800))
         self.assertEqual(ptSettings.polarImageSize, self.shortAxisApexPolarImage_centerMiddle.shape[0:2])
 
-        np.testing.assert_almost_equal(cartesianImage, self.shortAxisApexCartesianImage2)
+        assert_image_approx_equal_average(cartesianImage, self.shortAxisApexImage, 5)
 
     def test_RGBA(self):
         cartesianImage, ptSettings = polarTransform.convertToCartesianImage(self.verticalLinesPolarImage,
@@ -79,7 +75,7 @@ class TestCartesianConversion(unittest.TestCase):
         self.assertEqual(ptSettings.cartesianImageSize, (256, 256))
         self.assertEqual(ptSettings.polarImageSize, self.verticalLinesPolarImage.shape[0:2])
 
-        np.testing.assert_almost_equal(cartesianImage, self.verticalLinesCartesianImage)
+        assert_image_approx_equal_average(cartesianImage, self.verticalLinesImage, 5)
 
     def test_IFRadius(self):
         cartesianImage, ptSettings = polarTransform.convertToCartesianImage(self.verticalLinesPolarImage_scaled2,

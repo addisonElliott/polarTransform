@@ -277,6 +277,7 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
             center = np.ceil(np.abs(center)).astype(int)
         elif isinstance(center, str):
             # Set the center based on the image size given
+            # TODO I Dont think this will work?!?!
             if center == 'bottom-left':
                 center = imageSize[1::-1] * np.array([0, 0])
             elif center == 'bottom-middle':
@@ -304,10 +305,10 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
                                   image.shape[-2:])
     else:
         # This is used to scale the result of the radius to get the appropriate Cartesian value
-        scaleRadius = settings.polarImageSize[0] / (settings.finalRadius - settings.initialRadius)
+        scaleRadius = settings.polarImageSize[1] / (settings.finalRadius - settings.initialRadius)
 
         # This is used to scale the result of the angle to get the appropriate Cartesian value
-        scaleAngle = settings.polarImageSize[1] / (settings.finalAngle - settings.initialAngle)
+        scaleAngle = settings.polarImageSize[0] / (settings.finalAngle - settings.initialAngle)
 
     # Get list of cartesian x and y coordinate and create a 2D create of the coordinates using meshgrid
     xs = np.arange(0, settings.cartesianImageSize[1])
@@ -332,7 +333,7 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
     theta = theta * scaleAngle
 
     # Flatten the desired x/y cartesian points into one 2xN array
-    desiredCoords = np.vstack((r.flatten(), theta.flatten()))
+    desiredCoords = np.vstack((theta.flatten(), r.flatten()))
 
     # Get the new shape which is the cartesian image shape plus any other dimensions
     # Get the new shape of the cartesian image which is the same shape of the polar image except the last two dimensions

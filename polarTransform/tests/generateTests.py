@@ -179,8 +179,8 @@ def generateHorizontalLinesAnimatedPolar():
 
 # Enable these functions as you see fit to generate the images
 # Note: It is up to the developer to visually inspect the output images that are created.
-# generateShortAxisPolar()
-# generateShortAxisPolar2()
+generateShortAxisPolar()
+generateShortAxisPolar2()
 # generateVerticalLinesPolar()
 # generateVerticalLinesPolar2()
 # generateVerticalLinesPolar3()

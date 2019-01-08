@@ -44,7 +44,7 @@ class TestCartesianConversion(unittest.TestCase):
         self.assertEqual(ptSettings.initialAngle, 0.0)
         self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
         self.assertEqual(ptSettings.cartesianImageSize, (608, 800))
-        self.assertEqual(ptSettings.polarImageSize, self.shortAxisApexPolarImage.shape[0:2])
+        self.assertEqual(ptSettings.polarImageSize, self.shortAxisApexPolarImage.shape[-2:])
 
         assert_image_approx_equal_average(cartesianImage, self.shortAxisApexImage, 5)
 

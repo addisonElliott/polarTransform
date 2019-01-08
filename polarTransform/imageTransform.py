@@ -129,10 +129,6 @@ class ImageTransform:
             coordinates are traditionally represented as (x, y, z) and as (r, theta, z) in the polar domain. When
             storing Cartesian data in C-order, the axes are usually flipped and the data is saved as (z, y, x). Thus,
             the polar domain coordinates are also flipped to stay consistent.
-
-            Image is structured in C-order, i.e. the axes are ordered as (z, theta, r) or (theta, r). This format is
-            inverted from the traditional mathematical format of (r, theta). This assumes that the radial dimension is
-            fastest varying.
         """
         image, ptSettings = convertToPolarImage(image, order=order, border=border, borderVal=borderVal,
                                                    useMultiThreading=useMultiThreading, settings=self)

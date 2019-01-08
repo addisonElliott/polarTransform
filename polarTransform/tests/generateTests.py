@@ -163,7 +163,7 @@ def generateHorizontalLinesAnimatedPolar():
     polarFrames = []
 
     for x in range(frameSize):
-        frame = horizontalLinesAnimated[..., x]
+        frame = horizontalLinesAnimated[x, ...]
 
         # Call convert to polar image on each frame, uses the assumption that individual 2D image works fine based on
         # other tests
@@ -179,24 +179,24 @@ def generateHorizontalLinesAnimatedPolar():
 
 # Enable these functions as you see fit to generate the images
 # Note: It is up to the developer to visually inspect the output images that are created.
-generateShortAxisPolar()
-generateShortAxisPolar2()
-# generateVerticalLinesPolar()
+# generateShortAxisPolar()
+# generateShortAxisPolar2()
+generateVerticalLinesPolar()
 # generateVerticalLinesPolar2()
 # generateVerticalLinesPolar3()
 # generateVerticalLinesPolar4()
-
+#
 # generateVerticalLinesCartesian2()
 # generateVerticalLinesCartesian3()
 # generateVerticalLinesCartesian4()
-
+#
 # generateVerticalLinesBorders()
 # generateVerticalLinesBorders2()
 
 # generateHorizontalLinesPolar()
-
+#
 # generateVerticalLinesAnimated()
 # generateVerticalLinesAnimatedPolar()
-
+#
 # generateHorizontalLinesAnimated()
 # generateHorizontalLinesAnimatedPolar()

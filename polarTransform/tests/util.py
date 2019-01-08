@@ -59,6 +59,8 @@ def saveVideo(filename, image, fps=20, fourcc='MJLS', flipud=True):
     if isinstance(fourcc, str):
         fourcc = cv2.VideoWriter_fourcc(*fourcc)
 
+    image.shape[-2:]
+
     # Construct codec to use and create writer
     # MJLS is one of the few FFMPEG formats that supports lossy encoding in OpenCV specifically because it does not
     # convert to YUV color space

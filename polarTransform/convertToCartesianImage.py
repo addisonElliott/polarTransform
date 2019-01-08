@@ -199,7 +199,7 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
         # In other words, what radius does the last row of polar image correspond to?
         # If not set, default is the largest radius from image
         if finalRadius is None:
-            finalRadius = image.shape[0]
+            finalRadius = image.shape[-1]
 
         # Initial angle of the source image
         # In other words, what angle does column 0 correspond to?
@@ -214,15 +214,15 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
             finalAngle = 2 * np.pi
 
         # This is used to scale the result of the radius to get the appropriate Cartesian value
-        scaleRadius = image.shape[0] / (finalRadius - initialRadius)
+        scaleRadius = image.shape[-1] / (finalRadius - initialRadius)
 
         # This is used to scale the result of the angle to get the appropriate Cartesian value
-        scaleAngle = image.shape[1] / (finalAngle - initialAngle)
+        scaleAngle = image.shape[-2] / (finalAngle - initialAngle)
 
         if imageSize is None:
             # Obtain the image size by looping from initial to final source angle (every possible theta in the image
             # basically)
-            thetas = np.mod(np.linspace(0, (finalAngle - initialAngle), image.shape[1]) + initialAngle, 2 * np.pi)
+            thetas = np.mod(np.linspace(0, (finalAngle - initialAngle), image.shape[-2]) + initialAngle, 2 * np.pi)
             maxRadius = finalRadius * np.ones_like(thetas)
 
             # Then get the maximum radius of the image and compute the x/y coordinates for each option
@@ -301,7 +301,7 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
         imageSize = tuple(imageSize)
 
         settings = ImageTransform(center, initialRadius, finalRadius, initialAngle, finalAngle, imageSize,
-                                  image.shape[0:2])
+                                  image.shape[-2:])
     else:
         # This is used to scale the result of the radius to get the appropriate Cartesian value
         scaleRadius = settings.polarImageSize[0] / (settings.finalRadius - settings.initialRadius)
@@ -335,20 +335,22 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
     desiredCoords = np.vstack((r.flatten(), theta.flatten()))
 
     # Get the new shape which is the cartesian image shape plus any other dimensions
-    newShape = settings.cartesianImageSize + image.shape[2:]
+    # Get the new shape of the cartesian image which is the same shape of the polar image except the last two dimensions
+    # (r & theta) are replaced with the cartesian image size
+    newShape =  image.shape[:-2] + settings.cartesianImageSize
 
     # Reshape the image to be 3D, flattens the array if > 3D otherwise it makes it 3D with the 3rd dimension a size of 1
-    image = image.reshape(image.shape[0:2] + (-1,))
+    image = image.reshape((-1,) + settings.polarImageSize)
 
     if border == 'constant':
         # Pad image by 3 pixels and then offset all of the desired coordinates by 3
-        image = np.pad(image, ((3, 3), (3, 3), (0, 0)), 'edge')
+        image = np.pad(image, ((0, 0), (3, 3), (3, 3)), 'edge')
         desiredCoords += 3
 
     if useMultiThreading:
         with concurrent.futures.ThreadPoolExecutor() as executor:
-            futures = [executor.submit(scipy.ndimage.map_coordinates, image[:, :, k], desiredCoords, mode=border,
-                                       cval=borderVal, order=order) for k in range(image.shape[2])]
+            futures = [executor.submit(scipy.ndimage.map_coordinates, slice, desiredCoords, mode=border, cval=borderVal,
+                                       order=order) for slice in image]
 
             concurrent.futures.wait(futures, return_when=concurrent.futures.ALL_COMPLETED)
 
@@ -357,13 +359,13 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
         cartesianImages = []
 
         # Loop through the third dimension and map each 2D slice
-        for k in range(image.shape[2]):
-            imageSlice = scipy.ndimage.map_coordinates(image[:, :, k], desiredCoords, mode=border, cval=borderVal,
+        for slice in image:
+            imageSlice = scipy.ndimage.map_coordinates(slice, desiredCoords, mode=border, cval=borderVal,
                                                        order=order).reshape(x.shape)
             cartesianImages.append(imageSlice)
 
     # Stack all of the slices together and reshape it to what it should be
-    cartesianImage = np.dstack(cartesianImages).reshape(newShape)
+    cartesianImage = np.stack(cartesianImages, axis=0).reshape(newShape)
 
     return cartesianImage, settings
 

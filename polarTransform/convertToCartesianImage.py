@@ -195,7 +195,6 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
         provides an easy way of passing these parameters along without having to specify them all again.
     """
 
-    # TODO If color channels exist, some setting for this. Then we move it to front and continue, then move back at end
     # If there is a color channel present, move it to the front of axes
     if settings.hasColor if settings is not None else hasColor:
         image = np.moveaxis(image, -1, 0)
@@ -294,7 +293,6 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
             center = np.ceil(np.abs(center)).astype(int)
         elif isinstance(center, str):
             # Set the center based on the image size given
-            # TODO I Dont think this will work?!?!
             if center == 'bottom-left':
                 center = imageSize[1::-1] * np.array([0, 0])
             elif center == 'bottom-middle':

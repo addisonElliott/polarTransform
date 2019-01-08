@@ -213,7 +213,6 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
         provides an easy way of passing these parameters along without having to specify them all again.
     """
 
-    # TODO If color channels exist, some setting for this. Then we move it to front and continue, then move back at end
     # If there is a color channel present, move it to the front of axes
     if settings.hasColor if settings is not None else hasColor:
         image = np.moveaxis(image, -1, 0)

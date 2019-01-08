@@ -39,7 +39,7 @@ def loadVideo(filename, flipud=True, convertToGrayscale=False):
         frames.append(frame)
 
     # Combine the video on the last axis
-    image3D = np.stack(frames, axis=-1)
+    image3D = np.stack(frames, axis=0)
 
     if flipud:
         image3D = np.flipud(image3D)
@@ -62,15 +62,15 @@ def saveVideo(filename, image, fps=20, fourcc='MJLS', flipud=True):
     # Construct codec to use and create writer
     # MJLS is one of the few FFMPEG formats that supports lossy encoding in OpenCV specifically because it does not
     # convert to YUV color space
-    writer = cv2.VideoWriter(os.path.join(dataDirectory, filename), fourcc, fps, image.shape[1::-1], isColor=hasColor)
+    writer = cv2.VideoWriter(os.path.join(dataDirectory, filename), fourcc, fps, image.shape[-2:], isColor=hasColor)
 
     # Flip image if specified
     if flipud:
         image = np.flipud(image)
 
     # Write frames
-    for x in range(image.shape[-1]):
-        writer.write(image[..., x])
+    for slice in image:
+        writer.write(slice)
 
     # Finish writing
     writer.release()
@@ -92,6 +92,7 @@ def assert_image_approx_equal_average(desired, actual, averageDiff):
     difference = np.abs(desired.astype(int) - actual.astype(int)).astype(np.uint8)
 
     # Get average difference between each different pixel
+    # TODO Not sure this is right anymore!
     averageDiffPerPixel = np.sum(difference, axis=(0, 1)) / np.sum(difference > 0, axis=(0, 1))
 
     assert np.all(averageDiffPerPixel < averageDiff), 'Images are not equal, average difference between each channel ' \

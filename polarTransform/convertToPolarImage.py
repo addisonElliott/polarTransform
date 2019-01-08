@@ -215,7 +215,7 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
 
     # TODO If color channels exist, some setting for this. Then we move it to front and continue, then move back at end
     # If there is a color channel present, move it to the front of axes
-    if hasColor:
+    if settings.hasColor if settings is not None else hasColor:
         image = np.moveaxis(image, -1, 0)
 
     # Create settings if none are given
@@ -337,7 +337,7 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
     polarImage = np.stack(polarImages, axis=0).reshape(newShape)
 
     # If there is a color channel present, move it abck to the end of axes
-    if hasColor:
+    if settings.hasColor:
         polarImage = np.moveaxis(polarImage, 0, -1)
 
     return polarImage, settings

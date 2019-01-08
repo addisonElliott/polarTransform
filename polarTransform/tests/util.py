@@ -42,7 +42,7 @@ def loadVideo(filename, flipud=True, convertToGrayscale=False):
     image3D = np.stack(frames, axis=0)
 
     if flipud:
-        image3D = np.flipud(image3D)
+        image3D = np.flip(image3D, axis=1)
 
     return image3D
 
@@ -59,16 +59,18 @@ def saveVideo(filename, image, fps=20, fourcc='MJLS', flipud=True):
     if isinstance(fourcc, str):
         fourcc = cv2.VideoWriter_fourcc(*fourcc)
 
-    image.shape[-2:]
+    # Retrieve the 2D image shape
+    # If there is color channels, get 2nd and 3rd to last dimensions, otherwise get last 2 dimensions
+    imageShape = image.shape[-2:-4:-1] if hasColor else image.shape[-1:-3:-1]
 
     # Construct codec to use and create writer
     # MJLS is one of the few FFMPEG formats that supports lossy encoding in OpenCV specifically because it does not
     # convert to YUV color space
-    writer = cv2.VideoWriter(os.path.join(dataDirectory, filename), fourcc, fps, image.shape[-2:], isColor=hasColor)
+    writer = cv2.VideoWriter(os.path.join(dataDirectory, filename), fourcc, fps, imageShape, isColor=hasColor)
 
     # Flip image if specified
     if flipud:
-        image = np.flipud(image)
+        image = np.flip(image, axis=1)
 
     # Write frames
     for slice in image:

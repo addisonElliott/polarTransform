@@ -197,7 +197,7 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
 
     # TODO If color channels exist, some setting for this. Then we move it to front and continue, then move back at end
     # If there is a color channel present, move it to the front of axes
-    if hasColor:
+    if settings.hasColor if settings is not None else hasColor:
         image = np.moveaxis(image, -1, 0)
 
     # Create settings if none are given
@@ -386,7 +386,7 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
     cartesianImage = np.stack(cartesianImages, axis=0).reshape(newShape)
 
     # If there is a color channel present, move it abck to the end of axes
-    if hasColor:
+    if settings.hasColor:
         cartesianImage = np.moveaxis(cartesianImage, 0, -1)
 
     return cartesianImage, settings

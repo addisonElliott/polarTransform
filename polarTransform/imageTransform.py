@@ -72,8 +72,8 @@ class ImageTransform:
         image : (N, M) or (N, M, P) :class:`numpy.ndarray`
             Cartesian image to convert to polar domain
 
-            Image should be structured in C-order, i.e. the axes should be ordered (y, x) or (z, y, x). Most libraries
-            in Python follow C-order syntax.
+            Image should be structured in C-order, i.e. the axes should be ordered (y, x) or (z, y, x). This format is
+            the traditional method of storing image data in Python.
 
             .. note::
                 For a 3D array, polar transformation is applied separately across each 2D slice
@@ -122,6 +122,13 @@ class ImageTransform:
         -------
         polarImage : (N, M) or (N, M, P) :class:`numpy.ndarray`
             Polar image
+
+            Resulting image is structured in C-order, i.e. the axes are be ordered as (z, theta, r) or (theta, r)
+            depending on if the input image was 3D. This format is arbitrary but is selected to stay consistent with
+            the traditional C-order representation in the Cartesian domain. In the mathematical domain, Cartesian
+            coordinates are traditionally represented as (x, y, z) and as (r, theta, z) in the polar domain. When
+            storing Cartesian data in C-order, the axes are usually flipped and the data is saved as (z, y, x). Thus,
+            the polar domain coordinates are also flipped to stay consistent.
 
             Image is structured in C-order, i.e. the axes are ordered as (z, theta, r) or (theta, r). This format is
             inverted from the traditional mathematical format of (r, theta). This assumes that the radial dimension is
@@ -203,7 +210,8 @@ class ImageTransform:
         cartesianImage : (N, M) or (N, M, P) :class:`numpy.ndarray`
             Cartesian image
 
-            Resulting image is structured in C-order, i.e. the axes are ordered as (z, y, x) or (y, x).
+            Resulting image is structured in C-order, i.e. the axes are ordered as (z, y, x) or (y, x). This format is
+            the traditional method of storing image data in Python.
 
         See Also
         --------

@@ -199,13 +199,16 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
         provides an easy way of passing these parameters along without having to specify them all again.
     """
 
+    # TODO If color channels exist, some setting for this. Then we move it to front and continue, then move back at end
+
     # Create settings if none are given
     if settings is None:
         # If center is not specified, set to the center of the image
         # Image shape is reversed because center is specified as x,y and shape is r,c.
+        # Fancy indexing says to grab the last element (x) and to the 2nd to last element (y) and reverse them
         # Otherwise, make sure the center is a Numpy array
         if center is None:
-            center = (np.array(image.shape[1::-1]) / 2).astype(int)
+            center = (np.array(image.shape[-1:-3:-1]) / 2).astype(int)
         else:
             center = np.array(center)
 
@@ -217,7 +220,8 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
         # Get four corners (indices) of the cartesian image
         # Convert the corners to polar and get the largest radius
         # This will be the maximum radius to represent the entire image in polar
-        corners = np.array([[0, 0], [0, 1], [1, 0], [1, 1]]) * image.shape[0:2]
+        # For image.shape, grab last 2 elements (y, x). Use -2 in case there is additional dimensions in front
+        corners = np.array([[0, 0], [0, 1], [1, 0], [1, 1]]) * image.shape[-2:]
         radii, _ = getPolarPoints2(corners[:, 1], corners[:, 0], center)
         maxRadius = np.ceil(radii.max()).astype(int)
 
@@ -239,7 +243,7 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
         # width/height of image to center times two.
         # The radius size is proportional to the final radius and initial radius
         if radiusSize is None:
-            cross = np.array([[image.shape[1] - 1, center[1]], [0, center[1]], [center[0], image.shape[0] - 1],
+            cross = np.array([[image.shape[-1] - 1, center[1]], [0, center[1]], [center[0], image.shape[-2] - 1],
                               [center[0], 0]])
 
             radiusSize = np.ceil(np.abs(cross - center).max() * 2 * (finalRadius - initialRadius) / maxRadius) \
@@ -263,15 +267,15 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
                 angleSize = int(4 * np.max(image.shape) * (finalAngle - initialAngle) / (2 * np.pi))
 
         # Create the settings
-        settings = ImageTransform(center, initialRadius, finalRadius, initialAngle, finalAngle, image.shape[0:2],
-                                  (radiusSize, angleSize))
+        settings = ImageTransform(center, initialRadius, finalRadius, initialAngle, finalAngle, image.shape[-2:],
+                                  (angleSize, radiusSize))
 
     # Create radii from start to finish with radiusSize, do same for theta
     # Then create a 2D grid of radius and theta using meshgrid
     # Set endpoint to False to NOT include the final sample specified. Think of it like this, if you ask to count from
     # 0 to 30, that is 31 numbers not 30. Thus, we count 0...29 to get 30 numbers.
-    radii = np.linspace(settings.initialRadius, settings.finalRadius, settings.polarImageSize[0], endpoint=False)
-    theta = np.linspace(settings.initialAngle, settings.finalAngle, settings.polarImageSize[1], endpoint=False)
+    radii = np.linspace(settings.initialRadius, settings.finalRadius, settings.polarImageSize[1], endpoint=False)
+    theta = np.linspace(settings.initialAngle, settings.finalAngle, settings.polarImageSize[0], endpoint=False)
     r, theta = np.meshgrid(radii, theta)
 
     # Take polar  grid and convert to cartesian coordinates
@@ -280,39 +284,40 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
     # Flatten the desired x/y cartesian points into one 2xN array
     desiredCoords = np.vstack((yCartesian.flatten(), xCartesian.flatten()))
 
-    # Get the new shape which is the cartesian image shape plus any other dimensions
-    newShape = settings.polarImageSize + image.shape[2:]
+    # Get the new shape of the polar image which is the same shape of the cartesian image except the last two dimensions
+    # (x & y) are replaced with the polar image size
+    newShape = image.shape[:-2] + settings.polarImageSize
 
     # Reshape the image to be 3D, flattens the array if > 3D otherwise it makes it 3D with the 3rd dimension a size of 1
-    image = image.reshape(image.shape[0:2] + (-1,))
+    image = image.reshape((-1,) + settings.cartesianImageSize)
 
     # If border is set to constant, then pad the image by the edges by 3 pixels.
     # If one tries to convert back to cartesian without the borders padded then the border of the cartesian image will
     # be corrupted because it will average the pixels with the border value
     if border == 'constant':
         # Pad image by 3 pixels and then offset all of the desired coordinates by 3
-        image = np.pad(image, ((3, 3), (3, 3), (0, 0)), 'edge')
+        image = np.pad(image, ((0, 0), (3, 3), (3, 3)), 'edge')
         desiredCoords += 3
 
     if useMultiThreading:
         with concurrent.futures.ThreadPoolExecutor() as executor:
-            futures = [executor.submit(scipy.ndimage.map_coordinates, image[:, :, k], desiredCoords, mode=border,
-                                       cval=borderVal, order=order) for k in range(image.shape[2])]
+            futures = [executor.submit(scipy.ndimage.map_coordinates, slice, desiredCoords, mode=border, cval=borderVal,
+                                       order=order) for slice in image]
 
             concurrent.futures.wait(futures, return_when=concurrent.futures.ALL_COMPLETED)
 
-            polarImages = [future.result().reshape(r.shape).T for future in futures]
+            polarImages = [future.result().reshape(r.shape) for future in futures]
     else:
         polarImages = []
 
         # Loop through the third dimension and map each 2D slice
-        for k in range(image.shape[2]):
-            imageSlice = scipy.ndimage.map_coordinates(image[:, :, k], desiredCoords, mode=border, cval=borderVal,
-                                                       order=order).reshape(r.shape).T
+        for slice in image:
+            imageSlice = scipy.ndimage.map_coordinates(slice, desiredCoords, mode=border, cval=borderVal,
+                                                       order=order).reshape(r.shape)
             polarImages.append(imageSlice)
 
     # Stack all of the slices together and reshape it to what it should be
-    polarImage = np.dstack(polarImages).reshape(newShape)
+    polarImage = np.stack(polarImages, axis=0).reshape(newShape)
 
     return polarImage, settings
 

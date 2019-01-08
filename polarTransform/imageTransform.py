@@ -128,7 +128,7 @@ class ImageTransform:
             the traditional C-order representation in the Cartesian domain. In the mathematical domain, Cartesian
             coordinates are traditionally represented as (x, y, z) and as (r, theta, z) in the polar domain. When
             storing Cartesian data in C-order, the axes are usually flipped and the data is saved as (z, y, x). Thus,
-            the polar domain coordinates are also flipped to stay consistent.
+            the polar domain coordinates are also flipped to stay consistent, hence the format (z, theta, r).
         """
         image, ptSettings = convertToPolarImage(image, order=order, border=border, borderVal=borderVal,
                                                    useMultiThreading=useMultiThreading, settings=self)
@@ -151,7 +151,7 @@ class ImageTransform:
             Cartesian domain. In the mathematical domain, Cartesian coordinates are traditionally represented as
             (x, y, z) and as (r, theta, z) in the polar domain. When storing Cartesian data in C-order, the axes are
             usually flipped and the data is saved as (z, y, x). Thus, the polar domain coordinates are also flipped to
-            stay consistent.
+            stay consistent, hence the format (z, theta, r).
 
             .. note::
                 For a 3D array, polar transformation is applied separately across each 2D slice

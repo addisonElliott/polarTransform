@@ -192,8 +192,8 @@ class TestPolarConversion(unittest.TestCase):
         self.assertEqual(ptSettings.finalRadius, 640)
         self.assertEqual(ptSettings.initialAngle, 0.0)
         self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
-        self.assertEqual(ptSettings.cartesianImageSize, self.horizontalLinesAnimated.shape[0:2])
-        self.assertEqual(ptSettings.polarImageSize, (1024, 2048))
+        self.assertEqual(ptSettings.cartesianImageSize, self.horizontalLinesAnimated.shape[-2:])
+        self.assertEqual(ptSettings.polarImageSize, (2048, 1024))
 
         np.testing.assert_almost_equal(polarImage, self.horizontalLinesAnimatedPolar)
 

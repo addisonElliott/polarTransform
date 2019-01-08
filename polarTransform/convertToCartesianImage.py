@@ -18,6 +18,13 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
     image : (N, M) or (N, M, P) :class:`numpy.ndarray`
         Polar image to convert to cartesian domain
 
+        Image should be structured in C-order, i.e. the axes should be ordered (z, theta, r) or (theta, r). This
+        format is arbitrary but is selected to stay consistent with the traditional C-order representation in the
+        Cartesian domain. In the mathematical domain, Cartesian coordinates are traditionally represented as
+        (x, y, z) and as (r, theta, z) in the polar domain. When storing Cartesian data in C-order, the axes are
+        usually flipped and the data is saved as (z, y, x). Thus, the polar domain coordinates are also flipped to
+        stay consistent, hence the format (z, theta, r).
+
         .. note::
             For a 3D array, polar transformation is applied separately across each 2D slice
 
@@ -163,13 +170,18 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
     Returns
     -------
     cartesianImage : (N, M) or (N, M, P) :class:`numpy.ndarray`
-        Cartesian image (3D cartesian image if 3D input image is given)
+            Cartesian image
+
+            Resulting image is structured in C-order, i.e. the axes are ordered as (z, y, x) or (y, x). This format is
+            the traditional method of storing image data in Python.
     settings : :class:`ImageTransform`
         Contains metadata for conversion between polar and cartesian image.
 
         Settings contains many of the arguments in :func:`convertToPolarImage` and :func:`convertToCartesianImage` and
         provides an easy way of passing these parameters along without having to specify them all again.
     """
+
+    # TODO If color channels exist, some setting for this. Then we move it to front and continue, then move back at end
 
     # Create settings if none are given
     if settings is None:

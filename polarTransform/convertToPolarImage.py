@@ -191,7 +191,7 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
         the traditional C-order representation in the Cartesian domain. In the mathematical domain, Cartesian
         coordinates are traditionally represented as (x, y, z) and as (r, theta, z) in the polar domain. When
         storing Cartesian data in C-order, the axes are usually flipped and the data is saved as (z, y, x). Thus,
-        the polar domain coordinates are also flipped to stay consistent.
+        the polar domain coordinates are also flipped to stay consistent, hence the format (z, theta, r).
     settings : :class:`ImageTransform`
         Contains metadata for conversion between polar and cartesian image.
 

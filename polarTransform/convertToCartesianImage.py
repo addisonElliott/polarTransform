@@ -353,7 +353,7 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
     # Get the new shape which is the cartesian image shape plus any other dimensions
     # Get the new shape of the cartesian image which is the same shape of the polar image except the last two dimensions
     # (r & theta) are replaced with the cartesian image size
-    newShape =  image.shape[:-2] + settings.cartesianImageSize
+    newShape = image.shape[:-2] + settings.cartesianImageSize
 
     # Reshape the image to be 3D, flattens the array if > 3D otherwise it makes it 3D with the 3rd dimension a size of 1
     image = image.reshape((-1,) + settings.polarImageSize)

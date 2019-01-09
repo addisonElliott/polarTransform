@@ -22,7 +22,7 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
     image : N-dimensional :class:`numpy.ndarray`
         Cartesian image to convert to polar domain
 
-        Image should be structured in C-order, i.e. the axes should be ordered (y, x) or (z, y, x). This format is
+        Image should be structured in C-order, i.e. the axes should be ordered as (..., z, y, x, [ch]). This format is
         the traditional method of storing image data in Python.
 
         .. note::
@@ -197,9 +197,11 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
     polarImage : N-dimensional :class:`numpy.ndarray`
         Polar image
 
-        Resulting image is structured in C-order, i.e. the axes are be ordered as (z, theta, r) or (theta, r)
+        Resulting image is structured in C-order, i.e. the axes are be ordered as (..., z, theta, r, [ch])
         depending on if the input image was 3D. This format is arbitrary but is selected to stay consistent with
-        the traditional C-order representation in the Cartesian domain. In the mathematical domain, Cartesian
+        the traditional C-order representation in the Cartesian domain.
+
+        In the mathematical domain, Cartesian
         coordinates are traditionally represented as (x, y, z) and as (r, theta, z) in the polar domain. When
         storing Cartesian data in C-order, the axes are usually flipped and the data is saved as (z, y, x). Thus,
         the polar domain coordinates are also flipped to stay consistent, hence the format (z, theta, r).
@@ -335,7 +337,7 @@ def convertToPolarImage(image, center=None, initialRadius=None, finalRadius=None
     # Stack all of the slices together and reshape it to what it should be
     polarImage = np.stack(polarImages, axis=0).reshape(newShape)
 
-    # If there is a color channel present, move it abck to the end of axes
+    # If there is a color channel present, move it back to the end of axes
     if settings.hasColor:
         polarImage = np.moveaxis(polarImage, 0, -1)
 

@@ -18,12 +18,14 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
     image : N-dimensional :class:`numpy.ndarray`
         Polar image to convert to cartesian domain
 
-        Image should be structured in C-order, i.e. the axes should be ordered (z, theta, r) or (theta, r). This
-        format is arbitrary but is selected to stay consistent with the traditional C-order representation in the
-        Cartesian domain. In the mathematical domain, Cartesian coordinates are traditionally represented as
-        (x, y, z) and as (r, theta, z) in the polar domain. When storing Cartesian data in C-order, the axes are
-        usually flipped and the data is saved as (z, y, x). Thus, the polar domain coordinates are also flipped to
-        stay consistent, hence the format (z, theta, r).
+        Image should be structured in C-order, i.e. the axes should be ordered (..., z, theta, r, [ch]). The channel
+        axes should only be present if :obj:`hasColor` is :obj:`True`. This format is arbitrary but is selected to stay
+        consistent with the traditional C-order representation in the Cartesian domain.
+
+        In the mathematical domain, Cartesian coordinates are traditionally represented as (x, y, z) and as
+        (r, theta, z) in the polar domain. When storing Cartesian data in C-order, the axes are usually flipped and the
+        data is saved as (z, y, x). Thus, the polar domain coordinates are also flipped to stay consistent, hence the
+        format (z, theta, r).
 
         .. note::
             For multi-dimensional images above 2D, the cartesian transformation is applied individually across each
@@ -183,7 +185,7 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
     cartesianImage : N-dimensional :class:`numpy.ndarray`
             Cartesian image
 
-            Resulting image is structured in C-order, i.e. the axes are ordered as (z, y, x) or (y, x). This format is
+            Resulting image is structured in C-order, i.e. the axes are ordered as (..., z, y, x, [ch]). This format is
             the traditional method of storing image data in Python.
 
             Resulting image shape will be the same as the input image except for the polar dimensions are

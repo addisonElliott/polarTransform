@@ -86,8 +86,8 @@ class ImageTransform:
         image : N-dimensional :class:`numpy.ndarray`
             Cartesian image to convert to polar domain
 
-            Image should be structured in C-order, i.e. the axes should be ordered (y, x) or (z, y, x). This format is
-            the traditional method of storing image data in Python.
+            Image should be structured in C-order, i.e. the axes should be ordered as (..., z, y, x, [ch]). This format
+            is the traditional method of storing image data in Python.
 
             .. note::
                 For multi-dimensional images above 2D, the polar transformation is applied individually across each 2D
@@ -135,15 +135,17 @@ class ImageTransform:
         polarImage : N-dimensional :class:`numpy.ndarray`
             Polar image
 
-            Resulting image is structured in C-order, i.e. the axes are be ordered as (z, theta, r) or (theta, r)
+            Resulting image is structured in C-order, i.e. the axes are be ordered as (..., z, theta, r, [ch])
             depending on if the input image was 3D. This format is arbitrary but is selected to stay consistent with
-            the traditional C-order representation in the Cartesian domain. In the mathematical domain, Cartesian
+            the traditional C-order representation in the Cartesian domain.
+
+            In the mathematical domain, Cartesian
             coordinates are traditionally represented as (x, y, z) and as (r, theta, z) in the polar domain. When
             storing Cartesian data in C-order, the axes are usually flipped and the data is saved as (z, y, x). Thus,
             the polar domain coordinates are also flipped to stay consistent, hence the format (z, theta, r).
 
-            Resulting image shape will be the same as the input image except for the Cartesian dimensions are
-            replaced with the polar dimensions.
+            Resulting image shape will be the same as the input image except for the Cartesian dimensions are replaced
+            with the polar dimensions.
         """
         image, ptSettings = convertToPolarImage(image, order=order, border=border, borderVal=borderVal,
                                                    useMultiThreading=useMultiThreading, settings=self)
@@ -161,12 +163,14 @@ class ImageTransform:
         image : N-dimensional :class:`numpy.ndarray`
             Polar image to convert to cartesian domain
 
-            Image should be structured in C-order, i.e. the axes should be ordered (z, theta, r) or (theta, r). This
-            format is arbitrary but is selected to stay consistent with the traditional C-order representation in the
-            Cartesian domain. In the mathematical domain, Cartesian coordinates are traditionally represented as
-            (x, y, z) and as (r, theta, z) in the polar domain. When storing Cartesian data in C-order, the axes are
-            usually flipped and the data is saved as (z, y, x). Thus, the polar domain coordinates are also flipped to
-            stay consistent, hence the format (z, theta, r).
+            Image should be structured in C-order, i.e. the axes should be ordered (..., z, theta, r, [ch]). The channel
+            axes should only be present if :obj:`hasColor` is :obj:`True`. This format is arbitrary but is selected to
+            stay consistent with the traditional C-order representation in the Cartesian domain.
+
+            In the mathematical domain, Cartesian coordinates are traditionally represented as (x, y, z) and as
+            (r, theta, z) in the polar domain. When storing Cartesian data in C-order, the axes are usually flipped and
+            the data is saved as (z, y, x). Thus, the polar domain coordinates are also flipped to stay consistent,
+            hence the format (z, theta, r).
 
             .. note::
                 For multi-dimensional images above 2D, the cartesian transformation is applied individually across each
@@ -219,7 +223,7 @@ class ImageTransform:
         cartesianImage : N-dimensional :class:`numpy.ndarray`
             Cartesian image
 
-            Resulting image is structured in C-order, i.e. the axes are ordered as (z, y, x) or (y, x). This format is
+            Resulting image is structured in C-order, i.e. the axes are ordered as (..., z, y, x, [ch]). This format is
             the traditional method of storing image data in Python.
 
             Resulting image shape will be the same as the input image except for the polar dimensions are

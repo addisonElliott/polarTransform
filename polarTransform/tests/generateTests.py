@@ -29,7 +29,7 @@ verticalLinesPolarImage_scaled3 = loadImage('verticalLinesPolarImage_scaled3.png
 verticalLinesCartesianImage_scaled2 = loadImage('verticalLinesCartesianImage_scaled2.png')
 
 verticalLinesAnimated = loadVideo('verticalLinesAnimated.avi')
-horizontalLinesAnimated = loadVideo('horizontalLinesAnimated.avi')
+horizontalLinesAnimated = loadVideo('horizontalLinesAnimated.avi', convertToGrayscale=True)
 
 
 # Generate functions
@@ -44,27 +44,27 @@ def generateShortAxisPolar2():
 
 
 def generateVerticalLinesPolar():
-    polarImage, ptSettings = polarTransform.convertToPolarImage(verticalLinesImage)
+    polarImage, ptSettings = polarTransform.convertToPolarImage(verticalLinesImage, hasColor=True)
     saveImage('verticalLinesPolarImage.png', polarImage)
 
 
 def generateVerticalLinesPolar2():
     polarImage, ptSettings = polarTransform.convertToPolarImage(verticalLinesImage, initialRadius=30, finalRadius=100,
                                                                 initialAngle=2 / 4 * np.pi, finalAngle=5 / 4 * np.pi,
-                                                                radiusSize=140, angleSize=700)
+                                                                radiusSize=140, angleSize=700, hasColor=True)
     saveImage('verticalLinesPolarImage_scaled.png', polarImage)
 
 
 def generateVerticalLinesPolar3():
     polarImage, ptSettings = polarTransform.convertToPolarImage(verticalLinesImage, initialRadius=30,
-                                                                finalRadius=100)
+                                                                finalRadius=100, hasColor=True)
     saveImage('verticalLinesPolarImage_scaled2.png', polarImage)
 
 
 def generateVerticalLinesPolar4():
     polarImage, ptSettings = polarTransform.convertToPolarImage(verticalLinesImage, initialRadius=30,
                                                                 finalRadius=100, initialAngle=2 / 4 * np.pi,
-                                                                finalAngle=5 / 4 * np.pi)
+                                                                finalAngle=5 / 4 * np.pi, hasColor=True)
     saveImage('verticalLinesPolarImage_scaled3.png', polarImage)
 
 
@@ -73,14 +73,15 @@ def generateVerticalLinesCartesian2():
                                                                         initialRadius=30, finalRadius=100,
                                                                         initialAngle=2 / 4 * np.pi,
                                                                         finalAngle=5 / 4 * np.pi, imageSize=[256, 256],
-                                                                        center=[128, 128])
+                                                                        center=[128, 128], hasColor=True)
     saveImage('verticalLinesCartesianImage_scaled.png', cartesianImage)
 
 
 def generateVerticalLinesCartesian3():
     cartesianImage, ptSettings = polarTransform.convertToCartesianImage(verticalLinesPolarImage_scaled2,
                                                                         center=[128, 128], imageSize=[256, 256],
-                                                                        initialRadius=30, finalRadius=100)
+                                                                        initialRadius=30, finalRadius=100,
+                                                                        hasColor=True)
     saveImage('verticalLinesCartesianImage_scaled2.png', cartesianImage)
 
 
@@ -89,12 +90,13 @@ def generateVerticalLinesCartesian4():
                                                                         initialRadius=30, finalRadius=100,
                                                                         initialAngle=2 / 4 * np.pi,
                                                                         finalAngle=5 / 4 * np.pi, center=[128, 128],
-                                                                        imageSize=[256, 256])
+                                                                        imageSize=[256, 256], hasColor=True)
     saveImage('verticalLinesCartesianImage_scaled3.png', cartesianImage)
 
 
 def generateVerticalLinesBorders():
-    polarImage, ptSettings = polarTransform.convertToPolarImage(verticalLinesImage, border='constant', borderVal=128.0)
+    polarImage, ptSettings = polarTransform.convertToPolarImage(verticalLinesImage, border='constant', borderVal=128.0,
+                                                                hasColor=True)
     saveImage('verticalLinesPolarImageBorders.png', polarImage)
 
     ptSettings.cartesianImageSize = (500, 500)
@@ -104,7 +106,7 @@ def generateVerticalLinesBorders():
 
 
 def generateVerticalLinesBorders2():
-    polarImage, ptSettings = polarTransform.convertToPolarImage(verticalLinesImage, border='nearest')
+    polarImage, ptSettings = polarTransform.convertToPolarImage(verticalLinesImage, hasColor=True, border='nearest')
     saveImage('verticalLinesPolarImageBorders3.png', polarImage)
 
     ptSettings.cartesianImageSize = (500, 500)
@@ -122,7 +124,7 @@ def generateVerticalLinesAnimated():
     frameSize = 40
 
     frames = [np.roll(verticalLinesImage, 12 * x, axis=1) for x in range(frameSize)]
-    image3D = np.stack(frames, axis=-1)
+    image3D = np.stack(frames, axis=0)
 
     saveVideo('verticalLinesAnimated.avi', image3D)
 
@@ -132,19 +134,17 @@ def generateVerticalLinesAnimatedPolar():
     ptSettings = None
     polarFrames = []
 
-    for x in range(frameSize):
-        frame = verticalLinesAnimated[..., x]
-
+    for frame in verticalLinesAnimated:
         # Call convert to polar image on each frame, uses the assumption that individual 2D image works fine based on
         # other tests
         if ptSettings:
             polarFrame = ptSettings.convertToPolarImage(frame)
         else:
-            polarFrame, ptSettings = polarTransform.convertToPolarImage(frame)
+            polarFrame, ptSettings = polarTransform.convertToPolarImage(frame, hasColor=True)
 
         polarFrames.append(polarFrame)
 
-    polarImage3D = np.stack(polarFrames, axis=-1)
+    polarImage3D = np.stack(polarFrames, axis=0)
     saveVideo('verticalLinesAnimatedPolar.avi', polarImage3D)
 
 
@@ -152,7 +152,7 @@ def generateHorizontalLinesAnimated():
     frameSize = 40
 
     frames = [np.roll(horizontalLines, 36 * x, axis=0) for x in range(frameSize)]
-    image3D = np.stack(frames, axis=-1)
+    image3D = np.stack(frames, axis=0)
 
     saveVideo('horizontalLinesAnimated.avi', image3D)
 
@@ -162,9 +162,7 @@ def generateHorizontalLinesAnimatedPolar():
     ptSettings = None
     polarFrames = []
 
-    for x in range(frameSize):
-        frame = horizontalLinesAnimated[..., x]
-
+    for frame in horizontalLinesAnimated:
         # Call convert to polar image on each frame, uses the assumption that individual 2D image works fine based on
         # other tests
         if ptSettings:
@@ -174,7 +172,7 @@ def generateHorizontalLinesAnimatedPolar():
 
         polarFrames.append(polarFrame)
 
-    polarImage3D = np.stack(polarFrames, axis=-1)
+    polarImage3D = np.stack(polarFrames, axis=0)
     saveVideo('horizontalLinesAnimatedPolar.avi', polarImage3D)
 
 # Enable these functions as you see fit to generate the images
@@ -185,18 +183,18 @@ def generateHorizontalLinesAnimatedPolar():
 # generateVerticalLinesPolar2()
 # generateVerticalLinesPolar3()
 # generateVerticalLinesPolar4()
-
+#
 # generateVerticalLinesCartesian2()
 # generateVerticalLinesCartesian3()
 # generateVerticalLinesCartesian4()
-
+#
 # generateVerticalLinesBorders()
 # generateVerticalLinesBorders2()
-
+#
 # generateHorizontalLinesPolar()
-
+#
 # generateVerticalLinesAnimated()
 # generateVerticalLinesAnimatedPolar()
-
+#
 # generateHorizontalLinesAnimated()
 # generateHorizontalLinesAnimatedPolar()

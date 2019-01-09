@@ -42,7 +42,7 @@ class TestPolarAndCartesianConversion(unittest.TestCase):
         self.assertEqual(ptSettings.initialAngle, 0.0)
         self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
         self.assertEqual(ptSettings.cartesianImageSize, (608, 800))
-        self.assertEqual(ptSettings.polarImageSize, self.shortAxisApexPolarImage.shape[0:2])
+        self.assertEqual(ptSettings.polarImageSize, self.shortAxisApexPolarImage.shape[-2:])
 
         assert_image_approx_equal_average(cartesianImage, self.shortAxisApexImage, 5)
 
@@ -61,13 +61,13 @@ class TestPolarAndCartesianConversion(unittest.TestCase):
         self.assertEqual(ptSettings.initialAngle, 0.0)
         self.assertEqual(ptSettings.finalAngle, 2 * np.pi)
         self.assertEqual(ptSettings.cartesianImageSize, (608, 800))
-        self.assertEqual(ptSettings.polarImageSize, self.shortAxisApexPolarImage.shape[0:2])
+        self.assertEqual(ptSettings.polarImageSize, self.shortAxisApexPolarImage.shape[-2:])
 
         assert_image_equal(polarImage, self.shortAxisApexPolarImage, 10)
 
     def test_borders(self):
-        polarImage, ptSettings = polarTransform.convertToPolarImage(self.verticalLinesImage, border='constant',
-                                                                    borderVal=128.0)
+        polarImage, ptSettings = polarTransform.convertToPolarImage(self.verticalLinesImage, hasColor=True,
+                                                                    border='constant', borderVal=128.0)
 
         np.testing.assert_almost_equal(polarImage, self.verticalLinesPolarImageBorders)
 
@@ -78,7 +78,8 @@ class TestPolarAndCartesianConversion(unittest.TestCase):
         np.testing.assert_almost_equal(cartesianImage, self.verticalLinesCartesianImageBorders2)
 
     def test_borders2(self):
-        polarImage, ptSettings = polarTransform.convertToPolarImage(self.verticalLinesImage, border='nearest')
+        polarImage, ptSettings = polarTransform.convertToPolarImage(self.verticalLinesImage, hasColor=True,
+                                                                    border='nearest')
 
         np.testing.assert_almost_equal(polarImage, self.verticalLinesPolarImageBorders3)
 

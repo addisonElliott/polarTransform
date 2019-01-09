@@ -2,7 +2,7 @@ class ImageTransform:
     """Class to store settings when converting between cartesian and polar domain"""
 
     def __init__(self, center, initialRadius, finalRadius, initialAngle, finalAngle, cartesianImageSize,
-                 polarImageSize):
+                 polarImageSize, hasColor):
         """Polar and Cartesian Transform Metadata
 
         ImageTransform contains polar and cartesian transform metadata for the conversion between the two domains.
@@ -46,6 +46,19 @@ class ImageTransform:
             Size of cartesian image
         polarImageSize : (2,) :class:`tuple` of :class:`int`
             Size of polar image
+        hasColor : :class:`bool`, optional
+            Whether or not the polar or cartesian image contains color channels
+
+            This means that the image is structured as (..., y, x, ch) or (..., theta, r, ch) for Cartesian or polar
+            images, respectively. If color channels are present, the last dimension (channel axes) will be shifted to
+            the front, converted and then shifted back to its original location.
+
+            Default is :obj:`False`
+
+            .. note::
+                If an alpha band (4th channel of image is present), then it will be converted. Typically, this is
+                unwanted, so the recommended solution is to transform the first 3 channels and set the 4th channel to
+                fully on.
         """
         self.center = center
         self.initialRadius = initialRadius
@@ -54,6 +67,7 @@ class ImageTransform:
         self.finalAngle = finalAngle
         self.cartesianImageSize = cartesianImageSize
         self.polarImageSize = polarImageSize
+        self.hasColor = hasColor
 
     def convertToPolarImage(self, image, order=3, border='constant', borderVal=0.0, useMultiThreading=False):
         """Convert cartesian image to polar image.
@@ -69,16 +83,17 @@ class ImageTransform:
 
         Parameters
         ----------
-        image : (N, M) or (N, M, P) :class:`numpy.ndarray`
+        image : N-dimensional :class:`numpy.ndarray`
             Cartesian image to convert to polar domain
 
-            .. note::
-                For a 3D array, polar transformation is applied separately across each 2D slice
+            Image should be structured in C-order, i.e. the axes should be ordered as (..., z, y, x, [ch]). This format
+            is the traditional method of storing image data in Python.
 
             .. note::
-                If an alpha band (4th channel of image is present), then it will be converted. Typically, this is
-                unwanted, so the recommended solution is to transform the first 3 channels and set the 4th channel to
-                fully on.
+                For multi-dimensional images above 2D, the polar transformation is applied individually across each 2D
+                slice. The last two dimensions should be the x & y dimensions, unless :obj:`hasColor` is True in which
+                case the 2nd and 3rd to last dimensions should be. The multidimensional shape will be preserved for the
+                resulting polar image (besides the Cartesian dimensions).
         order : :class:`int` (0-5), optional
             The order of the spline interpolation, default is 3. The order has to be in the range 0-5.
 
@@ -117,9 +132,20 @@ class ImageTransform:
 
         Returns
         -------
-        polarImage : (N, M) or (N, M, P) :class:`numpy.ndarray`
-            Polar image where first dimension is radii and second dimension is angle (3D polar image if 3D input image
-            is given)
+        polarImage : N-dimensional :class:`numpy.ndarray`
+            Polar image
+
+            Resulting image is structured in C-order, i.e. the axes are be ordered as (..., z, theta, r, [ch])
+            depending on if the input image was 3D. This format is arbitrary but is selected to stay consistent with
+            the traditional C-order representation in the Cartesian domain.
+
+            In the mathematical domain, Cartesian
+            coordinates are traditionally represented as (x, y, z) and as (r, theta, z) in the polar domain. When
+            storing Cartesian data in C-order, the axes are usually flipped and the data is saved as (z, y, x). Thus,
+            the polar domain coordinates are also flipped to stay consistent, hence the format (z, theta, r).
+
+            Resulting image shape will be the same as the input image except for the Cartesian dimensions are replaced
+            with the polar dimensions.
         """
         image, ptSettings = convertToPolarImage(image, order=order, border=border, borderVal=borderVal,
                                                    useMultiThreading=useMultiThreading, settings=self)
@@ -134,16 +160,23 @@ class ImageTransform:
 
         Parameters
         ----------
-        image : (N, M) or (N, M, P) :class:`numpy.ndarray`
+        image : N-dimensional :class:`numpy.ndarray`
             Polar image to convert to cartesian domain
 
-            .. note::
-                For a 3D array, polar transformation is applied separately across each 2D slice
+            Image should be structured in C-order, i.e. the axes should be ordered (..., z, theta, r, [ch]). The channel
+            axes should only be present if :obj:`hasColor` is :obj:`True`. This format is arbitrary but is selected to
+            stay consistent with the traditional C-order representation in the Cartesian domain.
+
+            In the mathematical domain, Cartesian coordinates are traditionally represented as (x, y, z) and as
+            (r, theta, z) in the polar domain. When storing Cartesian data in C-order, the axes are usually flipped and
+            the data is saved as (z, y, x). Thus, the polar domain coordinates are also flipped to stay consistent,
+            hence the format (z, theta, r).
 
             .. note::
-                If an alpha band (4th channel of image is present), then it will be converted. Typically, this is
-                unwanted, so the recommended solution is to transform the first 3 channels and set the 4th channel to
-                fully on.
+                For multi-dimensional images above 2D, the cartesian transformation is applied individually across each
+                2D slice. The last two dimensions should be the r & theta dimensions, unless :obj:`hasColor` is True in
+                which case the 2nd and 3rd to last dimensions should be. The multidimensional shape will be preserved
+                for the resulting cartesian image (besides the polar dimensions).
         order : :class:`int` (0-5), optional
             The order of the spline interpolation, default is 3. The order has to be in the range 0-5.
 
@@ -187,8 +220,14 @@ class ImageTransform:
 
         Returns
         -------
-        cartesianImage : (N, M) or (N, M, P) :class:`numpy.ndarray`
-            Cartesian image (3D cartesian image if 3D input image is given)
+        cartesianImage : N-dimensional :class:`numpy.ndarray`
+            Cartesian image
+
+            Resulting image is structured in C-order, i.e. the axes are ordered as (..., z, y, x, [ch]). This format is
+            the traditional method of storing image data in Python.
+
+            Resulting image shape will be the same as the input image except for the polar dimensions are
+            replaced with the Cartesian dimensions.
 
         See Also
         --------

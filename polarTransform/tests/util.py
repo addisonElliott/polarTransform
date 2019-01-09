@@ -39,10 +39,10 @@ def loadVideo(filename, flipud=True, convertToGrayscale=False):
         frames.append(frame)
 
     # Combine the video on the last axis
-    image3D = np.stack(frames, axis=-1)
+    image3D = np.stack(frames, axis=0)
 
     if flipud:
-        image3D = np.flipud(image3D)
+        image3D = np.flip(image3D, axis=1)
 
     return image3D
 
@@ -59,18 +59,22 @@ def saveVideo(filename, image, fps=20, fourcc='MJLS', flipud=True):
     if isinstance(fourcc, str):
         fourcc = cv2.VideoWriter_fourcc(*fourcc)
 
+    # Retrieve the 2D image shape
+    # If there is color channels, get 2nd and 3rd to last dimensions, otherwise get last 2 dimensions
+    imageShape = image.shape[-2:-4:-1] if hasColor else image.shape[-1:-3:-1]
+
     # Construct codec to use and create writer
     # MJLS is one of the few FFMPEG formats that supports lossy encoding in OpenCV specifically because it does not
     # convert to YUV color space
-    writer = cv2.VideoWriter(os.path.join(dataDirectory, filename), fourcc, fps, image.shape[1::-1], isColor=hasColor)
+    writer = cv2.VideoWriter(os.path.join(dataDirectory, filename), fourcc, fps, imageShape, isColor=hasColor)
 
     # Flip image if specified
     if flipud:
-        image = np.flipud(image)
+        image = np.flip(image, axis=1)
 
     # Write frames
-    for x in range(image.shape[-1]):
-        writer.write(image[..., x])
+    for slice in image:
+        writer.write(slice)
 
     # Finish writing
     writer.release()
@@ -82,7 +86,7 @@ def assert_image_equal(desired, actual, diff):
     assert (np.all(difference <= diff))
 
 
-def assert_image_approx_equal_average(desired, actual, averageDiff):
+def assert_image_approx_equal_average(desired, actual, averageDiff, hasColor=False):
     assert desired.ndim == actual.ndim, 'Images are not equal, difference in dimensions: %i != %i' % \
                                         (desired.ndim, actual.ndim)
     assert desired.shape == actual.shape, 'Images are not equal, difference in shape %s != %s' % \
@@ -91,8 +95,11 @@ def assert_image_approx_equal_average(desired, actual, averageDiff):
     # Calculate the difference between the two images
     difference = np.abs(desired.astype(int) - actual.astype(int)).astype(np.uint8)
 
+    axes = (-2, -3) if hasColor else (-1, -2)
+
     # Get average difference between each different pixel
-    averageDiffPerPixel = np.sum(difference, axis=(0, 1)) / np.sum(difference > 0, axis=(0, 1))
+    # averageDiffPerPixel = np.sum(difference, axis=(0, 1)) / np.sum(difference > 0, axis=(0, 1))
+    averageDiffPerPixel = np.sum(difference, axis=axes) / np.sum(difference > 0, axis=axes)
 
     assert np.all(averageDiffPerPixel < averageDiff), 'Images are not equal, average difference between each channel ' \
                                                       'is not less than the given threshold, %s < %s' % \

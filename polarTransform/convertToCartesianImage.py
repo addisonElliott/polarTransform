@@ -5,7 +5,7 @@ import scipy.ndimage
 
 def convertToCartesianImage(image, center=None, initialRadius=None,
                             finalRadius=None, initialAngle=None,
-                            finalAngle=None, imageSize=None, order=3, border='constant',
+                            finalAngle=None, imageSize=None, hasColor=False, order=3, border='constant',
                             borderVal=0.0, useMultiThreading=False, settings=None):
     """Convert polar image to cartesian image.
 
@@ -15,16 +15,23 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
 
     Parameters
     ----------
-    image : (N, M) or (N, M, P) :class:`numpy.ndarray`
+    image : N-dimensional :class:`numpy.ndarray`
         Polar image to convert to cartesian domain
 
-        .. note::
-            For a 3D array, polar transformation is applied separately across each 2D slice
+        Image should be structured in C-order, i.e. the axes should be ordered (..., z, theta, r, [ch]). The channel
+        axes should only be present if :obj:`hasColor` is :obj:`True`. This format is arbitrary but is selected to stay
+        consistent with the traditional C-order representation in the Cartesian domain.
+
+        In the mathematical domain, Cartesian coordinates are traditionally represented as (x, y, z) and as
+        (r, theta, z) in the polar domain. When storing Cartesian data in C-order, the axes are usually flipped and the
+        data is saved as (z, y, x). Thus, the polar domain coordinates are also flipped to stay consistent, hence the
+        format (z, theta, r).
 
         .. note::
-            If an alpha band (4th channel of image is present), then it will be converted. Typically, this is
-            unwanted, so the recommended solution is to transform the first 3 channels and set the 4th channel to
-            fully on.
+            For multi-dimensional images above 2D, the cartesian transformation is applied individually across each
+            2D slice. The last two dimensions should be the r & theta dimensions, unless :obj:`hasColor` is True in
+            which case the 2nd and 3rd to last dimensions should be. The multidimensional shape will be preserved
+            for the resulting cartesian image (besides the polar dimensions).
     center : :class:`str` or (2,) :class:`list`, :class:`tuple` or :class:`numpy.ndarray` of :class:`int`, optional
         Specifies the center in the cartesian image to use as the origin in polar domain. The center in the
         cartesian domain will be (0, 0) in the polar domain.
@@ -108,6 +115,19 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
 
         If imageSize is not set, then it defaults to the size required to fit the entire polar image on a cartesian
         image.
+    hasColor : :class:`bool`, optional
+        Whether or not the polar image contains color channels
+
+        This means that the image is structured as (..., y, x, ch) or (..., theta, r, ch) for Cartesian or polar
+        images, respectively. If color channels are present, the last dimension (channel axes) will be shifted to
+        the front, converted and then shifted back to its original location.
+
+        Default is :obj:`False`
+
+        .. note::
+            If an alpha band (4th channel of image is present), then it will be converted. Typically, this is
+            unwanted, so the recommended solution is to transform the first 3 channels and set the 4th channel to
+            fully on.
     order : :class:`int` (0-5), optional
         The order of the spline interpolation, default is 3. The order has to be in the range 0-5.
 
@@ -162,14 +182,24 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
 
     Returns
     -------
-    cartesianImage : (N, M) or (N, M, P) :class:`numpy.ndarray`
-        Cartesian image (3D cartesian image if 3D input image is given)
+    cartesianImage : N-dimensional :class:`numpy.ndarray`
+            Cartesian image
+
+            Resulting image is structured in C-order, i.e. the axes are ordered as (..., z, y, x, [ch]). This format is
+            the traditional method of storing image data in Python.
+
+            Resulting image shape will be the same as the input image except for the polar dimensions are
+            replaced with the Cartesian dimensions.
     settings : :class:`ImageTransform`
         Contains metadata for conversion between polar and cartesian image.
 
         Settings contains many of the arguments in :func:`convertToPolarImage` and :func:`convertToCartesianImage` and
         provides an easy way of passing these parameters along without having to specify them all again.
     """
+
+    # If there is a color channel present, move it to the front of axes
+    if settings.hasColor if settings is not None else hasColor:
+        image = np.moveaxis(image, -1, 0)
 
     # Create settings if none are given
     if settings is None:
@@ -187,7 +217,7 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
         # In other words, what radius does the last row of polar image correspond to?
         # If not set, default is the largest radius from image
         if finalRadius is None:
-            finalRadius = image.shape[0]
+            finalRadius = image.shape[-1]
 
         # Initial angle of the source image
         # In other words, what angle does column 0 correspond to?
@@ -202,15 +232,15 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
             finalAngle = 2 * np.pi
 
         # This is used to scale the result of the radius to get the appropriate Cartesian value
-        scaleRadius = image.shape[0] / (finalRadius - initialRadius)
+        scaleRadius = image.shape[-1] / (finalRadius - initialRadius)
 
         # This is used to scale the result of the angle to get the appropriate Cartesian value
-        scaleAngle = image.shape[1] / (finalAngle - initialAngle)
+        scaleAngle = image.shape[-2] / (finalAngle - initialAngle)
 
         if imageSize is None:
             # Obtain the image size by looping from initial to final source angle (every possible theta in the image
             # basically)
-            thetas = np.mod(np.linspace(0, (finalAngle - initialAngle), image.shape[1]) + initialAngle, 2 * np.pi)
+            thetas = np.mod(np.linspace(0, (finalAngle - initialAngle), image.shape[-2]) + initialAngle, 2 * np.pi)
             maxRadius = finalRadius * np.ones_like(thetas)
 
             # Then get the maximum radius of the image and compute the x/y coordinates for each option
@@ -289,13 +319,13 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
         imageSize = tuple(imageSize)
 
         settings = ImageTransform(center, initialRadius, finalRadius, initialAngle, finalAngle, imageSize,
-                                  image.shape[0:2])
+                                  image.shape[-2:], hasColor)
     else:
         # This is used to scale the result of the radius to get the appropriate Cartesian value
-        scaleRadius = settings.polarImageSize[0] / (settings.finalRadius - settings.initialRadius)
+        scaleRadius = settings.polarImageSize[1] / (settings.finalRadius - settings.initialRadius)
 
         # This is used to scale the result of the angle to get the appropriate Cartesian value
-        scaleAngle = settings.polarImageSize[1] / (settings.finalAngle - settings.initialAngle)
+        scaleAngle = settings.polarImageSize[0] / (settings.finalAngle - settings.initialAngle)
 
     # Get list of cartesian x and y coordinate and create a 2D create of the coordinates using meshgrid
     xs = np.arange(0, settings.cartesianImageSize[1])
@@ -320,23 +350,25 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
     theta = theta * scaleAngle
 
     # Flatten the desired x/y cartesian points into one 2xN array
-    desiredCoords = np.vstack((r.flatten(), theta.flatten()))
+    desiredCoords = np.vstack((theta.flatten(), r.flatten()))
 
     # Get the new shape which is the cartesian image shape plus any other dimensions
-    newShape = settings.cartesianImageSize + image.shape[2:]
+    # Get the new shape of the cartesian image which is the same shape of the polar image except the last two dimensions
+    # (r & theta) are replaced with the cartesian image size
+    newShape = image.shape[:-2] + settings.cartesianImageSize
 
     # Reshape the image to be 3D, flattens the array if > 3D otherwise it makes it 3D with the 3rd dimension a size of 1
-    image = image.reshape(image.shape[0:2] + (-1,))
+    image = image.reshape((-1,) + settings.polarImageSize)
 
     if border == 'constant':
         # Pad image by 3 pixels and then offset all of the desired coordinates by 3
-        image = np.pad(image, ((3, 3), (3, 3), (0, 0)), 'edge')
+        image = np.pad(image, ((0, 0), (3, 3), (3, 3)), 'edge')
         desiredCoords += 3
 
     if useMultiThreading:
         with concurrent.futures.ThreadPoolExecutor() as executor:
-            futures = [executor.submit(scipy.ndimage.map_coordinates, image[:, :, k], desiredCoords, mode=border,
-                                       cval=borderVal, order=order) for k in range(image.shape[2])]
+            futures = [executor.submit(scipy.ndimage.map_coordinates, slice, desiredCoords, mode=border, cval=borderVal,
+                                       order=order) for slice in image]
 
             concurrent.futures.wait(futures, return_when=concurrent.futures.ALL_COMPLETED)
 
@@ -345,13 +377,17 @@ def convertToCartesianImage(image, center=None, initialRadius=None,
         cartesianImages = []
 
         # Loop through the third dimension and map each 2D slice
-        for k in range(image.shape[2]):
-            imageSlice = scipy.ndimage.map_coordinates(image[:, :, k], desiredCoords, mode=border, cval=borderVal,
+        for slice in image:
+            imageSlice = scipy.ndimage.map_coordinates(slice, desiredCoords, mode=border, cval=borderVal,
                                                        order=order).reshape(x.shape)
             cartesianImages.append(imageSlice)
 
     # Stack all of the slices together and reshape it to what it should be
-    cartesianImage = np.dstack(cartesianImages).reshape(newShape)
+    cartesianImage = np.stack(cartesianImages, axis=0).reshape(newShape)
+
+    # If there is a color channel present, move it abck to the end of axes
+    if settings.hasColor:
+        cartesianImage = np.moveaxis(cartesianImage, 0, -1)
 
     return cartesianImage, settings
 

@@ -177,24 +177,24 @@ def generateHorizontalLinesAnimatedPolar():
 
 # Enable these functions as you see fit to generate the images
 # Note: It is up to the developer to visually inspect the output images that are created.
-generateShortAxisPolar()
-generateShortAxisPolar2()
-generateVerticalLinesPolar()
-generateVerticalLinesPolar2()
-generateVerticalLinesPolar3()
-generateVerticalLinesPolar4()
-
-generateVerticalLinesCartesian2()
-generateVerticalLinesCartesian3()
-generateVerticalLinesCartesian4()
-
-generateVerticalLinesBorders()
-generateVerticalLinesBorders2()
-
-generateHorizontalLinesPolar()
-
+# generateShortAxisPolar()
+# generateShortAxisPolar2()
+# generateVerticalLinesPolar()
+# generateVerticalLinesPolar2()
+# generateVerticalLinesPolar3()
+# generateVerticalLinesPolar4()
+#
+# generateVerticalLinesCartesian2()
+# generateVerticalLinesCartesian3()
+# generateVerticalLinesCartesian4()
+#
+# generateVerticalLinesBorders()
+# generateVerticalLinesBorders2()
+#
+# generateHorizontalLinesPolar()
+#
 # generateVerticalLinesAnimated()
-generateVerticalLinesAnimatedPolar()
-
+# generateVerticalLinesAnimatedPolar()
+#
 # generateHorizontalLinesAnimated()
-generateHorizontalLinesAnimatedPolar()
+# generateHorizontalLinesAnimatedPolar()

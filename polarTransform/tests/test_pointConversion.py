@@ -30,6 +30,7 @@ class TestPointConversion(unittest.TestCase):
         np.testing.assert_array_equal(ptSettings.getPolarPointsImage(np.array([[401, 365], [401, 365]])),
                                       np.array([[0, 0], [0, 0]]))
 
+        # Fails here
         np.testing.assert_array_equal(ptSettings.getPolarPointsImage([[451, 365], [401, 400], [348, 365], [401, 305]]),
                                       np.array([[50 * 802 / 543, 0], [35 * 802 / 543, 400], [53 * 802 / 543, 800],
                                                 [60 * 802 / 543, 1200]]))

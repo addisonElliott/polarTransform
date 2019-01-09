@@ -200,10 +200,10 @@ def getPolarPointsImage(points, settings):
         needSqueeze = False
 
     # This is used to scale the result of the radius to get the appropriate Cartesian value
-    scaleRadius = settings.polarImageSize[0] / (settings.finalRadius - settings.initialRadius)
+    scaleRadius = settings.polarImageSize[1] / (settings.finalRadius - settings.initialRadius)
 
     # This is used to scale the result of the angle to get the appropriate Cartesian value
-    scaleAngle = settings.polarImageSize[1] / (settings.finalAngle - settings.initialAngle)
+    scaleAngle = settings.polarImageSize[0] / (settings.finalAngle - settings.initialAngle)
 
     # Take cartesian grid and convert to polar coordinates
     polarPoints = getPolarPoints(points, settings.center)
@@ -272,10 +272,10 @@ def getCartesianPointsImage(points, settings):
         needSqueeze = False
 
     # This is used to scale the result of the radius to get the appropriate Cartesian value
-    scaleRadius = settings.polarImageSize[0] / (settings.finalRadius - settings.initialRadius)
+    scaleRadius = settings.polarImageSize[1] / (settings.finalRadius - settings.initialRadius)
 
     # This is used to scale the result of the angle to get the appropriate Cartesian value
-    scaleAngle = settings.polarImageSize[1] / (settings.finalAngle - settings.initialAngle)
+    scaleAngle = settings.polarImageSize[0] / (settings.finalAngle - settings.initialAngle)
 
     # Create a new copy of the points variable because we are going to change it and don't want the points parameter to
     # change outside of this function
